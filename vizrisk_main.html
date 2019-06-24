@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>The Rise of Kpop in Chicago</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.1/TweenMax.min.js"></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <style media="screen">
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 60%;
+    }
+
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    circle {
+      stroke-width: 0;
+      mix-blend-mode: multiply;
+    }
+
+    section {
+      padding: 25px 50px;
+      line-height: 25px;
+      margin: 200px 25px 200px 25px;
+      opacity: 0.05;
+      font-size: 20px;
+      color: #fafafa;
+      ;
+    }
+
+    section.active {
+      opacity: 0.8;
+    }
+
+    section:last-child {
+      border-bottom: none;
+      margin-bottom: 1000px;
+    }
+
+    #features {
+      width: 40%;
+      margin-left: 60%;
+      font-family: 'Roboto', sans-serif;
+      overflow-y: scroll;
+      background-color: rgba(13, 13, 12, 1);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div id='features'>
+    <section id='welcome'>
+      <h3>Welcome</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section1'>
+      <h3>Landers before</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section2'>
+      <h3>Landers mainshock</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section3'>
+      <h3>Landers aftershocks</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section4'>
+      <h3>Landers triggered</h3>
+      <p></p>
+    </section>
+  </div>
+  <script type="text/javascript" src="enter-view.js"></script>
+  <script type="text/javascript">
+    mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/wchase14/cjwh8fgh00omd1clb4krxzcxj',
+      center: [11.634, 25.448],
+      zoom: 1.1
+    });
+
+    var chapters = {
+        'welcome': {
+            bearing: 0,
+            center: [11.634, 25.448],
+            zoom: 1.1,
+            speed: 0.6,
+            pitch: 0
+        },
+        'section1': {
+            bearing: 0,
+            center: [-108.139,39.404],
+            zoom: 3.94,
+            speed: 0.7,
+            pitch: 0
+        },
+        'section2': {
+            center: [-87.887091,42.004897],
+            bearing: 14.40,
+            zoom: 16.00,
+            speed: 0.5,
+            pitch: 53.50
+        },
+        'section3': {
+            bearing: 14.40,
+            center: [-87.673674,41.880015],
+            zoom: 16.00,
+            speed: 0.5,
+            pitch: 53.50
+        },
+        'section4': {
+            bearing: 0.00,
+            center: [-87.615715,41.861087],
+            zoom: 15.78,
+            speed: 0.5,
+            pitch: 60.00
+        },
+    };
+
+    //////////////////////////
+    // Mapbox+D3 Connection
+    //////////////////////////
+    // Get Mapbox map canvas container
+    var canvas = map.getCanvasContainer();
+    // Overlay d3 on the map
+    var svg = d3.select(canvas).append("svg");
+    // Load map and dataset
+    // map.on('load', function() {
+    //   d3.json("https://gist.githubusercontent.com/will-r-chase/09f382961528be682a73029fd22b9cb1/raw/d69b210bb82cf7bff22d9eee4e3573ed01d2967f/landers_triggered.geojson", function(err, data) {
+    //     drawData(data);
+    //   });
+    // });
+    // Project GeoJSON coordinate to the map's current state
+    function initData(source) {
+      d3.json(source, function(err, data) {
+        drawData(data);})}
+
+    function project(d) {
+      return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
+    }
+    //////////////
+    // D3 stuff
+    //////////////
+    // Draw GeoJSON data with d3
+    var circles;
+
+    // Scales
+    aScale = d3.scaleSqrt()
+      .range([5, 20]);
+
+    colorScale = d3.scaleSequential(d3.interpolateHcl("#FD8C3D", "#E3191C"));
+
+
+    function drawData(data) {
+      console.log("draw data");
+      // set scale domain
+      //const mags = data.features.map(d => d.properties).map(d => d.mag);
+      aScale.domain(d3.extent(data.features.map(d => d.properties).map(d => d.mag)));
+      colorScale.domain(d3.extent(data.features.map(d => d.properties).map(d => d.mag)));
+      // Add circles
+      circles = svg.selectAll("circle")
+        .data(data.features)
+        .enter()
+        .append("circle")
+        .attr("r", 0)
+        .attr("fill", d => colorScale(d.properties.mag))
+        .style("opacity", 0.7);
+
+      circles
+        .transition()
+        .delay(1500)
+        .duration(650)
+        .attr("r", d => aScale(d.properties.mag));
+      // Call the update function
+      update();
+      // Update on map interaction
+      map.on("viewreset", update);
+      map.on("move", update);
+      map.on("moveend", update);
+    }
+    // Update d3 shapes' positions to the map's current state
+    function update() {
+      console.log("update");
+      circles.attr("cx", function(d) {
+          return project(d.geometry.coordinates).x
+        })
+        .attr("cy", function(d) {
+          return project(d.geometry.coordinates).y
+        });
+    }
+
+    function eraseData() {
+      circles = svg.selectAll("circle")
+        .remove()
+    }
+
+    enterView({
+     selector: '#welcome',
+     offset: 0.75,
+     enter: function(el) {
+      el.classList.add('active');
+      map.flyTo(chapters['welcome']);
+
+    },
+     exit: function(el) {
+      el.classList.remove('active');
+     },
+    });
+    enterView({
+     selector: '#section1',
+     offset: 0.75,
+     enter: function(el) {
+      el.classList.add('active');
+      map.flyTo(chapters['section1']);
+      initData("https://gist.githubusercontent.com/will-r-chase/788da2914f1f7ff5866d9bfb19d2b604/raw/801f798b8c4e3df875ad64558049aa849370d11c/landers_before.geojson");
+    },
+     exit: function(el) {
+      el.classList.remove('active');
+      eraseData();
+     },
+    });
+
+
+    /*map.on('load', function () {
+
+      map.addSource("indianOcean_aftershocks", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/5d41e555f64d27f19ff6518b0d779efd/raw/1f4b1ecd4b8c6ecb3e25e48cdff17240b01558eb/indianOcean_aftershocks.geojson"
+      });
+      map.addSource("indianOcean_before", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/40d8803b4eed82851e617d8eb264bea7/raw/83d4f1a0276319cfe8f8af451c662340fbf4e581/indianOcean_before.geojson"
+      });
+      map.addSource("indianOcean_mainshock", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/5e3e1470002a9bb53465c610faea0959/raw/07c39e495864ecc02aa5b683379af33e3dc9a259/indianOcean_mainshock.geojson"
+      });
+      map.addSource("indianOcean_triggered", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/800af0c4317257f7ef066d648daa9bfc/raw/3ede95367400e22666171617ae6cb158a671cdb8/indianOcean_triggered.geojson"
+      });
+
+      map.addSource("landers_aftershocks", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson"
+      });
+      map.addSource("landers_before", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/788da2914f1f7ff5866d9bfb19d2b604/raw/801f798b8c4e3df875ad64558049aa849370d11c/landers_before.geojson"
+      });
+      map.addSource("landers_mainshock", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson"
+      });
+      map.addSource("landers_triggered", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/09f382961528be682a73029fd22b9cb1/raw/d69b210bb82cf7bff22d9eee4e3573ed01d2967f/landers_triggered.geojson"
+      });
+
+      map.addSource("tohoku_mainshock", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/60b33af5567a82a13d21fbd5c5161ff2/raw/fccd7f76b1535d89c6c37384f9db6cc43bac6dcc/tohoku_mainshock.geojson"
+      });
+      map.addSource("tohoku_baja_after", {
+        type: "geojson",
+        data: "https://gist.githubusercontent.com/will-r-chase/e5ce036f3af9030ec56c58ab660b2003/raw/d217d3c4162ea77435b8907b8008b3a0c9fc4bd0/tohoku_baja_after2.geojson"
+      });*/
+
+    //const testLanders = d3.json("https://gist.githubusercontent.com/will-r-chase/09f382961528be682a73029fd22b9cb1/raw/d69b210bb82cf7bff22d9eee4e3573ed01d2967f/landers_triggered.geojson")
+
+
+    /*const bb = container.getBoundingClientRect();
+    var svg = d3.select(container)
+      .append("svg")
+      .style("position", "absolute")
+      .style("top", 0)
+      .style("left", 0)
+      .attr("width", bb.width)
+      .attr("height", bb.height)
+      .style("pointer-events", "none"); // the svg shouldn't capture mouse events, so we can have pan and zoom from mapbox
+
+    //Project any point to map's current state
+        function projectPoint(lon, lat) {
+            var point = map.project(new mapboxgl.LngLat(lon, lat));
+            this.stream.point(point.x, point.y);
+        }
+
+    //Projection function
+    var transform = d3.geoTransform({point:projectPoint});
+    var path = d3.geoPath().projection(transform);
+
+    const dots = svg.selectAll(".point")
+            .data(testLanders.features)
+            .join("path")
+            .attr("class", "point")
+            .style("fill", "salmon")
+            //.on("mouseover", d => mutable hovered=d)
+            .style("pointer-events", "all");
+
+    const update = () => {
+       dots.attr("d", path);
+    }
+
+    // Every time the map changes, update the dots
+    map.on("viewreset", update);
+    map.on("move", update);
+    map.on("moveend", update);
+
+    update();
+*/
+    /*
+      map.addLayer({
+        'id': 'landers_triggered_pts',
+        'type': 'circle',
+        'source': 'landers_triggered',
+        'paint': {
+          'circle-radius': 0,
+          'circle-radius-transition': {
+            'duration': 1500
+          },
+          'circle-radius': [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            7, [
+            "interpolate",
+            ["linear"],
+            ["get", "mag"],
+            1, 1,
+            6, 10
+            ],
+            16, [
+            "interpolate",
+            ["linear"],
+            ["get", "mag"],
+            1, 5,
+            6, 50
+            ]
+            ],
+        'circle-color': [
+            "interpolate-hcl",
+            ["linear"],
+            ["get", "mag"],
+                1, "#FD8C3D",
+                6.5, "#E3191C"
+        ],
+        'circle-opacity': 0.5
+        //'circle-stroke-width': 1.5
+        //'circle-stroke-color': '#6D6D6D',
+        //'circle-stroke-opacity': 1
+        }
+      });*/
+
+    /*map.setPaintProperty('landers_triggered_pts','circle-radius', [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        7, [
+        "interpolate",
+        ["linear"],
+        ["get", "mag"],
+        1, 1,
+        6, 10
+        ],
+        16, [
+        "interpolate",
+        ["linear"],
+        ["get", "mag"],
+        1, 5,
+        6, 50
+        ]
+        ]);
+*/
+
+
+    /*map.addLayer({
+        'id': 'my_lines',
+        'type': 'line',
+        'source': 'path',
+        'layout': {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        'paint': {
+          'line-color': '#363636',
+          'line-width': 2,
+          'line-opacity': 1,
+          'line-dasharray': [6, 4]
+        }
+      });
+
+    map.addLayer({
+        'id': 'symbols',
+        'type': 'symbol',
+        'source': 'labels',
+        'layout': {
+          'text-field': '{title}',
+          'text-font': ['Alegreya SC Regular'],
+          'text-size': 12,
+          'text-anchor': 'bottom',
+          'text-max-width': Infinity
+        },
+        'paint': {
+          'text-translate': [0, 20],
+          'text-halo-width': 0.5,
+          'text-halo-color': '#fff',
+          'text-halo-blur': 0.5
+        }
+      });*/
+  </script>
+</body>
+
+</html>
