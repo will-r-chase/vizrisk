@@ -10,6 +10,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.1/TweenMax.min.js"></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
   <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+  <script src="https://unpkg.com/scrollama"></script>
   <style media="screen">
     body {
       margin: 0;
@@ -37,6 +39,8 @@
     .landers-before {
       stroke-width: 0;
       mix-blend-mode: multiply;
+      -webkit-mask-image: url("http://support.nature.org/images/earth/assets/grit.png");
+  mask-image: url("http://support.nature.org/images/earth/assets/grit.png");
     }
 
     section {
@@ -45,7 +49,7 @@
       margin: 200px 25px 200px 25px;
       opacity: 0.05;
       font-size: 20px;
-      color: #fafafa;
+      color: #000;
       ;
     }
 
@@ -63,7 +67,7 @@
       margin-left: 60%;
       font-family: 'Roboto', sans-serif;
       overflow-y: scroll;
-      background-color: rgba(13, 13, 12, 1);
+      background-color: #fafafa;
     }
   </style>
 </head>
@@ -71,28 +75,31 @@
 <body>
   <div id="map"></div>
   <div id='features'>
-    <section id='welcome'>
+    <section id='welcome' class='step' step-num='1'>
       <h3>Welcome</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </section>
-    <section id='section1'>
+    <section id='section1' class='step' step-num='2'>
       <h3>Landers before</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </section>
-    <section id='section2'>
+    <section id='section2' class='step' step-num='3'>
       <h3>Landers mainshock</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </section>
-    <section id='section3'>
+    <section id='section3' class='step' step-num='4'>
       <h3>Landers aftershocks</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </section>
-    <section id='section4'>
+    <section id='section4' class='step' step-num='5'>
       <h3>Landers triggered</h3>
       <p></p>
     </section>
   </div>
-  <script type="text/javascript" src="enter-view.js"></script>
   <script type="text/javascript">
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
     var map = new mapboxgl.Map({
@@ -103,41 +110,41 @@
     });
 
     var chapters = {
-        'welcome': {
-            bearing: 0,
-            center: [11.634, 25.448],
-            zoom: 1.1,
-            speed: 0.6,
-            pitch: 0
-        },
-        'section1': {
-            bearing: 0,
-            center: [-108.139,39.404],
-            zoom: 3.94,
-            speed: 0.7,
-            pitch: 0
-        },
-        'section2': {
-            center: [-87.887091,42.004897],
-            bearing: 14.40,
-            zoom: 16.00,
-            speed: 0.5,
-            pitch: 53.50
-        },
-        'section3': {
-            bearing: 14.40,
-            center: [-87.673674,41.880015],
-            zoom: 16.00,
-            speed: 0.5,
-            pitch: 53.50
-        },
-        'section4': {
-            bearing: 0.00,
-            center: [-87.615715,41.861087],
-            zoom: 15.78,
-            speed: 0.5,
-            pitch: 60.00
-        },
+      'welcome': {
+        bearing: 0,
+        center: [11.634, 25.448],
+        zoom: 1.1,
+        speed: 0.6,
+        pitch: 0
+      },
+      'section1': {
+        bearing: 0,
+        center: [-108.139, 39.404],
+        zoom: 3.94,
+        speed: 0.7,
+        pitch: 0
+      },
+      'section2': {
+        center: [-87.887091, 42.004897],
+        bearing: 14.40,
+        zoom: 16.00,
+        speed: 0.5,
+        pitch: 53.50
+      },
+      'section3': {
+        bearing: 14.40,
+        center: [-87.673674, 41.880015],
+        zoom: 16.00,
+        speed: 0.5,
+        pitch: 53.50
+      },
+      'section4': {
+        bearing: 0.00,
+        center: [-87.615715, 41.861087],
+        zoom: 15.78,
+        speed: 0.5,
+        pitch: 60.00
+      },
     };
 
     //////////////////////////
@@ -147,10 +154,16 @@
     var canvas = map.getCanvasContainer();
     // Overlay d3 on the map
     var svg = d3.select(canvas).append("svg");
+    var before = svg.append("g");
+    var aftershock = svg.append("g");
+    var trigger = svg.append("g");
+    var mainshock = svg.append("g");
     // For each enter step, read and draw data
-    function initData(source, myClass, myDomain) {
+    function initData(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
       d3.json(source, function(err, data) {
-        drawData(data, myClass, myDomain);})}
+        drawData(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
+      })
+    }
     // Project GeoJSON coordinate to the map's current state
     function project(d) {
       return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
@@ -169,24 +182,28 @@
     colorScale = d3.scaleSequential(d3.interpolateHcl("#FD8C3D", "#E3191C"));
 
     timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
-    timeScale = d3.scaleTime()
-      .range([0, 5000]);
+    timeScale = d3.scaleTime();
 
     //Main draw function
-    function drawData(data, pointClass, domain) {
+    function drawData(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
       // console.log("draw data");
-      // const dates = data.features.map(d => d.properties).map(d => d.time);
-      // const datesNew = dates.map(d => timeParse(d));
+      const dates = data.features.map(d => d.properties).map(d => d.time);
+      const datesNew = dates.map(d => timeParse(d));
+      for(let i = 0; i < datesNew.length; i++) {
+        data.features[i].properties.date = datesNew[i]
+      };
       // //console.log(datesNew);
-      // console.log(data);
+      console.log(data);
 
       // set scale domain
       //const mags = data.features.map(d => d.properties).map(d => d.mag);
       aScale.domain(domain);
       colorScale.domain(domain);
-      //timeScale.domain(d3.extent(data.features.map(d => d.properties).map(d => d.time)));
+      timeScale
+        .domain(d3.extent(data.features.map(d => d.properties).map(d => d.date)))
+        .range(timeRange);
       // Add circles
-      circles = svg.selectAll(pointClass)
+      circles = group.selectAll(pointClass)
         .data(data.features)
         .enter()
         .append("circle")
@@ -197,8 +214,9 @@
 
       circles
         .transition()
-        .delay(1500)
-        .duration(650)
+        .delay(d => extraDelay + timeScale(d.properties.date))
+        .duration(Duration)
+        .ease(Ease)
         .attr("r", d => aScale(d.properties.mag));
       // Call the update function
       update();
@@ -233,6 +251,7 @@
         .transition()
         .duration(500)
         .style("opacity", 0.3)
+        .style("fill", "#515151");
     }
 
     //Scrollytelling steps with enter-view.js
@@ -240,62 +259,153 @@
     //This is so that if someone scrolls backwards from section1 to Welcome...
     //The points that were drawn in section1 will be removed...
     //Test by scrolling to section1, points will show up (drawData is triggered)...
-    //Then scroll back up to Welcome, the points should be removed
-    enterView({
-     selector: '#welcome',
-     offset: 0.75,
-     enter: function(el) {
-      eraseData(".landers-before");  ////HERE
-      el.classList.add('active');
-      map.flyTo(chapters['welcome']);
+    //Then scroll back up to Welcome, the points should be remove
 
-    },
-     exit: function(el) {
-      el.classList.remove('active');
-     },
-    });
-    enterView({
-     selector: '#section1',
-     offset: 0.75,
-     enter: function(el) {
-      el.classList.add('active');
-      eraseData(".landers-before");
-      map.flyTo(chapters['section1']);
-      initData("https://gist.githubusercontent.com/will-r-chase/788da2914f1f7ff5866d9bfb19d2b604/raw/801f798b8c4e3df875ad64558049aa849370d11c/landers_before.geojson", "landers-before", [2.5, 7.3]);
-    },
-     exit: function(el) {
-      el.classList.remove('active');
-      fadeData(".landers-before");
-     },
-    });
-    enterView({
-     selector: '#section2',
-     offset: 0.75,
-     enter: function(el) {
-      el.classList.add('active');
-      initData("https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson", "landers-mainshock", [2.5, 7.3]);
-    },
-     exit: function(el) {
-      el.classList.remove('active');
-     },
-    });
-    enterView({
-     selector: '#section3',
-     offset: 0.75,
-     enter: function(el) {
-      el.classList.add('active');
-      initData("https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson", "landers-aftershocks", [2.5, 7.3]);
-    },
-     exit: function(el) {
-      el.classList.remove('active');
-     },
-    });
+    // initialize the scrollama
+    var scroller = scrollama();
+
+    // scrollama event handlers
+    function handleStepEnter(response) {
+      // response = { element, direction, index }
+      console.log(response);
+      // add to color to current step
+      response.element.classList.add('active');
+      if (response.direction === 'down') {
+        if (response.element.attributes['step-num'].value === '2') {
+          map.flyTo(chapters['section1']);
+          initData("https://gist.githubusercontent.com/will-r-chase/788da2914f1f7ff5866d9bfb19d2b604/raw/801f798b8c4e3df875ad64558049aa849370d11c/landers_before.geojson", before, "landers-before", [2.5, 7.3], [0, 4000], 1500);
+
+        };
+        if (response.element.attributes['step-num'].value === '3') {
+          initData("https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson", mainshock, "landers-mainshock", [2.5, 7.3], [0, 4000], 700, d3.easeElastic, 1000);
+
+        }
+        if (response.element.attributes['step-num'].value === '4') {
+          initData("https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson", aftershock, "landers-aftershocks", [2.5, 7.3], [0, 700]);
+        }
+        if (response.element.attributes['step-num'].value === '5') {
+          initData("https://gist.githubusercontent.com/will-r-chase/09f382961528be682a73029fd22b9cb1/raw/d69b210bb82cf7bff22d9eee4e3573ed01d2967f/landers_triggered.geojson", trigger, "landers-triggered", [2.5, 7.3], [0, 4000]);
+        }
+
+      };
+      if (response.direction === 'up') {
+        if (response.element.attributes['step-num'].value === '1') {
+          map.flyTo(chapters['welcome']);
+        }
+      }
+    };
+
+    function handleStepExit(response) {
+      // response = { element, direction, index }
+      console.log(response);
+      // remove color from current step
+      response.element.classList.remove('active');
+      if (response.direction === 'down') {
+        if (response.element.attributes['step-num'].value === '2') {
+          fadeData(".landers-before");
+
+        }
+        if (response.element.attributes['step-num'].value === '4') {
+          fadeData(".landers-aftershocks");
+
+        }
+      };
+      if (response.direction === 'up') {
+        if (response.element.attributes['step-num'].value === '2') {
+          eraseData(".landers-before");
+
+        };
+        if (response.element.attributes['step-num'].value === '3') {
+          eraseData(".landers-mainshock");
+
+        }
+        if (response.element.attributes['step-num'].value === '4') {
+          eraseData(".landers-aftershocks");
+
+        }
+        if (response.element.attributes['step-num'].value === '5') {
+          eraseData(".landers-triggered");
+
+        }
+      }
+    }
+
+    function init() {
+      // 1. setup the scroller with the bare-bones options
+      // 		this will also initialize trigger observations
+      // 2. bind scrollama event handlers (this can be chained like below)
+      scroller.setup({
+          step: '.step',
+          debug: false,
+          offset: 0.3
+        })
+        .onStepEnter(handleStepEnter)
+        .onStepExit(handleStepExit);
+
+      // 3. setup resize event
+      window.addEventListener('resize', scroller.resize);
+    }
+
+    // kick things off
+    init();
 
 
-//////////////////////////////////////////////////////////////////
-///////////////
-///Old Stuff///
-///////////////
+
+
+    //////////////////////////////////////////////////////////////////
+    ///////////////
+    ///Old Stuff///
+    ///////////////
+
+    // enterView({
+    //  selector: '#welcome',
+    //  offset: 0.75,
+    //  enter: function(el) {
+    //   eraseData(".landers-before");  ////HERE
+    //   el.classList.add('active');
+    //   map.flyTo(chapters['welcome']);
+    //
+    // },
+    //  exit: function(el) {
+    //   el.classList.remove('active');
+    //  },
+    // });
+    // enterView({
+    //  selector: '#section1',
+    //  offset: 0.75,
+    //  enter: function(el) {
+    //   el.classList.add('active');
+    //   eraseData(".landers-before");
+    //   map.flyTo(chapters['section1']);
+    //   initData("https://gist.githubusercontent.com/will-r-chase/788da2914f1f7ff5866d9bfb19d2b604/raw/801f798b8c4e3df875ad64558049aa849370d11c/landers_before.geojson", "landers-before", [2.5, 7.3]);
+    // },
+    //  exit: function(el) {
+    //   el.classList.remove('active');
+    //   fadeData(".landers-before");
+    //  },
+    // });
+    // enterView({
+    //  selector: '#section2',
+    //  offset: 0.75,
+    //  enter: function(el) {
+    //   el.classList.add('active');
+    //   initData("https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson", "landers-mainshock", [2.5, 7.3]);
+    // },
+    //  exit: function(el) {
+    //   el.classList.remove('active');
+    //  },
+    // });
+    // enterView({
+    //  selector: '#section3',
+    //  offset: 0.75,
+    //  enter: function(el) {
+    //   el.classList.add('active');
+    //   initData("https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson", "landers-aftershocks", [2.5, 7.3]);
+    // },
+    //  exit: function(el) {
+    //   el.classList.remove('active');
+    //  },
+    // });
 
     /*map.on('load', function () {
 
