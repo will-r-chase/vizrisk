@@ -73,7 +73,9 @@
 </head>
 
 <body>
+  //map container
   <div id="map"></div>
+  //text scroll container
   <div id='features'>
     <section id='welcome' class='step' step-num='1'>
       <h3>Welcome</h3>
@@ -107,15 +109,16 @@
     </section>
   </div>
   <script type="text/javascript">
+    //initialize map
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
-    var map = new mapboxgl.Map({
+    let map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/wchase14/cjwh8fgh00omd1clb4krxzcxj',
       center: [11.634, 25.448],
       zoom: 1.1
     });
-
-    var chapters = {
+    //area for mapbox fly-tos
+    let chapters = {
       'welcome': {
         bearing: 0,
         center: [11.634, 25.448],
@@ -157,42 +160,28 @@
     // Mapbox+D3 Connection
     //////////////////////////
     // Get Mapbox map canvas container
-    var canvas = map.getCanvasContainer();
-    var view = "map";
-    console.log(canvas)
-    // Overlay d3 on the map
-    var svg = d3.select(canvas).append("svg").attr("id", "my_svg");
-    var svgSelect = document.getElementById("my_svg"); // or other selector like querySelector()
-    var rect = svgSelect.getBoundingClientRect(); // get the bounding rectangle
-    console.log(rect.width);
-    console.log(rect.height);
-    var before = svg.append("g");
-    var aftershock = svg.append("g");
-    var trigger = svg.append("g");
-    var mainshock = svg.append("g");
-    // For each enter step, read and draw data
-    function initData(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
-      d3.json(source, function(err, data) {
-        drawData(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
-      })
-    }
-    // Project GeoJSON coordinate to the map's current state
-    function project(d) {
-      return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
-    }
-    //////////////
-    // D3 stuff
-    //////////////
-    // Draw GeoJSON data with d3
-    var circles;
+    // Setup svg dims and margins
+    let canvas = map.getCanvasContainer();
+    let svg = d3.select(canvas).append("svg").attr("id", "my_svg");
+    let svgSelect = document.getElementById("my_svg");
+    let rect = svgSelect.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
     const margin = ({
       top: 50,
       right: 30,
       bottom: 70,
       left: 30
     });
-    const width = rect.width;
-    const height = rect.height;
+
+    // Set up svg groups so that last one will be on top
+    let before = svg.append("g");
+    let aftershock = svg.append("g");
+    let trigger = svg.append("g");
+    let mainshock = svg.append("g");
+
+    // Draw GeoJSON data with d3
+    let circles;
 
     // Scales
     //landers domain [2.5, 7.3]
@@ -210,9 +199,23 @@
     timeScaleTriggered = d3.scaleTime()
       .range([margin.left, width / 2 - margin.right / 2]);
 
+
+    // For each enter step, read and draw data
+    function initData(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
+      d3.json(source, function(err, data) {
+        drawData(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
+      })
+    }
+    //////////////
+    // D3 stuff
+    //////////////
+    // Project GeoJSON coordinate to the map's current state
+    function project(d) {
+      return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
+    }
+
     //Main draw function
     function drawData(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
-      // console.log("draw data");
       const dates = data.features.map(d => d.properties).map(d => d.time);
       const datesNew = dates.map(d => timeParse(d));
       for (let i = 0; i < datesNew.length; i++) {
