@@ -40,7 +40,7 @@
       stroke-width: 0;
       mix-blend-mode: multiply;
       -webkit-mask-image: url("http://support.nature.org/images/earth/assets/grit.png");
-  mask-image: url("http://support.nature.org/images/earth/assets/grit.png");
+      mask-image: url("http://support.nature.org/images/earth/assets/grit.png");
     }
 
     section {
@@ -97,7 +97,13 @@
     </section>
     <section id='section4' class='step' step-num='5'>
       <h3>Landers triggered</h3>
-      <p></p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section5' class='step' step-num='6'>
+      <h3>Chart view</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </section>
   </div>
   <script type="text/javascript">
@@ -152,8 +158,14 @@
     //////////////////////////
     // Get Mapbox map canvas container
     var canvas = map.getCanvasContainer();
+    var view = "map";
+    console.log(canvas)
     // Overlay d3 on the map
-    var svg = d3.select(canvas).append("svg");
+    var svg = d3.select(canvas).append("svg").attr("id", "my_svg");
+    var svgSelect = document.getElementById("my_svg"); // or other selector like querySelector()
+    var rect = svgSelect.getBoundingClientRect(); // get the bounding rectangle
+    console.log(rect.width);
+    console.log(rect.height);
     var before = svg.append("g");
     var aftershock = svg.append("g");
     var trigger = svg.append("g");
@@ -173,6 +185,14 @@
     //////////////
     // Draw GeoJSON data with d3
     var circles;
+    const margin = ({
+      top: 50,
+      right: 30,
+      bottom: 70,
+      left: 30
+    });
+    const width = rect.width;
+    const height = rect.height;
 
     // Scales
     //landers domain [2.5, 7.3]
@@ -184,12 +204,18 @@
     timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
     timeScale = d3.scaleTime();
 
+    timeScaleBefore = d3.scaleTime()
+      .range([margin.left, width / 2 - margin.right / 2]);
+/////change this to shift points to the right
+    timeScaleTriggered = d3.scaleTime()
+      .range([margin.left, width / 2 - margin.right / 2]);
+
     //Main draw function
     function drawData(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
       // console.log("draw data");
       const dates = data.features.map(d => d.properties).map(d => d.time);
       const datesNew = dates.map(d => timeParse(d));
-      for(let i = 0; i < datesNew.length; i++) {
+      for (let i = 0; i < datesNew.length; i++) {
         data.features[i].properties.date = datesNew[i]
       };
       // //console.log(datesNew);
@@ -236,12 +262,33 @@
         });
     }
 
-    //function to remove selected points
+    //function to draw stacked dot histogram
+    function drawChart(dataBefore, dataTriggered) {
+      function clean(data) {
+        for (const d of data.features) {
+          const date = timeParse(d.properties.time);
+          d.properties.date = date;
+          d.properties.day = d3.timeDay(date);
+        }
+        return data;
+      };
+      clean(dataBefore);
+      clean(dataAfter);
 
-    ///////PROBLEM HERE/////
-    //If I do svg.select("circle").remove() it works
-    //otherwise, it doesn't work...
-    //see below for where it's called in scrollytelling function
+      timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
+      timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
+
+      svg.append("g")
+        .append("line")
+        .attr("x1", width/2 + margin.right)
+        .attr("x2", width/2 + margin.right)
+        .attr("y1", 0)
+        .attr("y2", height - margin.bottom)
+        .style("stroke", "red")
+        .style("stroke-width", 5);
+    };
+
+    //function to remove selected points
     function eraseData(pointClass) {
       svg.selectAll(pointClass).remove()
     }
@@ -254,12 +301,47 @@
         .style("fill", "#515151");
     }
 
-    //Scrollytelling steps with enter-view.js
-    //the eraseData function is called when the first chapter enters...
-    //This is so that if someone scrolls backwards from section1 to Welcome...
-    //The points that were drawn in section1 will be removed...
-    //Test by scrolling to section1, points will show up (drawData is triggered)...
-    //Then scroll back up to Welcome, the points should be remove
+    function setMapOpacity(value) {
+      d3.selectAll(".mapboxgl-canvas")
+        .transition()
+        .duration(500)
+        .style("opacity", value);
+      d3.selectAll(".mapboxgl-control-container")
+        .transition()
+        .duration(500)
+        .style("opacity", value);
+    }
+
+    function showMap() {
+      setMapOpacity(1);
+      // Enable map interaction
+      map.doubleClickZoom.enable();
+      map.scrollZoom.enable();
+      map.dragPan.enable();
+    }
+
+    function hideMap() {
+      setMapOpacity(0.1);
+      // Disable map interaction
+      map.doubleClickZoom.disable();
+      map.scrollZoom.disable();
+      map.dragPan.disable();
+    }
+    ////////////
+    // Toggle
+    ////////////
+    function toggleViews() {
+      // Toggle active view
+      if (view == "map") {
+        view = "grid";
+        hideMap();
+      } else if (view == "grid") {
+        view = "map";
+        showMap();
+      }
+      update(500);
+    }
+
 
     // initialize the scrollama
     var scroller = scrollama();
@@ -273,24 +355,32 @@
       if (response.direction === 'down') {
         if (response.element.attributes['step-num'].value === '2') {
           map.flyTo(chapters['section1']);
-          initData("https://gist.githubusercontent.com/will-r-chase/788da2914f1f7ff5866d9bfb19d2b604/raw/801f798b8c4e3df875ad64558049aa849370d11c/landers_before.geojson", before, "landers-before", [2.5, 7.3], [0, 4000], 1500);
+          initData("https://gist.githubusercontent.com/will-r-chase/375d6366e6c32caf3862d1f6154f87a0/raw/f632753fc5940ac57e55276f38bca2262cb87907/landers_before2.geojson", before, "landers-before", [2.5, 7.3], [0, 4000], 1500);
 
         };
         if (response.element.attributes['step-num'].value === '3') {
-          initData("https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson", mainshock, "landers-mainshock", [2.5, 7.3], [0, 4000], 700, d3.easeElastic, 1000);
+          initData("https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson", mainshock, "landers-mainshock", [2.5, 7.3], [0, 4000], 700, d3.easeElastic,
+            1000);
 
         }
         if (response.element.attributes['step-num'].value === '4') {
           initData("https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson", aftershock, "landers-aftershocks", [2.5, 7.3], [0, 700]);
         }
         if (response.element.attributes['step-num'].value === '5') {
-          initData("https://gist.githubusercontent.com/will-r-chase/09f382961528be682a73029fd22b9cb1/raw/d69b210bb82cf7bff22d9eee4e3573ed01d2967f/landers_triggered.geojson", trigger, "landers-triggered", [2.5, 7.3], [0, 4000]);
+          initData("https://gist.githubusercontent.com/will-r-chase/b510d63e4cfabe7c52a053a50a9faeac/raw/a463bddcac56aa827e15a96d372e19854c99373d/landers_triggered2.geojson", trigger, "landers-triggered", [2.5, 7.3], [0, 4000]);
+        }
+        if (response.element.attributes['step-num'].value === '6') {
+          hideMap();
+
         }
 
       };
       if (response.direction === 'up') {
         if (response.element.attributes['step-num'].value === '1') {
           map.flyTo(chapters['welcome']);
+        }
+        if (response.element.attributes['step-num'].value === '6') {
+          hideMap();
         }
       }
     };
@@ -309,6 +399,13 @@
           fadeData(".landers-aftershocks");
 
         }
+        if (response.element.attributes['step-num'].value === '5') {
+          fadeData(".landers-triggered");
+
+        }
+        if (response.element.attributes['step-num'].value === '6') {
+          showMap();
+        }
       };
       if (response.direction === 'up') {
         if (response.element.attributes['step-num'].value === '2') {
@@ -326,6 +423,9 @@
         if (response.element.attributes['step-num'].value === '5') {
           eraseData(".landers-triggered");
 
+        }
+        if (response.element.attributes['step-num'].value === '6') {
+          showMap();
         }
       }
     }

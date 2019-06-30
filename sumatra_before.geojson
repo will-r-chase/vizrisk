@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "id": 1, "properties": { "time": "2012-04-01 14:04:24", "latitude": 37.116, "longitude": 140.957, "mag": 5.7, "id_overall": 1, "id_day": 1, "day": "2012-04-01" }, "geometry": { "type": "Point", "coordinates": [ 140.957, 37.116 ] } },
+{ "type": "Feature", "id": 2, "properties": { "time": "2012-04-01 21:44:04", "latitude": -4.516, "longitude": 153.427, "mag": 5.7, "id_overall": 2, "id_day": 2, "day": "2012-04-01" }, "geometry": { "type": "Point", "coordinates": [ 153.427, -4.516 ] } },
+{ "type": "Feature", "id": 3, "properties": { "time": "2012-04-02 17:36:42", "latitude": 16.395, "longitude": -98.316, "mag": 6.0, "id_overall": 3, "id_day": 1, "day": "2012-04-02" }, "geometry": { "type": "Point", "coordinates": [ -98.316, 16.395 ] } },
+{ "type": "Feature", "id": 4, "properties": { "time": "2012-04-06 16:15:58", "latitude": -4.551, "longitude": 153.457, "mag": 6.1, "id_overall": 4, "id_day": 1, "day": "2012-04-06" }, "geometry": { "type": "Point", "coordinates": [ 153.457, -4.551 ] } },
+{ "type": "Feature", "id": 5, "properties": { "time": "2012-04-06 19:24:13", "latitude": -3.345, "longitude": 100.426, "mag": 5.5, "id_overall": 5, "id_day": 2, "day": "2012-04-06" }, "geometry": { "type": "Point", "coordinates": [ 100.426, -3.345 ] } },
+{ "type": "Feature", "id": 6, "properties": { "time": "2012-04-10 05:09:08", "latitude": -1.261, "longitude": -13.972, "mag": 5.8, "id_overall": 6, "id_day": 1, "day": "2012-04-10" }, "geometry": { "type": "Point", "coordinates": [ -13.972, -1.261 ] } }
+]
+}
