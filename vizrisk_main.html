@@ -31,16 +31,9 @@
       height: 100%;
     }
 
-    /* circle {
+    circle {
       stroke-width: 0;
-      mix-blend-mode: multiply;
-    } */
 
-    .landers-before {
-      stroke-width: 0;
-      mix-blend-mode: multiply;
-      -webkit-mask-image: url("http://support.nature.org/images/earth/assets/grit.png");
-      mask-image: url("http://support.nature.org/images/earth/assets/grit.png");
     }
 
     section {
@@ -69,13 +62,17 @@
       overflow-y: scroll;
       background-color: #fafafa;
     }
+
+    path,
+    #arrowhead {
+      fill: none;
+      stroke: #7E7D7E;
+    }
   </style>
 </head>
 
 <body>
-  //map container
   <div id="map"></div>
-  //text scroll container
   <div id='features'>
     <section id='welcome' class='step' step-num='1'>
       <h3>Welcome</h3>
@@ -107,6 +104,37 @@
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
         irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </section>
+    <section id='section6' class='step' step-num='7'>
+      <h3>Landers above M5</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <!-- <section id='section7' class='step' step-num='8'>
+      <h3>Understanding magnitude</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section> -->
+    <section id='section8' class='step' step-num='9'>
+      <h3>Sumatra before</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section9' class='step' step-num='10'>
+      <h3>Sumatra mainshock</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section10' class='step' step-num='11'>
+      <h3>Sumatra triggered</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section11' class='step' step-num='12'>
+      <h3>Sumatra strain waves</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+
   </div>
   <script type="text/javascript">
     //initialize map
@@ -115,8 +143,10 @@
       container: 'map',
       style: 'mapbox://styles/wchase14/cjwh8fgh00omd1clb4krxzcxj',
       center: [11.634, 25.448],
-      zoom: 1.1
+      zoom: 1.1,
+      interactive: false
     });
+    //for polygons
     //area for mapbox fly-tos
     let chapters = {
       'welcome': {
@@ -155,6 +185,23 @@
         pitch: 60.00
       },
     };
+
+    //function to draw strain waves
+    map.on('load', function () {
+      map.addSource('strainWavesDat', {
+        type: 'geojson',
+        data: 'https://gist.githubusercontent.com/will-r-chase/72b206dd2ba17889ba98075d693db1bd/raw/57b8465a5e85f103e3f6d163ef2ad6294a229a77/strain_waves.geojson'
+      });
+      map.addLayer({
+        "id": "strainWaves",
+        "type": "fill",
+        "source": "strainWavesDat",
+        'layout': {},
+        'paint': {
+          'fill-color': '#961D72',
+          'fill-opacity': 0
+      }
+    });});
 
     //////////////////////////
     // Mapbox+D3 Connection
@@ -217,6 +264,18 @@
     const landers_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson";
     const landers_aftershocks_url = "https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson";
     const landers_triggered_url = "https://gist.githubusercontent.com/will-r-chase/b510d63e4cfabe7c52a053a50a9faeac/raw/a463bddcac56aa827e15a96d372e19854c99373d/landers_triggered2.geojson";
+    const sumatra_before_url = "https://gist.githubusercontent.com/will-r-chase/5cb1d0f0d043d3a3420a0be9d0eb3b58/raw/2542da1200c6ce637c4f80f12ff328c7873b564b/sumatra_before.geojson";
+    const sumatra_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/5e3e1470002a9bb53465c610faea0959/raw/07c39e495864ecc02aa5b683379af33e3dc9a259/indianOcean_mainshock.geojson";
+    const sumatra_triggered_url = "https://gist.githubusercontent.com/will-r-chase/cb0f15205c78e792fda1ffb3a753946f/raw/1c909965e19b283c597a125dc49d70ff92f2f4ae/sumatra_triggered.geojson";
+
+    //define data for magnitude viz
+    const magData = [{"id": 1, "mag": 3, "size": 5},
+                     {"id": 2, "mag": 4, "size": 50},
+                     {"id": 3, "mag": 5, "size": 500},
+                     {"id": 4, "mag": 6, "size": 5000},
+                     {"id": 5, "mag": 7, "size": 50000},
+                     {"id": 6, "mag": 8, "size": 500000},
+                     {"id": 7, "mag": 9, "size": 5000000}];
 
     // For each enter step, read and draw data
     function initData(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
@@ -233,6 +292,36 @@
           let cleanBefore = clean(dataBefore);
           let cleanTriggered = clean(dataTriggered);
           drawChart(cleanBefore, cleanTriggered);
+        });
+      });
+    };
+    function initChartBackwards(source1, source2) {
+      d3.json(source1, function(err, dataBefore) {
+        d3.json(source2, function(err, dataTriggered) {
+          if (err) console.log(err);
+          let cleanBefore = clean(dataBefore);
+          let cleanTriggered = clean(dataTriggered);
+          drawChartBackwards(cleanBefore, cleanTriggered);
+        });
+      });
+    };
+    function initChartHighlight(source1, source2) {
+      d3.json(source1, function(err, dataBefore) {
+        d3.json(source2, function(err, dataTriggered) {
+          if (err) console.log(err);
+          let cleanBefore = clean(dataBefore);
+          let cleanTriggered = clean(dataTriggered);
+          highlightChart(cleanBefore, cleanTriggered);
+        });
+      });
+    };
+    function exitChartHighlight(source1, source2) {
+      d3.json(source1, function(err, dataBefore) {
+        d3.json(source2, function(err, dataTriggered) {
+          if (err) console.log(err);
+          let cleanBefore = clean(dataBefore);
+          let cleanTriggered = clean(dataTriggered);
+          reverseHighlightChart(cleanBefore, cleanTriggered);
         });
       });
     };
@@ -272,7 +361,7 @@
         .attr("r", 0)
         .attr("fill", d => colorScale(d.properties.mag))
         .attr("day", d => d.properties.day)
-        .attr("opacity", 0.7);
+        .style("opacity", 0.7);
 
       circles
         .transition()
@@ -304,6 +393,21 @@
       console.log("dataTriggered", dataTriggered);
       timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
       timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
+      const arrowPath = `M ${width/2 - 130},${height/3.6} C ${width/2 - 130},${height/4 + 60} ${width/2 - 130},${height/4 + 70} ${width/2 - 10},${height/4 + 70}`
+      // Define simple arrowhead marker
+      svg.append('defs')
+        .append("marker")
+        .attr("id", "arrowhead")
+        .attr("viewBox", "-10 -10 20 20")
+        .attr("refX", 0)
+        .attr("refY", 0)
+        .attr("markerWidth", 20)
+        .attr("markerHeight", 20)
+        .attr("stroke-width", 1)
+        .attr("orient", "auto")
+        .append("polyline")
+        .attr("stroke-linejoin", "bevel")
+        .attr("points", "-6.75,-6.75 0,0 -6.75,6.75");
 
       //mainshock line
       line = svg.append("g")
@@ -313,7 +417,7 @@
         .attr("y1", height / 5)
         .attr("y2", height - margin.bottom)
         .attr("class", "mainshock-line")
-        .attr("opacity", 0)
+        .style("opacity", 0)
         .style("stroke", "#E3191C")
         .style("stroke-width", 3)
         .style("stroke-dasharray", 5);
@@ -321,7 +425,7 @@
       axisBefore = svg.append("g")
         .attr("transform", `translate(0, ${height - margin.bottom})`)
         .attr("class", "chart-axis")
-        .attr("opacity", 0)
+        .style("opacity", 0)
         .call(d3.axisBottom(timeScaleBefore)
           .ticks(5)
           .tickFormat(d3.timeFormat("%b %d"))
@@ -330,7 +434,7 @@
       axisTriggered = svg.append("g")
         .attr("transform", `translate(0, ${height - margin.bottom})`)
         .attr("class", "chart-axis")
-        .attr("opacity", 0)
+        .style("opacity", 0)
         .call(d3.axisBottom(timeScaleTriggered)
           .ticks(5)
           .tickFormat(d3.timeFormat("%b %d"))
@@ -339,43 +443,172 @@
       axisBefore
         .transition()
         .delay(100)
-        .duration(1000)
-        .attr("opacity", 1);
+        .duration(2000)
+        .style("opacity", 1);
+
+      beforeLabel = d3.select(canvas)
+        .append("div")
+        .attr("class", "chart-label")
+        .html(
+          "Earthquakes 10 days before the Landers mainshock"
+        )
+        .style("position", "absolute")
+        .style("width", "200px")
+        .style("opacity", 0)
+        .style("left", width / 11 + "px")
+        .style("top", height / 1.7 + "px")
+        .style("text-anchor", "left")
+        .style("font-size", "20px")
+        .transition()
+        .delay(0) //2500
+        .duration(2000)
+        .style("opacity", 1);
 
       before
         .selectAll(".landers-before")
         .data(dataBefore.features)
         .transition()
-        .delay(d => 2000 + randNum(0, 100) + d.properties.id_overall * 100)
+        .delay(d => 0 + randNum(0, 100) + d.properties.id_overall * 100) //7000
         .attr("r", 10)
-        .attr("opacity", 1)
+        .style("opacity", 1)
         .attr("fill", "#373536")
         .attr("cx", d => timeScaleBefore(d.properties.day))
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
 
+      mainshockLabel = d3.select(canvas)
+        .append("div")
+        .attr("class", "chart-label")
+        .html(
+          "On Jan 28th 1992, a magnitude 7.3 earthquake strikes near Landers, California"
+        )
+        .style("position", "absolute")
+        .style("width", "200px")
+        .style("opacity", 0)
+        .style("left", width / 2 - 220 + "px")
+        .style("top", height / 5.1 + "px")
+        .style("text-anchor", "left")
+        .style("font-size", "16px")
+        .transition()
+        .delay(0) //11000
+        .duration(2000)
+        .style("opacity", 1);
+
+      arrow = svg.append("path")
+        .attr('marker-end', 'url(#arrowhead)')
+        .attr("d", arrowPath)
+        .attr("class", "myArrow")
+        .style('opacity', 0)
+        .style("fill", "none")
+        .attr("stroke-width", 1)
+        .attr("stroke", "black")
+        .transition()
+        .delay(0) //12000
+        .duration(1500)
+        .style('opacity', 1);
+
       line
         .transition()
-        .delay(7000)
-        .duration(500)
-        .attr("opacity", 1)
+        .delay(0) //13000
+        .duration(1000)
+        .style("opacity", 1)
 
       axisTriggered
         .transition()
-        .delay(8000)
-        .duration(500)
-        .attr("opacity", 1);
+        .delay(0) //15000
+        .duration(2000)
+        .style("opacity", 1);
+
+      triggeredLabel = d3.select(canvas)
+        .append("div")
+        .attr("class", "chart-label")
+        .html(
+          "Earthquakes 10 days after the Landers mainshock"
+        )
+        .style("position", "absolute")
+        .style("width", "200px")
+        .style("opacity", 0)
+        .style("left", width / 1.5 + "px")
+        .style("top", height / 3.7 + "px")
+        .style("text-anchor", "left")
+        .style("font-size", "20px")
+        .transition()
+        .delay(0) //17500
+        .duration(2000)
+        .style("opacity", 1);
 
       trigger
         .selectAll(".landers-triggered")
         .data(dataTriggered.features)
         .transition()
-        .delay(d => 8500 + randNum(20, 150) + d.properties.id_overall * 30)
+        .delay(d => 0 + randNum(20, 150) + d.properties.id_overall * 30) //20000
         .attr("r", 10)
-        .attr("opacity", 1)
+        .style("opacity", 1)
         .attr("fill", "#373536")
         .attr("cx", d => timeScaleTriggered(d.properties.day))
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
 
+    };
+    function drawChartBackwards(dataBefore, dataTriggered) {
+      timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
+      timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
+
+      before
+        .selectAll(".landers-before")
+        .data(dataBefore.features)
+        .attr("r", 10)
+        .attr("fill", d => d.properties.mag > 5 ? "#DC0505" : "#373536")
+        .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
+        .attr("cx", d => timeScaleBefore(d.properties.day))
+        .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
+
+
+      trigger
+        .selectAll(".landers-triggered")
+        .data(dataTriggered.features)
+        .attr("r", 10)
+        .attr("fill", d => d.properties.mag > 5 ? "#DC0505" : "#373536")
+        .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
+        .attr("cx", d => timeScaleTriggered(d.properties.day))
+        .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
+
+    };
+    function highlightChart(dataBefore, dataTriggered) {
+      before
+        .selectAll(".landers-before")
+        .data(dataBefore.features)
+        .transition()
+        .delay(300)
+        .duration(1000)
+        .attr("fill", d => d.properties.mag > 5 ? "#DC0505" : "#373536")
+        .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
+
+      trigger
+        .selectAll(".landers-triggered")
+        .data(dataTriggered.features)
+        .transition()
+        .delay(300)
+        .duration(1000)
+        .attr("fill", d => d.properties.mag > 5 ? "#DC0505" : "#373536")
+        .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
+    };
+    function reverseHighlightChart(dataBefore, dataTriggered) {
+      before
+        .selectAll(".landers-before")
+        .data(dataBefore.features)
+        .transition()
+        .delay(700)
+        .duration(1000)
+        .attr("fill", "#373536")
+        .style("opacity", 1);
+
+      trigger
+        .selectAll(".landers-triggered")
+        .data(dataTriggered.features)
+        .transition()
+        .delay(700)
+        .duration(1000)
+        .attr("fill", "#373536")
+        .style("opacity", 1);
     };
     //function to draw stacked dot histogram
     function reverseChart(dataBefore, dataTriggered) {
@@ -389,7 +622,7 @@
         .data(dataBefore.features)
         .transition()
         .attr("r", d => aScale(d.properties.mag))
-        .attr("opacity", 0.3)
+        .style("opacity", 0.3)
         .attr("fill", "#515151");
       update();
 
@@ -398,42 +631,55 @@
         .data(dataTriggered.features)
         .transition()
         .attr("r", d => aScale(d.properties.mag))
-        .attr("opacity", 0.7)
+        .style("opacity", 0.7)
         .attr("fill", d => colorScale(d.properties.mag));
 
       update();
       // Update on map interaction
-      map.on("viewreset", update);
-      map.on("move", update);
-      map.on("moveend", update);
+      //map.on("viewreset", update);
+      //map.on("move", update);
+      //map.on("moveend", update);
 
     };
 
     //function to remove selected points
     function eraseData(pointClass) {
-      svg.selectAll(pointClass).remove()
+      d3.selectAll(pointClass).remove()
     }
     //function to fade opacity of selected points
     function fadeData(pointClass) {
       svg.selectAll(pointClass)
         .transition()
         .duration(500)
-        .attr("opacity", 0.3)
+        .style("opacity", 0.3)
         .attr("fill", "#515151");
     }
 
-    function hideEl(myClass) {
-      svg.selectAll(myClass)
+    ///if we have time make this a real function to restore colors to faded data
+    function unfadeData(pointClass) {
+      colorScale.domain([2.5, 7.3]);
+
+
+      svg.selectAll(pointClass)
         .transition()
         .duration(500)
-        .attr("opacity", 0);
+        .style("opacity", 0.3)
+        .attr("fill", d => colorScale(d.properties.mag))
     }
 
-    function showEl(myClass, opacity) {
-      svg.selectAll(myClass)
+    function hideEl(myClass) {
+      d3.selectAll(myClass)
         .transition()
         .duration(500)
-        .attr("opacity", opacity);
+        .style("opacity", 0);
+    }
+
+
+    function showEl(myClass, opacity) {
+      d3.selectAll(myClass)
+        .transition()
+        .duration(500)
+        .style("opacity", opacity);
     }
 
     function setMapOpacity(value) {
@@ -473,16 +719,17 @@
       console.log(response);
       // add to color to current step
       response.element.classList.add('active');
+      if (response.element.attributes['step-num'].value === '12') {
+        map.setPaintProperty('strainWaves', 'fill-opacity', 0.4)
+      };
       if (response.direction === 'down') {
         if (response.element.attributes['step-num'].value === '2') {
           map.flyTo(chapters['section1']);
           initData(landers_before_url, before, "landers-before", [2.5, 7.3], [0, 500], 1500); //range [0,4000] when not debugging
-
         };
         if (response.element.attributes['step-num'].value === '3') {
           initData(landers_mainshock_url, mainshock, "landers-mainshock", [2.5, 7.3], [0, 4000], 700, d3.easeElastic,
             1000);
-
         }
         if (response.element.attributes['step-num'].value === '4') {
           initData(landers_aftershocks_url, aftershock, "landers-aftershocks", [2.5, 7.3], [0, 700]);
@@ -492,10 +739,23 @@
         }
         if (response.element.attributes['step-num'].value === '6') {
           hideMap();
-          hideEl(".landers-aftershocks");
-          hideEl(".landers-mainshock");
+          hideEl(".landers-aftershocks,.landers-mainshock");
           initChart(landers_before_url, landers_triggered_url);
         }
+        if (response.element.attributes['step-num'].value === '7') {
+          initChartHighlight(landers_before_url, landers_triggered_url);
+        }
+        if (response.element.attributes['step-num'].value === '9') {
+          map.flyTo(chapters['welcome']);
+          initData(sumatra_before_url, before, "sumatra-before", [2.5, 7.3], [0, 500], 1500); //range [0,4000] when not debugging
+        };
+        if (response.element.attributes['step-num'].value === '10') {
+          initData(sumatra_mainshock_url, mainshock, "sumatra-mainshock", [2.5, 7.3], [0, 4000], 700, d3.easeElastic,
+            1000); //range [0,4000] when not debugging
+        };
+        if (response.element.attributes['step-num'].value === '11') {
+          initData(sumatra_triggered_url, trigger, "sumatra-triggered", [2.5, 7.3], [0, 500]); //range [0,4000] when not debugging
+        };
 
       };
       if (response.direction === 'up') {
@@ -504,18 +764,19 @@
         }
         if (response.element.attributes['step-num'].value === '5') {
           showMap();
-          eraseData(".chart-axis");
-          eraseData(".mainshock-line");
+          eraseData(".chart-axis,.mainshock-line,.chart-label,.myArrow");
           exitChart(landers_before_url, landers_triggered_url);
-          showEl(".landers-aftershocks", 0.7);
-          showEl(".landers-mainshock", 0.7);
+          showEl(".landers-aftershocks,.landers-mainshock", 0.7);
+          map.flyTo(chapters['section1']);
         }
         if (response.element.attributes['step-num'].value === '6') {
+          exitChartHighlight(landers_before_url, landers_triggered_url);
+          //showEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
+        }
+        if (response.element.attributes['step-num'].value === '7') {
           hideMap();
-          showEl(".chart-axis");
-          showEl(".mainshock-line");
-          showEl(".landers-before");
-          showEl(".landers-triggered");
+          showEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
+          initChartBackwards(landers_before_url, landers_triggered_url);
         }
       }
     };
@@ -525,6 +786,9 @@
       console.log(response);
       // remove color from current step
       response.element.classList.remove('active');
+      if (response.element.attributes['step-num'].value === '12') {
+        map.setPaintProperty('strainWaves', 'fill-opacity', 0)
+      };
       if (response.direction === 'down') {
         if (response.element.attributes['step-num'].value === '2') {
           fadeData(".landers-before");
@@ -539,12 +803,20 @@
 
         }
         if (response.element.attributes['step-num'].value === '6') {
-          showMap();
-          hideEl(".chart-axis");
-          hideEl(".mainshock-line");
-          hideEl(".landers-before");
-          hideEl(".landers-triggered");
+          //showMap();
+          //hideEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.chart-label,.myArrow");
         }
+        if (response.element.attributes['step-num'].value === '7') {
+          hideEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
+          showMap();
+        }
+        if (response.element.attributes['step-num'].value === '9') {
+          fadeData(".sumatra-before");
+        };
+        if (response.element.attributes['step-num'].value === '11') {
+
+        };
+
       };
       if (response.direction === 'up') {
         if (response.element.attributes['step-num'].value === '2') {
@@ -563,9 +835,16 @@
           eraseData(".landers-triggered");
 
         }
-        if (response.element.attributes['step-num'].value === '6') {
+        if (response.element.attributes['step-num'].value === '9') {
+          eraseData(".sumatra-before");
+        };
+        if (response.element.attributes['step-num'].value === '10') {
+          eraseData(".sumatra-mainshock");
+        };
+        if (response.element.attributes['step-num'].value === '11') {
+          eraseData(".sumatra-triggered");
+        };
 
-        }
       }
     }
 
