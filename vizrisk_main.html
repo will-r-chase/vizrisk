@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset='utf-8' />
-  <title>The Rise of Kpop in Chicago</title>
+  <title>Remote Triggering of Earthquakes</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+  <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0-beta.1/mapbox-gl.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0-beta.1/mapbox-gl.css">
   <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.1/TweenMax.min.js"></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
-  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+SC|Alegreya+Sans|Playfair+Display&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
   <script src="https://unpkg.com/scrollama"></script>
+  <link href="https://fonts.googleapis.com/css?family=Alegreya+SC&display=swap" rel="stylesheet">
+
+
   <style media="screen">
+
     body {
       margin: 0;
       padding: 0;
@@ -55,87 +59,245 @@
       margin-bottom: 1000px;
     }
 
-    #features {
+    .features {
       width: 40%;
       margin-left: 60%;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Alegreya', serif;
+      font-size: 20px;
+      line-height: 1.35;
       overflow-y: scroll;
       background-color: #fafafa;
+      color: #2A2A2A;
+    }
+    h3 {
+      font-family: 'Alegreya SC', serif;
+      font-size: 28px;
+      color: #2A2A2A;
     }
 
-    path,
+    .myArrow,
     #arrowhead {
       fill: none;
       stroke: #7E7D7E;
     }
+
+    .bar-chart {
+      fill: #872B32; //#aa0303
+      stroke: none;
+    }
+
+    circle.bar-axis {
+      fill: none;
+      stroke: #1E1E1E;
+      stroke-opacity: 0.7;
+      stroke-width: 0.5px;
+      stroke-dasharray: 2;
+    }
+    .chart-axis {
+      font-family: 'Alegreya Sans', sans-serif;
+    }
+    .chart-label {
+      font-family: 'Alegreya Sans', sans-serif;
+    }
+    .bar-axis {
+      font-family: 'Alegreya Sans', sans-serif;
+    }
+    .modal-window {
+      position: fixed;
+      background-color: rgba(230,230,230,0.5);
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      transition: all 0.3s;
+    }
+    .modal-window:target {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-window > div {
+      width: 400px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 2em;
+      background: #fafafa;
+    }
+
+    .modal-close {
+      color: #aaa;
+      line-height: 50px;
+      font-size: 80%;
+      position: absolute;
+      right: 0;
+      text-align: center;
+      top: 0;
+      width: 70px;
+      text-decoration: none;
+    }
+    .modal-close:hover {
+      color: black;
+    }
+
+.btn {
+  font-family: 'Alegreya SC', serif;
+  text-decoration: none;
+  background-color: #fafafa;
+  color: #2A2A2A;
+}
+/* Demo Styles */
+a {
+  color: inherit;
+}
+
+.container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  /* height: 100vh; */
+}
+
+/* .modal-window div:not(:last-of-type) {
+  margin-bottom: 15px;
+} */
+
+small {
+  color: #aaa;
+}
+
   </style>
 </head>
 
 <body>
+  <div class="main">
   <div id="map"></div>
-  <div id='features'>
+  <div class="container">
+<div id="open-modal" class="modal-window">
+  <div>
+    <a href="#" title="Close" class="modal-close">Close</a>
+    <h1>Voilà!</h1>
+    <div>A CSS-only modal based on the :target pseudo-class. Hope you find it helpful.</div>
+    <div><small>Sponsor</small></div>
+  </div>
+    </div>
+  </div>
+
+  <div class='features'>
     <section id='welcome' class='step' step-num='1'>
       <h3>Welcome</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Can one natural disaster influence the risk of another? It's well known that natural disasters
+      can cause others in their immediate vicinity, for instance, hurricanes are often accompanied by flooding,
+      and earthquakes are followed by aftershocks. But what about longer distance interactions? Could one earthquake
+      trigger another on the other side of the world? <a class="btn" href="#open-modal">this opens a modal.</a>
+      </p>
     </section>
     <section id='section1' class='step' step-num='2'>
       <h3>Landers before</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Our story begins in California in June of 1992. It was a quiet month; the dots below represent
+      earthquakes recorded in the 10 days from June 18th to June 28th. There were 44 quakes during this time, though most were small
+      and wouldn't have been felt by people. But in the early hours of June 28th, that changed.</p>
     </section>
     <section id='section2' class='step' step-num='3'>
       <h3>Landers mainshock</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>At 5:00 on the morning of June 28th, a large magnitude 7.3 earthquake struck, waking much of
+      Southern California. The epicenter was located near Landers California, in the Mojave desert. Thanks
+      to the remote location, the damage and loss of life was minimal.</p>
     </section>
     <section id='section3' class='step' step-num='4'>
       <h3>Landers aftershocks</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>As expected, the mainshock was followed by a smattering of aftershocks which occurred in the immediate vicinity
+      of the mainshock, but what played out over the next ten days was entirely unexpected.</p>
     </section>
     <section id='section4' class='step' step-num='5'>
       <h3>Landers triggered</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Survey stations across the Western United States recorded a flurry of seismic activity in the ten days following the
+      Landers earthquake. Seismologists recorded 192 earthquakes outside of the aftershock zone during this time, four times the amount in the 10 days proceeding
+      the Landers quake. Even more surprising was that these earthquakes occurred at great distances from the aftershock zone, with many recorded hundreds or even thousands of miles
+      from the mainshock epicenter.</p>
     </section>
     <section id='section5' class='step' step-num='6'>
       <h3>Chart view</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Placing each earthquake as a dot on a timeline before and after the mainshock reveals the striking pattern.
+      There is an especially large burst of activity in the three days following the mainshock, after which things taper off.
+      This event was one of the first reports of "remotely triggered earthquakes" to gain wide recognition. Most scholars were convinced
+      that this increase in seismic activity was triggered by shockwaves sent out from the Landers quake, but many questioned how relevant it was.</p>
     </section>
     <section id='section6' class='step' step-num='7'>
       <h3>Landers above M5</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Most earthquakes are small (M2.5 - M4). These quakes are not typically felt by people, and are only recorded by sensitive seismographs.
+      Earthquakes of magnitude 4 - 5 can cause shaking that might knock things off your shelf, but they're unlikely to cause structural damage.
+      What we're really concerned about are quakes greater than M5.5; only one of the 192 triggered earthquakes met this criteria.</p>
     </section>
-    <!-- <section id='section7' class='step' step-num='8'>
-      <h3>Understanding magnitude</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </section> -->
+    <section id='section7' class='step' step-num='8'>
+      <h3>Transition</h3>
+      <p>Over the next 15 years there were numerous papers published on remote triggering of earthquakes. It became well accepted
+      that large earthquakes often trigger small earthquakes at long distances, and are usually followed by increases in seismicity. However, the question of
+      whether source events could remotely trigger large earthquakes (M5.5+) remained contentious. Several researchers argued that the largest earthquakes (M8.0+) could
+      remotely trigger M5.5+ quakes, but not all were convinced. Scientists squabbled over statistical details and seismic interpretation until 2012, when we got a unique glimpse
+      into the possibilities of remote triggering.</p>
+    </section>
     <section id='section8' class='step' step-num='9'>
       <h3>Sumatra before</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>XXX in 2012 was an unusually quiet time for large earthquakes. Here we will only consider earthquakes larger than M5.5. In the ten days
+      from XX to YY there were only 5 M5.5+ earthquakes.</p>
     </section>
     <section id='section9' class='step' step-num='10'>
       <h3>Sumatra mainshock</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>On XXX 2012, a massive M8.6 earthquake struck off the coast of Sumatra. The temblor triggered many aftershocks (not shown here) and initiated
+      tsunami that devastated island nations in Indonesia. This quake was unique for it's size and mechanism. To date, this is the largest ever recorded
+      strike-slip earthquake.</p>
     </section>
     <section id='section10' class='step' step-num='11'>
       <h3>Sumatra triggered</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>In the ten days following the Sumatra mainshock, 44 earthquakes M5.5+ were recorded. The statistics were clear; this increase of XX times, was highly
+      significant, and most researchers agreed the most likely explanation was remote triggering by the M8.6 Sumatra earthquake. This massive triggering of large
+      earthquakes was unprecedented, and many wondered if the strike-slip mechanism at such a large magnitude was a unique combination that led to this outsized response.</p>
     </section>
     <section id='section11' class='step' step-num='12'>
       <h3>Sumatra strain waves</h3>
+      <p>When earthquakes strike, they send out strain waves that travel through the earth's crust... These waves often propagate out from the mainshock in a '+' pattern
+      meeting at the opposite side of the earth (the antipode). Analysis of the Sumatra quake showed that nearly all of the triggered earthquakes
+      fell within the strain waves from the mainshock.</p>
+    </section>
+    <section id='section12' class='step' step-num='13'>
+      <h3>Bar chart</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section13' class='step' step-num='14'>
+      <h3>Highlight hotspots</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section14' class='step' step-num='15'>
+      <h3>Oita mainshock</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section15' class='step' step-num='16'>
+      <h3>Oita triggered</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section16' class='step' step-num='17'>
+      <h3>Hokkaido mainshock</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section17' class='step' step-num='18'>
+      <h3>Hokkaido triggered</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
         irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </section>
 
   </div>
+</div>
   <script type="text/javascript">
     //initialize map
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
@@ -164,18 +326,18 @@
         pitch: 0
       },
       'section2': {
-        center: [-87.887091, 42.004897],
-        bearing: 14.40,
-        zoom: 16.00,
-        speed: 0.5,
-        pitch: 53.50
+        bearing: 0,
+        center: [131.380, 32.789],
+        zoom: 7.87,
+        speed: 0.7,
+        pitch: 60.00
       },
       'section3': {
-        bearing: 14.40,
-        center: [-87.673674, 41.880015],
-        zoom: 16.00,
-        speed: 0.5,
-        pitch: 53.50
+        bearing: -44.80,
+        center: [137.553218, 17.956907],
+        zoom: 3.87,
+        speed: 0.7,
+        pitch: 60.00
       },
       'section4': {
         bearing: 0.00,
@@ -185,23 +347,6 @@
         pitch: 60.00
       },
     };
-
-    //function to draw strain waves
-    map.on('load', function () {
-      map.addSource('strainWavesDat', {
-        type: 'geojson',
-        data: 'https://gist.githubusercontent.com/will-r-chase/72b206dd2ba17889ba98075d693db1bd/raw/57b8465a5e85f103e3f6d163ef2ad6294a229a77/strain_waves.geojson'
-      });
-      map.addLayer({
-        "id": "strainWaves",
-        "type": "fill",
-        "source": "strainWavesDat",
-        'layout': {},
-        'paint': {
-          'fill-color': '#961D72',
-          'fill-opacity': 0
-      }
-    });});
 
     //////////////////////////
     // Mapbox+D3 Connection
@@ -226,6 +371,11 @@
     let aftershock = svg.append("g");
     let trigger = svg.append("g");
     let mainshock = svg.append("g");
+    let mainshockSumatra = svg.append("g");
+    let mainshockOita = svg.append("g");
+    let triggeredOita = svg.append("g");
+    let mainshockHokkaido = svg.append("g");
+    let triggeredHokkaido = svg.append("g");
 
     // Draw GeoJSON data with d3
     let circles;
@@ -233,9 +383,9 @@
     // Scales
     //landers domain [2.5, 7.3]
     aScale = d3.scaleSqrt()
-      .range([5, 20]);
+      .range([5, 22]);
 
-    colorScale = d3.scaleSequential(d3.interpolateHcl("#FD8C3D", "#E3191C"));
+    colorScale = d3.scaleSequential(d3.interpolateHcl("#F79567", "#c3402c"));
 
     timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
     timeScale = d3.scaleTime();
@@ -254,6 +404,13 @@
       }
       return data;
     };
+
+    function csvClean(data) {
+      for (const d of data) {
+        d.rel_rate = +d.rel_rate;
+      }
+      return data;
+    };
     //rand number function
     function randNum(min, max) {
       return Math.random() * (max - min) + min;
@@ -267,15 +424,199 @@
     const sumatra_before_url = "https://gist.githubusercontent.com/will-r-chase/5cb1d0f0d043d3a3420a0be9d0eb3b58/raw/2542da1200c6ce637c4f80f12ff328c7873b564b/sumatra_before.geojson";
     const sumatra_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/5e3e1470002a9bb53465c610faea0959/raw/07c39e495864ecc02aa5b683379af33e3dc9a259/indianOcean_mainshock.geojson";
     const sumatra_triggered_url = "https://gist.githubusercontent.com/will-r-chase/cb0f15205c78e792fda1ffb3a753946f/raw/1c909965e19b283c597a125dc49d70ff92f2f4ae/sumatra_triggered.geojson";
+    const bars_url = "https://gist.githubusercontent.com/will-r-chase/8dea02691e0b03044711ea1f7ba97310/raw/6bfd551a460ba1118c19c3f9e9d84a8c07a26ee7/m8_day1-3_relrates.csv";
+    const oita_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/29e7d6564c96049fb5962e6c015150b4/raw/f0a3cca5753d88c9d780c1ab6cf8147acf0889ab/oitaMainshock.geojson";
+    const oita_triggered_url = "https://gist.githubusercontent.com/will-r-chase/bf22e59067f4ebb827cda5d81534dbd1/raw/29e28b6d04b7933664ed3357e5548255bc737e06/oitaTriggered.geojson";
+    const hokkaido_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/035234ed3d84b08bbaca18a68afaa0f3/raw/00352a1b23b761b84876932eff2ec25c1ecf372c/hokkaidoMainshock.geojson";
+    const hokkaido_triggered_url = "https://gist.githubusercontent.com/will-r-chase/4d6d64f50fe9db1094789afd34284470/raw/2cfd89ca9bea89b9e2810591ed79498107f34585/hokkaidoTriggered.geojson";
 
+    const oita = [{
+      "latitude_target": 33.17,
+      "longitude_target": 131.4,
+      "latitude_source": 32.74,
+      "longitude_source": 130.77
+    }];
+    const hokkaido = [{
+      "latitude_target": 42.16340342422401,
+      "longitude_target": 143.61328125,
+      "latitude_source": 1.4500404973608074,
+      "longitude_source": 127.57324218750001
+    }];
+
+    //colors for arcs
+    var source_color = [131, 193, 193];
+    var target_color = [131, 193, 193];
+
+    var {
+      MapboxLayer,
+      ArcLayer
+    } = deck;
     //define data for magnitude viz
-    const magData = [{"id": 1, "mag": 3, "size": 5},
-                     {"id": 2, "mag": 4, "size": 50},
-                     {"id": 3, "mag": 5, "size": 500},
-                     {"id": 4, "mag": 6, "size": 5000},
-                     {"id": 5, "mag": 7, "size": 50000},
-                     {"id": 6, "mag": 8, "size": 500000},
-                     {"id": 7, "mag": 9, "size": 5000000}];
+    const magData = [{
+        "id": 1,
+        "mag": 3,
+        "size": 5
+      },
+      {
+        "id": 2,
+        "mag": 4,
+        "size": 50
+      },
+      {
+        "id": 3,
+        "mag": 5,
+        "size": 500
+      },
+      {
+        "id": 4,
+        "mag": 6,
+        "size": 5000
+      },
+      {
+        "id": 5,
+        "mag": 7,
+        "size": 50000
+      },
+      {
+        "id": 6,
+        "mag": 8,
+        "size": 500000
+      },
+      {
+        "id": 7,
+        "mag": 9,
+        "size": 5000000
+      }
+    ];
+
+    // Deck.gl arc layer with custom shader
+    class ArcBrushingLayer extends ArcLayer {
+      getShaders() {
+        // here comes our custom shader
+        // we will use step function to create opacity gradient with colorA and color B
+        // for more information see https://thebookofshaders.com/05/
+        return Object.assign({}, super.getShaders(), {
+          inject: {
+            'vs:#decl': `
+             uniform float coef;
+            `,
+            'vs:#main-end': `
+            if (coef > 0.0) {
+              vec4 pct = vec4(segmentRatio);
+              pct.a = step(coef, segmentRatio);
+              vec4 colorA = instanceTargetColors;
+              vec4 colorB = vec4(instanceTargetColors.r, instanceTargetColors.g, instanceTargetColors.b, 0.0);
+              vec4 color = mix(colorA, colorB, pct) / 255.;
+              vColor = color;
+            }
+                        `,
+            'fs:#main-start': `
+            if (vColor.a == 0.0) discard;
+                        `
+          }
+        });
+      }
+
+      draw(opts) {
+        const {
+          coef
+        } = this.props;
+        // add uniforms
+        const uniforms = Object.assign({}, opts.uniforms, {
+          coef: coef
+        });
+        super.draw(Object.assign({}, opts, {
+          uniforms
+        }));
+      }
+    }
+    //function transition arc opacity from source to target
+    function animateArcs(layer) {
+      var coef = 0.001;
+      const animationInterval = setInterval(() => {
+        coef += 0.005;
+        if (coef >= 1.0) {
+          clearInterval(animationInterval);
+        }
+        layer.setProps({
+          coef
+        });
+      }, 5);
+    };
+    function hideArcs(layer) {
+      var coef = 0.001;
+        layer.setProps({
+          coef
+        });
+      };
+    //create new arcs and animate
+    function drawArc(data, myId) {
+      arcsLayer = new MapboxLayer({
+        type: ArcBrushingLayer,
+        id: myId,
+        data: data,
+        opacity: 1,
+        coef: 0.001,
+        getSourcePosition: d => [d.longitude_source, d.latitude_source],
+        getTargetPosition: d => [d.longitude_target, d.latitude_target],
+        getSourceColor: source_color,
+        getTargetColor: target_color,
+        getStrokeWidth: 10
+      });
+      map.addLayer(arcsLayer);
+    };
+    function drawArc2(data, myId) {
+      arcsLayer = new MapboxLayer({
+        type: ArcBrushingLayer,
+        id: myId,
+        data: data,
+        opacity: 1,
+        coef: 0.001,
+        getSourcePosition: d => [d.longitude_source, d.latitude_source],
+        getTargetPosition: d => [d.longitude_target, d.latitude_target],
+        getSourceColor: source_color,
+        getTargetColor: target_color,
+        getStrokeWidth: 10
+      });
+      map.addLayer(arcsLayer2);
+    };
+    // function drawArc2(data) {
+    //   arcsLayer = new MapboxLayer({
+    //     type: ArcBrushingLayer,
+    //     id: `deckarcs2`,
+    //     data: data,
+    //     opacity: 1,
+    //     coef: 0.001,
+    //     getSourcePosition: d => [d.longitude_source, d.latitude_source],
+    //     getTargetPosition: d => [d.longitude_target, d.latitude_target],
+    //     getSourceColor: source_color,
+    //     getTargetColor: target_color,
+    //     getStrokeWidth: 10
+    //   });
+    //   map.addLayer(arcsLayer2);
+    // };
+
+    var arcsLayer;
+    var arcsLayer2;
+    //function to draw strain waves
+    map.on('load', function() {
+      map.addSource('strainWavesDat', {
+        type: 'geojson',
+        data: 'https://gist.githubusercontent.com/will-r-chase/72b206dd2ba17889ba98075d693db1bd/raw/57b8465a5e85f103e3f6d163ef2ad6294a229a77/strain_waves.geojson'
+      });
+      map.addLayer({
+        "id": "strainWaves",
+        "type": "fill",
+        "source": "strainWavesDat",
+        'layout': {},
+        'paint': {
+          'fill-color': '#83c1c1',
+          'fill-opacity': 0
+        }
+      });
+      drawArc(oita, "oita-arcs");
+      //drawArc2(hokkaido, "hokkaido-arcs");
+    });
 
     // For each enter step, read and draw data
     function initData(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
@@ -284,7 +625,12 @@
         drawData(cleanDat, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
       })
     };
-
+    // For each enter step, read and draw data
+    function initPoints(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
+      d3.json(source, function(err, data) {
+        drawPoints(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
+      })
+    };
     function initChart(source1, source2) {
       d3.json(source1, function(err, dataBefore) {
         d3.json(source2, function(err, dataTriggered) {
@@ -325,7 +671,6 @@
         });
       });
     };
-
     function exitChart(source1, source2) {
       d3.json(source1, function(err, dataBefore) {
         d3.json(source2, function(err, dataTriggered) {
@@ -336,8 +681,32 @@
         });
       });
     };
+    function initBars(source) {
+      d3.csv(source, function(err, data) {
+        if (err) console.log(err);
+        let dataClean = csvClean(data);
+        console.log(dataClean)
+        drawBars(dataClean);
+      });
+    };
+    function initBarsHighlight(source) {
+      d3.csv(source, function(err, data) {
+        if (err) console.log(err);
+        let dataClean = csvClean(data);
+        console.log(dataClean)
+        highlightBars(dataClean);
+      });
+    };
+    function initRedrawCircles(source) {
+      d3.csv(source, function(err, data) {
+        if (err) console.log(err);
+        let dataClean = csvClean(data);
+        console.log(dataClean)
+        redrawCircles(dataClean);
+      });
+    };
     //////////////
-    // D3 stuff
+    // D3 stuff //
     //////////////
     // Project GeoJSON coordinate to the map's current state
     function project(d) {
@@ -376,6 +745,34 @@
       map.on("move", update);
       map.on("moveend", update);
     }
+    function drawPoints(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
+      // set scale domain
+      aScale.domain(domain);
+      colorScale.domain(domain);
+
+      // Add circles
+      circles = group.selectAll(pointClass)
+        .data(data.features)
+        .enter()
+        .append("circle")
+        .attr("class", pointClass)
+        .attr("r", 0)
+        .attr("fill", d => colorScale(d.properties.mag))
+        .style("opacity", 0.7);
+
+      circles
+        .transition()
+        .delay(extraDelay)
+        .duration(Duration)
+        .ease(Ease)
+        .attr("r", d => aScale(d.properties.mag));
+      // Call the update function
+      update();
+      // Update on map interaction
+      map.on("viewreset", update);
+      map.on("move", update);
+      map.on("moveend", update);
+    };
     // Update d3 shapes' positions to the map's current state
     function update() {
       console.log("update");
@@ -418,7 +815,7 @@
         .attr("y2", height - margin.bottom)
         .attr("class", "mainshock-line")
         .style("opacity", 0)
-        .style("stroke", "#E3191C")
+        .style("stroke", "#C3402C") //#E3191C
         .style("stroke-width", 3)
         .style("stroke-dasharray", 5);
       //x axis before
@@ -455,8 +852,8 @@
         .style("position", "absolute")
         .style("width", "200px")
         .style("opacity", 0)
-        .style("left", width / 11 + "px")
-        .style("top", height / 1.7 + "px")
+        .style("left", width / 40 + "px")
+        .style("top", height / 1.55 + "px")
         .style("text-anchor", "left")
         .style("font-size", "20px")
         .transition()
@@ -548,6 +945,7 @@
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
 
     };
+
     function drawChartBackwards(dataBefore, dataTriggered) {
       timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
       timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
@@ -556,7 +954,7 @@
         .selectAll(".landers-before")
         .data(dataBefore.features)
         .attr("r", 10)
-        .attr("fill", d => d.properties.mag > 5 ? "#DC0505" : "#373536")
+        .attr("fill", d => d.properties.mag > 5 ? "#C3402C" : "#373536") //#DC0505
         .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
         .attr("cx", d => timeScaleBefore(d.properties.day))
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
@@ -566,12 +964,13 @@
         .selectAll(".landers-triggered")
         .data(dataTriggered.features)
         .attr("r", 10)
-        .attr("fill", d => d.properties.mag > 5 ? "#DC0505" : "#373536")
+        .attr("fill", d => d.properties.mag > 5 ? "#C3402C" : "#373536") //#C3402C
         .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
         .attr("cx", d => timeScaleTriggered(d.properties.day))
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
 
     };
+
     function highlightChart(dataBefore, dataTriggered) {
       before
         .selectAll(".landers-before")
@@ -579,7 +978,7 @@
         .transition()
         .delay(300)
         .duration(1000)
-        .attr("fill", d => d.properties.mag > 5 ? "#DC0505" : "#373536")
+        .attr("fill", d => d.properties.mag > 5 ? "#C3402C" : "#515151") //#C3402C
         .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
 
       trigger
@@ -588,9 +987,10 @@
         .transition()
         .delay(300)
         .duration(1000)
-        .attr("fill", d => d.properties.mag > 5 ? "#DC0505" : "#373536")
+        .attr("fill", d => d.properties.mag > 5 ? "#C3402C" : "#515151") //#C3402C
         .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
     };
+
     function reverseHighlightChart(dataBefore, dataTriggered) {
       before
         .selectAll(".landers-before")
@@ -598,7 +998,7 @@
         .transition()
         .delay(700)
         .duration(1000)
-        .attr("fill", "#373536")
+        .attr("fill", "#515151")
         .style("opacity", 1);
 
       trigger
@@ -607,7 +1007,7 @@
         .transition()
         .delay(700)
         .duration(1000)
-        .attr("fill", "#373536")
+        .attr("fill", "#515151")
         .style("opacity", 1);
     };
     //function to draw stacked dot histogram
@@ -639,6 +1039,330 @@
       //map.on("viewreset", update);
       //map.on("move", update);
       //map.on("moveend", update);
+
+    };
+
+    function drawBars(data) {
+      innerRadius = 190,
+        outerRadius = Math.min(width, height) / 2.1;
+
+      bars = svg.append("g")
+        .attr("class", "bar-chart")
+        .attr("transform", `translate(${width/2}, ${height/2})`);
+
+      // X scale
+      var x = d3.scaleBand()
+        .range([0, 2 * Math.PI])
+        .align(0)
+        .domain(data.map(function(d) {
+          return d.deg;
+        }));
+
+      // Y scale
+      var y = d3.scaleRadial()
+        .range([innerRadius, outerRadius])
+        .domain([0, d3.max(data, d => d.rel_rate)]);
+
+      bars
+        .selectAll("path")
+        .data(data)
+        .enter()
+        .append("path")
+        .style("opacity", 0)
+        .attr("d", d3.arc()
+          .innerRadius(innerRadius)
+          .outerRadius(function(d) {
+            return y(d.rel_rate);
+          })
+          .startAngle(function(d) {
+            return x(d.deg);
+          })
+          .endAngle(function(d) {
+            return x(d.deg) + x.bandwidth();
+          })
+          .padAngle(0.01)
+          .padRadius(innerRadius))
+        .transition()
+        .delay(2500)
+        .duration(1000)
+        .style("opacity", 1);
+
+      xAxis = g => g
+        .attr("text-anchor", "middle")
+        .call(g => g.selectAll("g")
+          .data(data)
+          .enter().append("g")
+          .attr("transform", d => `
+                  rotate(${((x(d.deg) + x.bandwidth() / 2) * 180 / Math.PI - 90)})
+                  translate(${innerRadius},0)
+                `)
+          .call(g => g.append("line")
+            .attr("x2", -5)
+            .attr("stroke", "#000"))
+          .call(g => g.append("text")
+            .attr("transform", d => (x(d.deg) + x.bandwidth() / 2 + Math.PI / 2) % (2 * Math.PI) < Math.PI ?
+              "rotate(90)translate(0,16)" :
+              "rotate(-90)translate(0,-9)")
+            .text(d => d.deg)))
+
+      yAxis = g => g
+        .attr("text-anchor", "middle")
+        .call(g => g.append("text")
+          .attr("y", d => -y(y.ticks(5).pop()))
+          .attr("dy", "-0.7em")
+          .text("Relative rate"))
+        .attr("font-size", "16px")
+        .call(g => g.selectAll("g")
+          .data(y.ticks(5).slice(1))
+          .enter().append("g")
+          .call(g => g.append("circle")
+            .attr("class", "bar-axis")
+            .attr("r", y))
+          .call(g => g.append("text")
+            .attr("y", d => -y(d))
+            .attr("dy", "0.45em")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 3)
+            .text(y.tickFormat(5, "s"))
+            .clone(true)
+            .attr("fill", "#000")
+            .attr("font-size", "16px")
+            .attr("stroke", "none")))
+
+      // svg.append("g")
+      //   .attr("class", "bar-axis")
+      //   .attr("transform", `translate(${width/2}, ${height/2})`)
+      //   .call(xAxis);
+      svg.append("g")
+        .attr("class", "bar-axis")
+        .attr("transform", `translate(${width/2}, ${height/2})`)
+        .style("opacity", 0)
+        .call(yAxis)
+        .transition()
+        .delay(3000)
+        .duration(1000)
+        .style("opacity", 0.9);
+
+      var myimage = svg.append('image')
+        .attr('xlink:href', 'earth_outline.png')
+        .attr("class", "globe")
+        .attr('width', innerRadius * 1.9)
+        .attr('height', innerRadius * 1.9)
+        .attr("x", width / 2 - innerRadius / 1.05)
+        .attr("y", height / 2 - innerRadius / 1.05);
+
+        var arc = d3.arc()
+          .innerRadius(innerRadius / 1.1)
+          .outerRadius(innerRadius / 1.04)
+          .startAngle(Math.PI);
+
+        var righthand = svg.append("g")
+          .attr("transform", `translate(${width/2}, ${height/2})`)
+          .append("path")
+          .datum({
+            endAngle: 0
+          })
+          .attr("class", "strain-wave")
+          .style("opacity", 0)
+          .attr("fill", "#83c1c1")
+          .attr("d", arc);
+
+        var lefthand = svg.append("g")
+          .attr("transform", `translate(${width/2}, ${height/2})`)
+          .append("path")
+          .datum({
+            endAngle: 2 * Math.PI
+          })
+          .attr("class", "strain-wave")
+          .style("opacity", 0)
+          .attr("fill", "#83c1c1") //#961D72
+          .attr("d", arc);
+
+      svg.append("g")
+        .append("circle")
+        .attr("class", "mainshockDummy")
+        .attr("cx", width / 2)
+        .attr("cy", height / 2 + innerRadius / 1.08)
+        .attr("r", 0)
+        .attr("fill", "#C3402C")
+        .style("opacity", 1)
+        .transition()
+        .delay(1000)
+        .duration(700)
+        .ease(d3.easeElastic)
+        .attr("r", 15);
+
+      function tweenPie(b) {
+        //b.innerRadius = 0;
+        var i = d3.interpolate({
+          startAngle: 0,
+          endAngle: 0
+        }, b);
+        return function(t) {
+          return arc(i(t));
+        };
+      }
+
+      //             var arc = d3.data(data)
+      //             .arc()
+      //             .innerRadius(innerRadius)
+      //             .outerRadius(function(d) {
+      //                  return y(d.rel_rate);
+      //                });
+      //
+      //
+      // var arcs = svg.selectAll("g.arc")
+      //     .data(data)
+      //   .enter().append("g")
+      //     .attr("class", "arc");
+
+      // svg.append("g")
+      //   .attr("transform", `translate(${width/2}, ${height/2})`)
+      //   .append("path")
+      //   .attr("class", "strain-wave")
+      //   .attr("opacity", 0.7)
+      //   .attr("fill", "#961D72")
+      //   .attr("d", d3.arc()
+      //     .innerRadius(innerRadius / 1.1)
+      //     .outerRadius(innerRadius / 1.04)
+      //     .startAngle(Math.PI)
+      //     .endAngle(0)
+      //   );
+
+      var deadzone = svg.append("g")
+        .attr("transform", `translate(${width/2}, ${height/2})`)
+        .append("path")
+        .attr("class", "deadzone")
+        .style("opacity", 0)
+        .attr("fill", "#9A9A9A")
+        .attr("d", d3.arc()
+          .innerRadius(innerRadius)
+          .outerRadius(innerRadius / 0.8)
+          .startAngle(Math.PI / 1.15)
+          .endAngle(Math.PI * 1.13)
+        )
+        .transition()
+        .delay(2500)
+        .duration(1000)
+        .style("opacity", 0.5);
+
+      righthand.transition()
+        .delay(1200)
+        .duration(1000)
+        .style("opacity", 1)
+        .attrTween("d", function(d) {
+          var start = {
+            startAngle: Math.PI,
+            endAngle: Math.PI
+          };
+          var interpolate = d3.interpolate(start, d);
+          return function(t) {
+            return arc(interpolate(t));
+          };
+        });
+
+      lefthand.transition()
+        .delay(1200)
+        .duration(1000)
+        .style("opacity", 1)
+        .attrTween("d", function(d) {
+          var start = {
+            startAngle: Math.PI,
+            endAngle: Math.PI
+          };
+          var interpolate = d3.interpolate(start, d);
+          return function(t) {
+            return arc(interpolate(t));
+          };
+        });
+
+        // beforeLabel = d3.select(canvas)
+        //   .append("div")
+        //   .attr("class", "chart-label")
+        //   .html(
+        //     "Earthquakes 10 days before the Landers mainshock"
+        //   )
+        //   .style("position", "absolute")
+        //   .style("width", "200px")
+        //   .style("opacity", 0)
+        //   .style("left", width / 12 + "px")
+        //   .style("top", height / 1.6 + "px")
+        //   .style("text-anchor", "left")
+        //   .style("font-size", "20px")
+        //   .transition()
+        //   .delay(0) //2500
+        //   .duration(2000)
+        //   .style("opacity", 1);
+
+    };
+    function highlightBars(data) {
+      d3.selectAll("g.bar-chart")
+        .selectAll("path")
+        .data(data)
+        .transition()
+        .delay(300)
+        .duration(1000)
+        .style("opacity", d => d.rel_rate > 1.5 ? 1 : 0.5)
+        .style("fill", d => d.rel_rate > 1.5 ? "#872B32" : "#373536"); //#aa0303
+    };
+
+    function reverseHighlightBars() {
+      d3.selectAll("g.bar-chart")
+        .selectAll("path")
+        .transition()
+        .delay(300)
+        .duration(500)
+        .style("opacity", 1)
+        .style("fill", "#872B32"); //#aa0303
+    };
+
+    function redrawCircles(data) {
+      innerRadius = 190,
+        outerRadius = Math.min(width, height) / 2.1;
+
+        // Y scale
+        var y = d3.scaleRadial()
+          .range([innerRadius, outerRadius])
+          .domain([0, d3.max(data, d => d.rel_rate)]);
+
+      svg.append("g")
+        .append("circle")
+        .attr("class", "mainshockDummy")
+        .attr("cx", width / 2)
+        .attr("cy", height / 2 + innerRadius / 1.08)
+        .attr("r", 15)
+        .attr("fill", "#C3402C") // #E3191C
+        .style("opacity", 1);
+
+        yAxis = g => g
+          .attr("text-anchor", "middle")
+          .call(g => g.append("text")
+            .attr("y", d => -y(y.ticks(5).pop()))
+            .attr("dy", "-0.7em")
+            .text("Relative rate"))
+          .attr("font-size", "16px")
+          .call(g => g.selectAll("g")
+            .data(y.ticks(5).slice(1))
+            .enter().append("g")
+            .call(g => g.append("circle")
+              .attr("class", "bar-axis")
+              .attr("r", y))
+            .call(g => g.append("text")
+              .attr("y", d => -y(d))
+              .attr("dy", "0.45em")
+              .attr("stroke", "#fff")
+              .attr("stroke-width", 3)
+              .text(y.tickFormat(5, "s"))
+              .clone(true)
+              .attr("fill", "#000")
+              .attr("font-size", "16px")
+              .attr("stroke", "none")))
+
+              svg.append("g")
+                .attr("class", "bar-axis")
+                .attr("transform", `translate(${width/2}, ${height/2})`)
+                .style("opacity", 0.9)
+                .call(yAxis);
 
     };
 
@@ -725,17 +1449,17 @@
       if (response.direction === 'down') {
         if (response.element.attributes['step-num'].value === '2') {
           map.flyTo(chapters['section1']);
-          initData(landers_before_url, before, "landers-before", [2.5, 7.3], [0, 500], 1500); //range [0,4000] when not debugging
+          initData(landers_before_url, before, "landers-before", [2.5, 8], [0, 500], 1500); //range [0,4000] when not debugging
         };
         if (response.element.attributes['step-num'].value === '3') {
-          initData(landers_mainshock_url, mainshock, "landers-mainshock", [2.5, 7.3], [0, 4000], 700, d3.easeElastic,
+          initData(landers_mainshock_url, mainshock, "landers-mainshock", [2.5, 8], [0, 4000], 700, d3.easeElastic,
             1000);
         }
         if (response.element.attributes['step-num'].value === '4') {
-          initData(landers_aftershocks_url, aftershock, "landers-aftershocks", [2.5, 7.3], [0, 700]);
+          initData(landers_aftershocks_url, aftershock, "landers-aftershocks", [2.5, 8], [0, 700]);
         }
         if (response.element.attributes['step-num'].value === '5') {
-          initData(landers_triggered_url, trigger, "landers-triggered", [2.5, 7.3], [0, 500]); //range [0,4000] when not debugging
+          initData(landers_triggered_url, trigger, "landers-triggered", [2.5, 8], [0, 500]); //range [0,4000] when not debugging
         }
         if (response.element.attributes['step-num'].value === '6') {
           hideMap();
@@ -745,16 +1469,48 @@
         if (response.element.attributes['step-num'].value === '7') {
           initChartHighlight(landers_before_url, landers_triggered_url);
         }
-        if (response.element.attributes['step-num'].value === '9') {
+        if (response.element.attributes['step-num'].value === '8') {
           map.flyTo(chapters['welcome']);
-          initData(sumatra_before_url, before, "sumatra-before", [2.5, 7.3], [0, 500], 1500); //range [0,4000] when not debugging
+        }
+        if (response.element.attributes['step-num'].value === '9') {
+          initData(sumatra_before_url, before, "sumatra-before", [2.5, 8], [0, 500], 500); //range [0,4000] when not debugging
         };
         if (response.element.attributes['step-num'].value === '10') {
-          initData(sumatra_mainshock_url, mainshock, "sumatra-mainshock", [2.5, 7.3], [0, 4000], 700, d3.easeElastic,
+          initData(sumatra_mainshock_url, mainshock, "sumatra-mainshock", [2.5, 8], [0, 4000], 700, d3.easeElastic,
             1000); //range [0,4000] when not debugging
         };
         if (response.element.attributes['step-num'].value === '11') {
-          initData(sumatra_triggered_url, trigger, "sumatra-triggered", [2.5, 7.3], [0, 500]); //range [0,4000] when not debugging
+          initData(sumatra_triggered_url, trigger, "sumatra-triggered", [2.5, 8], [0, 500]); //range [0,4000] when not debugging
+        };
+        if (response.element.attributes['step-num'].value === '13') {
+          hideEl(".sumatra-before,.sumatra-mainshock,.sumatra-triggered");
+          hideMap();
+          initBars(bars_url);
+        };
+        if (response.element.attributes['step-num'].value === '14') {
+          initBarsHighlight(bars_url);
+        };
+        if (response.element.attributes['step-num'].value === '15') {
+          map.flyTo(chapters['section2']);
+          initPoints(oita_mainshock_url, mainshockOita, "oita-mainshock", [2.5, 8], [0, 4000], 3000, d3.easeElastic,
+            1000); //range [0,4000] when not debugging
+        };
+        if (response.element.attributes['step-num'].value === '16') {
+          initPoints(oita_triggered_url, triggeredOita, "oita-triggered", [2.5, 8], [0, 4000], 1500, d3.easeElastic,
+            1000); //range [0,4000] when not debugging
+          animateArcs(arcsLayer);
+        };
+        if (response.element.attributes['step-num'].value === '17') {
+          hideEl(".oita-triggered,.oita-mainshock");
+          hideArcs(arcsLayer);
+          map.flyTo(chapters['section3']);
+          initPoints(hokkaido_mainshock_url, mainshockHokkaido, "hokkaido-mainshock", [2.5, 8], [0, 4000], 3000, d3.easeElastic,
+            1000); //range [0,4000] when not debugging
+        };
+        if (response.element.attributes['step-num'].value === '18') {
+          initPoints(hokkaido_triggered_url, triggeredHokkaido, "hokkaido-triggered", [2.5, 8], [0, 4000], 3000, d3.easeElastic,
+            1000); //range [0,4000] when not debugging
+          //animateArcs(arcsLayer2);
         };
 
       };
@@ -778,6 +1534,26 @@
           showEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
           initChartBackwards(landers_before_url, landers_triggered_url);
         }
+        if (response.element.attributes['step-num'].value === '12') {
+          map.flyTo(chapters['welcome'])
+          eraseData(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
+          showMap();
+          showEl(".sumatra-before", 0.3);
+          showEl(".sumatra-mainshock,.sumatra-triggered", 0.7)
+        };
+        if (response.element.attributes['step-num'].value === '13') {
+          reverseHighlightBars();
+        };
+        if (response.element.attributes['step-num'].value === '14') {
+          initRedrawCircles(bars_url);
+          showEl(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
+          hideMap();
+        };
+        if (response.element.attributes['step-num'].value === '16') {
+          map.flyTo(chapters['section2'])
+          showEl(".oita-triggered,.oita-mainshock")
+          animateArcs(arcsLayer)
+        };
       }
     };
 
@@ -813,8 +1589,10 @@
         if (response.element.attributes['step-num'].value === '9') {
           fadeData(".sumatra-before");
         };
-        if (response.element.attributes['step-num'].value === '11') {
-
+        if (response.element.attributes['step-num'].value === '14') {
+          eraseData(".mainshockDummy,.bar-axis");
+          hideEl(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
+          showMap();
         };
 
       };
@@ -844,7 +1622,20 @@
         if (response.element.attributes['step-num'].value === '11') {
           eraseData(".sumatra-triggered");
         };
-
+        if (response.element.attributes['step-num'].value === '15') {
+          eraseData(".oita-mainshock");
+        };
+        if (response.element.attributes['step-num'].value === '16') {
+          eraseData(".oita-triggered");
+          hideArcs(arcsLayer);
+        };
+        if (response.element.attributes['step-num'].value === '17') {
+          eraseData(".hokkaido-mainshock");
+        };
+        if (response.element.attributes['step-num'].value === '18') {
+          eraseData(".hokkaido-triggered");
+          //hideArcs(arcsLayer);
+        };
       }
     }
 
@@ -866,60 +1657,6 @@
 
     // kick things off
     init();
-
-
-
-
-    //////////////////////////////////////////////////////////////////
-    ///////////////
-    ///Old Stuff///
-    ///////////////
-
-
-    /*map.on('load', function () {
-
-      map.addSource("indianOcean_aftershocks", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/5d41e555f64d27f19ff6518b0d779efd/raw/1f4b1ecd4b8c6ecb3e25e48cdff17240b01558eb/indianOcean_aftershocks.geojson"
-      });
-      map.addSource("indianOcean_before", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/40d8803b4eed82851e617d8eb264bea7/raw/83d4f1a0276319cfe8f8af451c662340fbf4e581/indianOcean_before.geojson"
-      });
-      map.addSource("indianOcean_mainshock", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/5e3e1470002a9bb53465c610faea0959/raw/07c39e495864ecc02aa5b683379af33e3dc9a259/indianOcean_mainshock.geojson"
-      });
-      map.addSource("indianOcean_triggered", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/800af0c4317257f7ef066d648daa9bfc/raw/3ede95367400e22666171617ae6cb158a671cdb8/indianOcean_triggered.geojson"
-      });
-
-      map.addSource("landers_aftershocks", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson"
-      });
-      map.addSource("landers_before", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/788da2914f1f7ff5866d9bfb19d2b604/raw/801f798b8c4e3df875ad64558049aa849370d11c/landers_before.geojson"
-      });
-      map.addSource("landers_mainshock", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson"
-      });
-      map.addSource("landers_triggered", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/09f382961528be682a73029fd22b9cb1/raw/d69b210bb82cf7bff22d9eee4e3573ed01d2967f/landers_triggered.geojson"
-      });
-
-      map.addSource("tohoku_mainshock", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/60b33af5567a82a13d21fbd5c5161ff2/raw/fccd7f76b1535d89c6c37384f9db6cc43bac6dcc/tohoku_mainshock.geojson"
-      });
-      map.addSource("tohoku_baja_after", {
-        type: "geojson",
-        data: "https://gist.githubusercontent.com/will-r-chase/e5ce036f3af9030ec56c58ab660b2003/raw/d217d3c4162ea77435b8907b8008b3a0c9fc4bd0/tohoku_baja_after2.geojson"
-      });*/
   </script>
 </body>
 
