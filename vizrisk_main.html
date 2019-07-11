@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset='utf-8' />
   <title>Remote Triggering of Earthquakes</title>
@@ -12,23 +13,22 @@
   <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+SC|Alegreya+Sans|Playfair+Display&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
   <script src="https://unpkg.com/scrollama"></script>
-  <link href="https://fonts.googleapis.com/css?family=Alegreya+SC&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Fira+Sans|Open+Sans|Source+Sans+Pro&display=swap" rel="stylesheet">
 
 
   <style media="screen">
-
     body {
       margin: 0;
       padding: 0;
     }
-
     #map {
       position: fixed;
+      left: 35%;
       top: 0;
       bottom: 0;
-      width: 60%;
+      width: 65%;
     }
-
     svg {
       position: absolute;
       width: 100%;
@@ -37,7 +37,6 @@
 
     circle {
       stroke-width: 0;
-
     }
 
     section {
@@ -46,7 +45,7 @@
       margin: 200px 25px 200px 25px;
       opacity: 0.05;
       font-size: 20px;
-      color: #000;
+      color: #2A2A2A;
       ;
     }
 
@@ -56,12 +55,11 @@
 
     section:last-child {
       border-bottom: none;
-      margin-bottom: 1000px;
     }
 
     .features {
-      width: 40%;
-      margin-left: 60%;
+      width: 35%;
+      margin-right: 65%;
       font-family: 'Alegreya', serif;
       font-size: 20px;
       line-height: 1.35;
@@ -69,6 +67,7 @@
       background-color: #fafafa;
       color: #2A2A2A;
     }
+
     h3 {
       font-family: 'Alegreya SC', serif;
       font-size: 28px;
@@ -87,24 +86,33 @@
     }
 
     circle.bar-axis {
+      font-family: 'Source Sans Pro', sans-serif;
       fill: none;
       stroke: #1E1E1E;
       stroke-opacity: 0.7;
       stroke-width: 0.5px;
       stroke-dasharray: 2;
     }
+
     .chart-axis {
-      font-family: 'Alegreya Sans', sans-serif;
+      font-family: 'Source Sans Pro', sans-serif;
     }
+
     .chart-label {
-      font-family: 'Alegreya Sans', sans-serif;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 18px;
     }
+    .mainshock-label {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
     .bar-axis {
-      font-family: 'Alegreya Sans', sans-serif;
+      font-family: 'Source Sans Pro', sans-serif;
     }
+
     .modal-window {
       position: fixed;
-      background-color: rgba(230,230,230,0.5);
+      background-color: rgba(230, 230, 230, 0.5);
       top: 0;
       right: 0;
       bottom: 0;
@@ -116,11 +124,15 @@
       -moz-transition: all 0.3s;
       transition: all 0.3s;
     }
+
     .modal-window:target {
       opacity: 1;
       pointer-events: auto;
     }
-    .modal-window > div {
+
+    .modal-window>div {
+      font-family: 'Alegreya', serif;
+      font-size: 18px;
       width: 400px;
       position: fixed;
       top: 50%;
@@ -131,9 +143,10 @@
     }
 
     .modal-close {
+      font-family: 'Alegreya', serif;
       color: #aaa;
       line-height: 50px;
-      font-size: 80%;
+      font-size: 16px;
       position: absolute;
       right: 0;
       text-align: center;
@@ -141,163 +154,418 @@
       width: 70px;
       text-decoration: none;
     }
+
     .modal-close:hover {
       color: black;
     }
 
-.btn {
-  font-family: 'Alegreya SC', serif;
-  text-decoration: none;
-  background-color: #fafafa;
-  color: #2A2A2A;
-}
-/* Demo Styles */
-a {
-  color: inherit;
-}
+    .btn {
+      position: relative;
+      z-index: 1000;
+      font-family: 'Alegreya SC', serif;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      background-color: #fafafa;
+      color: #872B32;
+    }
 
-.container {
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  /* height: 100vh; */
-}
+    /* Demo Styles */
+    a {
+      color: inherit;
+    }
 
-/* .modal-window div:not(:last-of-type) {
-  margin-bottom: 15px;
-} */
+    .container {
+      display: grid;
+      justify-content: center;
+      align-items: center;
+      /* height: 100vh; */
+    }
+    #intro {
+      background:
+        linear-gradient(
+          to left,
+          rgba(0, 0, 0, 0),
+          rgba(0, 0, 0, 0.7)
+        ),
+        url(chile_eq.jpg);
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      font-family: 'Raleway', sans-serif;
+      height: 100vh;
+      position: relative;
+      padding-top: 1%;
+      padding-left: 5%;
+      padding-right: 5%
+      padding-bottom: 1%;
+      color: #fafafa;
+      /* background: #fafafa; */
+      opacity: 1;
+      z-index: 2;
+    }
+    #footer {
+      font-family: 'Alegreya', serif;
+      font-size: 20px;
+      height: 200vh;
+      position: relative;
+      padding-top: 1%;
+      padding-left: 5%;
+      padding-right: 5%
+      padding-bottom: 1%;
+      background: #fafafa;
+      opacity: 1;
+      z-index: 2;
+    }
+    #outro {
+      box-sizing: border-box;
+      padding-left: 25vw;
+      padding-right: 25vw;
+    }
+    #methods {
+      box-sizing: border-box;
+      padding: 25px;
+      border-style: dotted;
+      border-width: 2px;
+      margin-left: 25vw;
+      margin-right: 25vw;
+      margin-top: 100px;
+      color: #2A2A2A;
+    }
+    #methods-title {
+      font-family: 'Alegreya SC', serif;
+      font-size: 25px;
+      letter-spacing: 0.08em;
+      color: #000;
+    }
+    .main {
+      position: relative;
+      z-index: 1;
+    }
+    .sticky {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+    }
+    .title {
+      margin-top: 7vh;
+      font-size: 40px;
+      line-height: 1.45em;
+      letter-spacing: 0.1em;
+    }
+    .xtra-big{
+      font-size: 60px;
+      font-weight: 800;
+      line-height: 1.5em;
+    }
+    .small {
+      margin-top: 15vh;
+      font-size: 20px;
+      font-weight: lighter;
+    }
+    .modal-title {
+      font-family: 'Alegreya SC', serif;
+      font-size: 27px;
+      margin-bottom: 10px;
+      letter-spacing: 0.08em;
+      color: #000;
+    }
 
-small {
-  color: #aaa;
-}
+
 
   </style>
 </head>
 
 <body>
-  <div class="main">
-  <div id="map"></div>
-  <div class="container">
-<div id="open-modal" class="modal-window">
-  <div>
-    <a href="#" title="Close" class="modal-close">Close</a>
-    <h1>Voilà!</h1>
-    <div>A CSS-only modal based on the :target pseudo-class. Hope you find it helpful.</div>
-    <div><small>Sponsor</small></div>
+  <div id="intro">
+    <div class="title">
+    <div class="xtra-big">CAN ONE</br>
+    EARTHQUAKE</br></div>
+    <div class="small">TRIGGER ANOTHER</br></div>
+    ON THE</br>
+    OTHER SIDE OF</br>
+    THE WORLD?</br>
   </div>
+    </br></br></br></br>
+    </br></br></br></br>
+    <h1>by Will Chase</h1>
+  </br></br>
+    <div>insert socials here</div>
+
+</div>
+  <div class="main">
+    <div id="map"></div>
+    <div class="container">
+      <div id="welcome-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">Hello, this is an info box!</div>
+          <div>Whenever you see something that <div class="btn">looks like this</div>, click it to open a
+          popup that will contain explanations of jargon or helpful info. For example,
+          did you know you can click on the ‘close’ button in the top left of this box to close it?
+          See, I told you, helpful!</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="mag-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">magnitude</div>
+          <div>Magnitude refers to the strength of an earthquake. Magnitude is reported on the Richter Magnitude Scale
+          which ranges from 1 to 10 (M1.0–M10). Technically, today's seismologists measure earthquakes with the Moment
+          Magnitude Scale, but these values are converted to the Richter Scale for reporting to the public. The Richter
+          Scale is logarithmic, meaning that each increase of one magnitude denotes a ten-fold increase in strength
+          (ie. a M8.0 earthquake is 10 times stronger than a M7.0, or 1000 times stronger than a M5.0).
+          Earthquakes M1.0–M5.0 are quite small, and rarely cause damage; M5.0 - M6.0 are moderate and may damage
+          flimsy structures; M7.0–M9.0 are strong to catastrophic and can damage or entirely destroy structures. </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="mainshock-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">mainshock</div>
+          <div>The mainshock is the largest earthquake in a sequence. Earthquakes often occur in groups, with seismic activity
+          over a short period of time. The mainshock is often proceeded be earthquakes (foreshocks), and almost always followed
+          by earthquakes (aftershocks).</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="aftershock-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">aftershock</div>
+          <div>Aftershocks are smaller earthquakes that follow in the same vicinity of a mainshock. Generally, aftershocks are
+          limited to within two rupture lengths of the mainshock (the aftershock zone). Large mainshocks can be followed by thousands of aftershocks, which
+          can be very large, but decay in strength and number over time.</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="triggered-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">remotely triggered earthquakes</div>
+          <div>Remotely triggered earthquakes are earthquakes following a large mainshock that occur outside of the aftershock zone.
+           as time and distiance from the mainshock increase, it can be more and more difficult to classify remotely triggered earthquakes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="seismograph-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">seismograph</div>
+          <div>A seismograph is an instrument to detect movements in the earth's crust. It generally consists of a measurement device
+           attached to a recording device. Earthquakes are detected using networks of seismographs that are arrayed worldwide. These devices
+           can be quite sensitive, but their ability to detect earthquakes depend on the proximity of the quake, and seismic noise in the region.</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="source-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">source event</div>
+          <div>Source event refers to the earthquake that triggers another earthquake, used synonymously with mainshock.</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="strike-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">strike-slip earthquake</div>
+          <div>Earthquakes occur at faults, which are zone of fracture between two blocks of rock. During an earthquake, the rock
+          on one side slips relative to the other. The direction and type of slippage determines the type of earthquake. Faults where
+          the rocks move upward or downward are called dip-slip. If the block above the fault has moved downward relative to the block below
+          it is called a "normal" fault. If the upper block, above the fault plane, moves up and over the lower block, it is called
+          a thrust fault. At strike-slip faults, blocks of rock move horizontally to each other. See <a class="btn" href="https://www.usgs.gov/faqs/what-a-fault-and-what-are-different-types?qt-news_science_products=0#qt-news_science_products" target="_blank">these animations from the USGS.</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="waves-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">seismic waves</div>
+          <div>When an earthquake strikes, it sends out energy in the form of seismic waves. Seismic waves come in two flavors:
+          body waves, which move through the inside of the earth, and surface waves which move along the surface of the earth. Within
+          body waves, there are P waves, which move parallel to the wave direction, and S waves which move perpendicular to the wave direction
+          Within surface waves there are Love waves, which cause the ground to move side-to-side, perpendicularly to the wave direction, and there are
+          Rayleigh waves, which cause the ground to move up and down like rolling ocean waves. Of these classes, Love waves are especially
+          destructive to structures.</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="antipode-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">antipode</div>
+          <div>The antipode refers to the other side of the globe from a point. Imagine you were standing at some location
+          on the earth. If you drilled a hole straight through the earth from that point, you would emerge at the antipode to that location.</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="degrees-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">degrees</div>
+          <div>This study sectioned the globe into discs width width of 5 degrees each. Degrees here refers to the angle around a circle (the globe).
+          The study considers relative rates across 180 degrees on each side of a mainshock.</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="rate-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">relative rate</div>
+          <div>The realtive rate refers to the rate of earthquakes over the three days following a mainshock, compared to the historical average.
+          A relative rate below one means fewer earthquakes occurred in this period than historically, whereas a realative rate above one indicates
+          an increase in earthquakes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class='features'>
+      <section id='welcome' class='step' step-num='1'>
+        <h3>Welcome</h3>
+        <p>Can one natural disaster influence the risk of another? It's well known that natural disasters
+          can cause others in their immediate vicinity, for instance, hurricanes are often accompanied by flooding,
+          and earthquakes are followed by aftershocks. But what about longer distance interactions? Could one earthquake
+          trigger another on the other side of the world? <a class="btn" href="#welcome-modal">hey click me for more info!</a>
+        </p>
+      </section>
+      <section id='section1' class='step' step-num='2'>
+        <h3>Landers before</h3>
+        <p>Our story begins in California in June of 1992. The dots below represent
+          earthquakes recorded in the ten days from June 18th to June 28th. Their size and color correspond to their <a class="btn" href="#mag-modal">magnitude</a>;
+          larger earthquakes are bigger and more red. There were 44 quakes during these ten days, though most were small
+          and wouldn't have been felt by people. But in the early hours of June 28th, that changed.</p>
+      </section>
+      <section id='section2' class='step' step-num='3'>
+        <h3>Landers mainshock</h3>
+        <p>At 5:00 on the morning of June 28th, a large magnitude 7.3 earthquake struck, waking much of
+          Southern California. The epicenter was located near Landers California, in the Mojave desert. Thanks
+          to the remote location, the damage and loss of life was minimal.</p>
+      </section>
+      <section id='section3' class='step' step-num='4'>
+        <h3>Landers aftershocks</h3>
+        <p>As expected, the <a class="btn" href="#mainshock-modal">mainshock</a> was followed by a smattering of <a class="btn" href="#aftershock-modal">aftershocks</a> which occurred in the immediate vicinity
+          of the mainshock, but what played out over the next ten days was entirely unexpected.</p>
+      </section>
+      <section id='section4' class='step' step-num='5'>
+        <h3>Landers triggered</h3>
+        <p>Survey stations across the Western United States recorded a flurry of seismic activity in the ten days following the
+          Landers earthquake. Seismologists recorded 192 earthquakes outside of the aftershock zone during this time, four times the amount in the ten days proceeding
+          the Landers quake. Even more surprising was that these earthquakes occurred at great distances from the aftershock zone, with many recorded hundreds or even thousands of miles
+          from the mainshock epicenter.</p>
+      </section>
+      <section id='section5' class='step' step-num='6'>
+        <h3>Chart view</h3>
+        <p>Placing each earthquake as a dot on a timeline before and after the mainshock reveals the striking pattern.
+          There is an especially large burst of activity in the three days following the mainshock, after which things taper off.
+          This event was one of the first reports of <a class="btn" href="#triggered-modal">remotely triggered earthquakes</a> to gain wide recognition. Most scholars were convinced
+          that this increase in seismic activity was triggered by energy sent out from the Landers quake, but many questioned how relevant it was.</p>
+      </section>
+      <section id='section6' class='step' step-num='7'>
+        <h3>Landers above M5</h3>
+        <p>Most earthquakes are small (M2.5-M4). These quakes are not typically felt by people, and are only recorded by sensitive <a class="btn" href="#seismograph-modal">seismographs</a>.
+          Earthquakes of magnitude 4-5 can cause shaking that might knock things off your shelf, but they're unlikely to cause structural damage.
+          What we're really concerned about are quakes greater than M5.5; only one of the 192 earthquakes following the Landers mainshock met this criteria.</p>
+      </section>
+      <section id='section7' class='step' step-num='8'>
+        <h3>Transition</h3>
+        <p>Over the next 15 years there were numerous papers published on remote triggering of earthquakes. It became well accepted
+          that large earthquakes often trigger small earthquakes at long distances, and are usually followed by increases in seismicity. However, the question of
+          whether <a class="btn" href="#source-modal">source events</a> could remotely trigger large earthquakes (M5.5+) remained contentious. Several researchers argued that the largest earthquakes (M8.0+) could
+          remotely trigger M5.5+ quakes, but not all were convinced. Scientists squabbled over statistical details and seismic mechanisms until 2012, when we got a unique glimpse
+          into the possibilities of remote triggering.</p>
+      </section>
+      <section id='section8' class='step' step-num='9'>
+        <h3>Sumatra before</h3>
+        <p>The spring of 2012 was an unusually quiet time for large earthquakes. Here we will only consider earthquakes larger than M5.5. In the ten days
+          from April 1st to April 11th there were only 5 M5.5+ earthquakes.</p>
+      </section>
+      <section id='section9' class='step' step-num='10'>
+        <h3>Sumatra mainshock</h3>
+        <p>On the afternoon of April 11th 2012, a massive M8.6 earthquake struck off the coast of Sumatra. The temblor triggered many aftershocks (not shown here) and initiated
+          tsunami that devastated island nations in Indonesia. This quake was unique for it's size and mechanism. To date, this is the largest ever recorded
+          <a class="btn" href="#strike-modal">strike-slip earthquake</a>.</p>
+      </section>
+      <section id='section10' class='step' step-num='11'>
+        <h3>Sumatra triggered</h3>
+        <p>In the ten days following the Sumatra mainshock, 44 earthquakes M5.5+ were recorded. The statistics were clear; this nine-fold increase was highly
+          significant, and most researchers agreed the most likely explanation was remote triggering by the M8.6 Sumatra earthquake. This massive triggering of large
+          earthquakes was unprecedented, and many wondered if the strike-slip mechanism at such a large magnitude was a unique combination that led to this outsized response.</p>
+      </section>
+      <section id='section11' class='step' step-num='12'>
+        <h3>Sumatra strain waves</h3>
+        <p>When earthquakes strike, they send out <a class="btn" href="#waves-modal">seismic waves</a> that travel through the earth's crust... These waves often propagate out from the mainshock in a '+' pattern
+          meeting at the opposite side of the earth (the <a class="btn" href="#antipode-modal">antipode</a>). Analysis of the Sumatra quake showed that nearly all of the triggered earthquakes
+          fell within the strain waves from the mainshock.</p>
+      </section>
+      <section id='section12' class='step' step-num='13'>
+        <h3>Bar chart</h3>
+        <p>The 2012 Sumatra quake showed that it was possible for a large earthquake to trigger other large earthquakes on the other side of the world, but the question remained: how common was
+        this phenomenon? Many argued that the Sumatra quake was an outlier, and rigorous statisical analysis was needed to prove otherwise. Recently, a small group of researchers at
+        Oregon State University carried out an analysis of 47 years of earthquake data to look for statistical evidence of remote earthquake triggering. Their method was to take each large mainshock (M7+)
+        and then divide the globe into slices of 5 <a class="btn" href="#degrees-modal">degrees</a> each emanating outwards from the mainshock (the 30 degrees surrounding the mainshock is disregarded as it was already known to have elevated earthquake levels).
+        For each slice, they compared the rate of M5.5+ earthquakes in the three days following the
+        mainshock to a historical average to determine a <a class="btn" href="#rate-modal">relative rate</a> of earthquakes.</p>
+      </section>
+      <section id='section13' class='step' step-num='14'>
+        <h3>Highlight hotspots</h3>
+        <p>The researchers found that in the three days following the largest earthquakes (M8+), the rate of M5.5+ earthquakes at certain locations was elevated as much as twice the average.
+        Two main regions--around 60 degrees and in the 30 degrees surrounding the antipode--have significantly elevated rates. The area around the antipode is particularly intriguing, as that is
+        typically where strain waves from the mainshock converge. Although suggestive, skeptics may argue that these results merely show a correlation--without causation--between large mainshocks and elevated M5.5+
+        quakes. However, there have been a handful of documented cases of remote triggering of large quakes with a demonstrated seismic mechanism that more convincingly shows causation.</p>
+      </section>
+      <section id='section16' class='step' step-num='17'>
+        <h3>Hokkaido mainshock</h3>
+        <p>On September 11th 2008, a M6.6 earthquake struck off the coast of Halmahera, Indonesia. The quake sent strain waves out towards Japan...</p>
+      </section>
+      <section id='section17' class='step' step-num='18'>
+        <h3>Hokkaido triggered</h3>
+        <p>Twenty-one minutes after the Papua New Guinea mainshock, a M6.9 eathquake was recorded off the Eastern coast of Hokkaido, Japan. The Hokkaido quake
+        hit mere seconds after the strain waves from the Papua New Guinea mainshock landed. Detailed seismic analysis showed convincingly that the Hokkaido quake
+        was directly triggered by the strain waves from the Papua New Guinea quake. Though this is perhaps the most compelling example, there have been a handful of other studies
+        demonstrating similar results of direct remote triggering via a seismic mechanism.</p>
+      </section>
+
+    </div>
+    <div id="footer">
+    <div id="outro">
+      <p>So, what does all of this mean for helping to predict earthquake risk? We've now seen that large earthquakes trigger hundreds to thousands of smaller earthquakes at great distances beyond the traditional aftershock zone. This finding is well accepted,
+      though the significance of these small triggered quakes is unclear. It's possible that these quakes can alter earthquake risk by either relieving or transferring stress in faults where they strike, but
+      this is poorly understood and more research is needed. The more relevant finding is that the largest earthquakes can trigger other large earthquakes at remote distances. Importantly, we've seen that
+      the triggered quakes are most likely to strike in the path of the mainshock strain waves. Since the strain waves converge at the antipode, this means that regions directly opposite a large mainshock should be
+      on high alert for at least three days, after which the relative risk reduces. Particularly concerning, is that some studies have noted that remotely triggered quakes can occur in areas that are not considered fault zones, meaning
+      they are less prepared and thus at higher risk of damage to property and to people. However, many scientist still question how common remote triggering of large earthquakes is, and the literature in this area
+      remains in disagreement. It is crucial that we devote more research on the seismic mechanisms involved, so that we may better
+      predict where and when risk of remotely triggered quakes is greatest. For example, why were so many large earthquakes triggered by the 2012 Sumatra earthquake? Was the strike-slip fracture mechanism a factor in that
+      case? Some have also argued that there are periods of quiesence before and/or after large mainshocks that cause remote triggering--a question that deserves attention. Ultimately more research is needed to determine
+      the details, exact risk, and likelihood, but given the evidence so far, next time I see a big earthquake in the news, I'll certainly be on the lookout to see if it's on the other side of the world as me--something that once may have been reassuring, now concerning.
+    </p>
+    </div>
+      <div id="methods">
+        <div id="methods-title">Methods</div>
+        <p>For the Landers and Sumatra earthquakes, data was retrieved from the USGS Earthquake Catalog for ten days before and after the mainshock. The Landers
+        data included all earthquakes greater than M2.5, and was limited to the Western United States. The Sumatra data was limited to M5.5+ earthquakes, and was
+        collected worldwide. For the Landers and Sumatra data, aftershocks and foreshocks were considered as any quake occurring within 2 rupture lengths of the mainshock,
+        and were excluded from all designations of earthquakes ten days before or after the mainshock. Analysis of the relative rate of M5.5+ earthquakes following large earthquakes
+        was based on O’Malley, R. T., Mondal, D., Goldfinger, C., & Behrenfeld, M. J. (2018). Evidence of systematic triggering at teleseismic distances following large earthquakes. <i>Scientific reports</i>. and was kindly provided by Mr. Robert O'Malley.
+        Data on the remote triggering of the Hokkaido earthquake was sourced from Lin, C. H. (2012). Remote Triggering of the M w 6.9 Hokkaido Earthquake as a Result of the M w 6.6 Indonesian Earthquake on September 11, 2008. <i>Terrestrial, Atmospheric & Oceanic Sciences</i>.
+        Scientific arguments and reasoning referred to throughout were sourced from XXXX ALL THE PAPERS.</p>
     </div>
   </div>
-
-  <div class='features'>
-    <section id='welcome' class='step' step-num='1'>
-      <h3>Welcome</h3>
-      <p>Can one natural disaster influence the risk of another? It's well known that natural disasters
-      can cause others in their immediate vicinity, for instance, hurricanes are often accompanied by flooding,
-      and earthquakes are followed by aftershocks. But what about longer distance interactions? Could one earthquake
-      trigger another on the other side of the world? <a class="btn" href="#open-modal">this opens a modal.</a>
-      </p>
-    </section>
-    <section id='section1' class='step' step-num='2'>
-      <h3>Landers before</h3>
-      <p>Our story begins in California in June of 1992. It was a quiet month; the dots below represent
-      earthquakes recorded in the 10 days from June 18th to June 28th. There were 44 quakes during this time, though most were small
-      and wouldn't have been felt by people. But in the early hours of June 28th, that changed.</p>
-    </section>
-    <section id='section2' class='step' step-num='3'>
-      <h3>Landers mainshock</h3>
-      <p>At 5:00 on the morning of June 28th, a large magnitude 7.3 earthquake struck, waking much of
-      Southern California. The epicenter was located near Landers California, in the Mojave desert. Thanks
-      to the remote location, the damage and loss of life was minimal.</p>
-    </section>
-    <section id='section3' class='step' step-num='4'>
-      <h3>Landers aftershocks</h3>
-      <p>As expected, the mainshock was followed by a smattering of aftershocks which occurred in the immediate vicinity
-      of the mainshock, but what played out over the next ten days was entirely unexpected.</p>
-    </section>
-    <section id='section4' class='step' step-num='5'>
-      <h3>Landers triggered</h3>
-      <p>Survey stations across the Western United States recorded a flurry of seismic activity in the ten days following the
-      Landers earthquake. Seismologists recorded 192 earthquakes outside of the aftershock zone during this time, four times the amount in the 10 days proceeding
-      the Landers quake. Even more surprising was that these earthquakes occurred at great distances from the aftershock zone, with many recorded hundreds or even thousands of miles
-      from the mainshock epicenter.</p>
-    </section>
-    <section id='section5' class='step' step-num='6'>
-      <h3>Chart view</h3>
-      <p>Placing each earthquake as a dot on a timeline before and after the mainshock reveals the striking pattern.
-      There is an especially large burst of activity in the three days following the mainshock, after which things taper off.
-      This event was one of the first reports of "remotely triggered earthquakes" to gain wide recognition. Most scholars were convinced
-      that this increase in seismic activity was triggered by shockwaves sent out from the Landers quake, but many questioned how relevant it was.</p>
-    </section>
-    <section id='section6' class='step' step-num='7'>
-      <h3>Landers above M5</h3>
-      <p>Most earthquakes are small (M2.5 - M4). These quakes are not typically felt by people, and are only recorded by sensitive seismographs.
-      Earthquakes of magnitude 4 - 5 can cause shaking that might knock things off your shelf, but they're unlikely to cause structural damage.
-      What we're really concerned about are quakes greater than M5.5; only one of the 192 triggered earthquakes met this criteria.</p>
-    </section>
-    <section id='section7' class='step' step-num='8'>
-      <h3>Transition</h3>
-      <p>Over the next 15 years there were numerous papers published on remote triggering of earthquakes. It became well accepted
-      that large earthquakes often trigger small earthquakes at long distances, and are usually followed by increases in seismicity. However, the question of
-      whether source events could remotely trigger large earthquakes (M5.5+) remained contentious. Several researchers argued that the largest earthquakes (M8.0+) could
-      remotely trigger M5.5+ quakes, but not all were convinced. Scientists squabbled over statistical details and seismic interpretation until 2012, when we got a unique glimpse
-      into the possibilities of remote triggering.</p>
-    </section>
-    <section id='section8' class='step' step-num='9'>
-      <h3>Sumatra before</h3>
-      <p>XXX in 2012 was an unusually quiet time for large earthquakes. Here we will only consider earthquakes larger than M5.5. In the ten days
-      from XX to YY there were only 5 M5.5+ earthquakes.</p>
-    </section>
-    <section id='section9' class='step' step-num='10'>
-      <h3>Sumatra mainshock</h3>
-      <p>On XXX 2012, a massive M8.6 earthquake struck off the coast of Sumatra. The temblor triggered many aftershocks (not shown here) and initiated
-      tsunami that devastated island nations in Indonesia. This quake was unique for it's size and mechanism. To date, this is the largest ever recorded
-      strike-slip earthquake.</p>
-    </section>
-    <section id='section10' class='step' step-num='11'>
-      <h3>Sumatra triggered</h3>
-      <p>In the ten days following the Sumatra mainshock, 44 earthquakes M5.5+ were recorded. The statistics were clear; this increase of XX times, was highly
-      significant, and most researchers agreed the most likely explanation was remote triggering by the M8.6 Sumatra earthquake. This massive triggering of large
-      earthquakes was unprecedented, and many wondered if the strike-slip mechanism at such a large magnitude was a unique combination that led to this outsized response.</p>
-    </section>
-    <section id='section11' class='step' step-num='12'>
-      <h3>Sumatra strain waves</h3>
-      <p>When earthquakes strike, they send out strain waves that travel through the earth's crust... These waves often propagate out from the mainshock in a '+' pattern
-      meeting at the opposite side of the earth (the antipode). Analysis of the Sumatra quake showed that nearly all of the triggered earthquakes
-      fell within the strain waves from the mainshock.</p>
-    </section>
-    <section id='section12' class='step' step-num='13'>
-      <h3>Bar chart</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </section>
-    <section id='section13' class='step' step-num='14'>
-      <h3>Highlight hotspots</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </section>
-    <section id='section14' class='step' step-num='15'>
-      <h3>Oita mainshock</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </section>
-    <section id='section15' class='step' step-num='16'>
-      <h3>Oita triggered</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </section>
-    <section id='section16' class='step' step-num='17'>
-      <h3>Hokkaido mainshock</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </section>
-    <section id='section17' class='step' step-num='18'>
-      <h3>Hokkaido triggered</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </section>
-
   </div>
-</div>
   <script type="text/javascript">
     //initialize map
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
@@ -333,18 +601,11 @@ small {
         pitch: 60.00
       },
       'section3': {
-        bearing: -44.80,
-        center: [137.553218, 17.956907],
-        zoom: 3.87,
+        bearing: -56,
+        center: [127.178124, 25.431137],
+        zoom: 3,
         speed: 0.7,
-        pitch: 60.00
-      },
-      'section4': {
-        bearing: 0.00,
-        center: [-87.615715, 41.861087],
-        zoom: 15.78,
-        speed: 0.5,
-        pitch: 60.00
+        pitch: 55
       },
     };
 
@@ -451,43 +712,6 @@ small {
       MapboxLayer,
       ArcLayer
     } = deck;
-    //define data for magnitude viz
-    const magData = [{
-        "id": 1,
-        "mag": 3,
-        "size": 5
-      },
-      {
-        "id": 2,
-        "mag": 4,
-        "size": 50
-      },
-      {
-        "id": 3,
-        "mag": 5,
-        "size": 500
-      },
-      {
-        "id": 4,
-        "mag": 6,
-        "size": 5000
-      },
-      {
-        "id": 5,
-        "mag": 7,
-        "size": 50000
-      },
-      {
-        "id": 6,
-        "mag": 8,
-        "size": 500000
-      },
-      {
-        "id": 7,
-        "mag": 9,
-        "size": 5000000
-      }
-    ];
 
     // Deck.gl arc layer with custom shader
     class ArcBrushingLayer extends ArcLayer {
@@ -532,7 +756,7 @@ small {
     }
     //function transition arc opacity from source to target
     function animateArcs(layer) {
-      var coef = 0.001;
+      var coef = 0.0000001;
       const animationInterval = setInterval(() => {
         coef += 0.005;
         if (coef >= 1.0) {
@@ -543,12 +767,13 @@ small {
         });
       }, 5);
     };
+
     function hideArcs(layer) {
-      var coef = 0.001;
-        layer.setProps({
-          coef
-        });
-      };
+      var coef = 0.0000001;
+      layer.setProps({
+        coef
+      });
+    };
     //create new arcs and animate
     function drawArc(data, myId) {
       arcsLayer = new MapboxLayer({
@@ -556,7 +781,7 @@ small {
         id: myId,
         data: data,
         opacity: 1,
-        coef: 0.001,
+        coef: 0.0000001,
         getSourcePosition: d => [d.longitude_source, d.latitude_source],
         getTargetPosition: d => [d.longitude_target, d.latitude_target],
         getSourceColor: source_color,
@@ -565,44 +790,14 @@ small {
       });
       map.addLayer(arcsLayer);
     };
-    function drawArc2(data, myId) {
-      arcsLayer = new MapboxLayer({
-        type: ArcBrushingLayer,
-        id: myId,
-        data: data,
-        opacity: 1,
-        coef: 0.001,
-        getSourcePosition: d => [d.longitude_source, d.latitude_source],
-        getTargetPosition: d => [d.longitude_target, d.latitude_target],
-        getSourceColor: source_color,
-        getTargetColor: target_color,
-        getStrokeWidth: 10
-      });
-      map.addLayer(arcsLayer2);
-    };
-    // function drawArc2(data) {
-    //   arcsLayer = new MapboxLayer({
-    //     type: ArcBrushingLayer,
-    //     id: `deckarcs2`,
-    //     data: data,
-    //     opacity: 1,
-    //     coef: 0.001,
-    //     getSourcePosition: d => [d.longitude_source, d.latitude_source],
-    //     getTargetPosition: d => [d.longitude_target, d.latitude_target],
-    //     getSourceColor: source_color,
-    //     getTargetColor: target_color,
-    //     getStrokeWidth: 10
-    //   });
-    //   map.addLayer(arcsLayer2);
-    // };
 
     var arcsLayer;
-    var arcsLayer2;
+
     //function to draw strain waves
     map.on('load', function() {
       map.addSource('strainWavesDat', {
         type: 'geojson',
-        data: 'https://gist.githubusercontent.com/will-r-chase/72b206dd2ba17889ba98075d693db1bd/raw/57b8465a5e85f103e3f6d163ef2ad6294a229a77/strain_waves.geojson'
+        data: 'https://gist.githubusercontent.com/will-r-chase/72b206dd2ba17889ba98075d693db1bd/raw/cc17e7c23ef33d0c69a43ba9addccab6b2dc1270/strain_waves.geojson'
       });
       map.addLayer({
         "id": "strainWaves",
@@ -614,8 +809,8 @@ small {
           'fill-opacity': 0
         }
       });
-      drawArc(oita, "oita-arcs");
-      //drawArc2(hokkaido, "hokkaido-arcs");
+
+      drawArc(hokkaido, "hokkaido-arcs");
     });
 
     // For each enter step, read and draw data
@@ -631,6 +826,7 @@ small {
         drawPoints(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
       })
     };
+
     function initChart(source1, source2) {
       d3.json(source1, function(err, dataBefore) {
         d3.json(source2, function(err, dataTriggered) {
@@ -641,6 +837,7 @@ small {
         });
       });
     };
+
     function initChartBackwards(source1, source2) {
       d3.json(source1, function(err, dataBefore) {
         d3.json(source2, function(err, dataTriggered) {
@@ -651,6 +848,7 @@ small {
         });
       });
     };
+
     function initChartHighlight(source1, source2) {
       d3.json(source1, function(err, dataBefore) {
         d3.json(source2, function(err, dataTriggered) {
@@ -661,6 +859,7 @@ small {
         });
       });
     };
+
     function exitChartHighlight(source1, source2) {
       d3.json(source1, function(err, dataBefore) {
         d3.json(source2, function(err, dataTriggered) {
@@ -671,6 +870,7 @@ small {
         });
       });
     };
+
     function exitChart(source1, source2) {
       d3.json(source1, function(err, dataBefore) {
         d3.json(source2, function(err, dataTriggered) {
@@ -681,6 +881,7 @@ small {
         });
       });
     };
+
     function initBars(source) {
       d3.csv(source, function(err, data) {
         if (err) console.log(err);
@@ -689,6 +890,7 @@ small {
         drawBars(dataClean);
       });
     };
+
     function initBarsHighlight(source) {
       d3.csv(source, function(err, data) {
         if (err) console.log(err);
@@ -697,6 +899,7 @@ small {
         highlightBars(dataClean);
       });
     };
+
     function initRedrawCircles(source) {
       d3.csv(source, function(err, data) {
         if (err) console.log(err);
@@ -745,6 +948,7 @@ small {
       map.on("move", update);
       map.on("moveend", update);
     }
+
     function drawPoints(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
       // set scale domain
       aScale.domain(domain);
@@ -855,7 +1059,6 @@ small {
         .style("left", width / 40 + "px")
         .style("top", height / 1.55 + "px")
         .style("text-anchor", "left")
-        .style("font-size", "20px")
         .transition()
         .delay(0) //2500
         .duration(2000)
@@ -868,7 +1071,7 @@ small {
         .delay(d => 0 + randNum(0, 100) + d.properties.id_overall * 100) //7000
         .attr("r", 10)
         .style("opacity", 1)
-        .attr("fill", "#373536")
+        .attr("fill", "#872B32")
         .attr("cx", d => timeScaleBefore(d.properties.day))
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
 
@@ -927,7 +1130,6 @@ small {
         .style("left", width / 1.5 + "px")
         .style("top", height / 3.7 + "px")
         .style("text-anchor", "left")
-        .style("font-size", "20px")
         .transition()
         .delay(0) //17500
         .duration(2000)
@@ -940,7 +1142,7 @@ small {
         .delay(d => 0 + randNum(20, 150) + d.properties.id_overall * 30) //20000
         .attr("r", 10)
         .style("opacity", 1)
-        .attr("fill", "#373536")
+        .attr("fill", "#872B32")
         .attr("cx", d => timeScaleTriggered(d.properties.day))
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
 
@@ -954,7 +1156,7 @@ small {
         .selectAll(".landers-before")
         .data(dataBefore.features)
         .attr("r", 10)
-        .attr("fill", d => d.properties.mag > 5 ? "#C3402C" : "#373536") //#DC0505
+        .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#DC0505
         .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
         .attr("cx", d => timeScaleBefore(d.properties.day))
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
@@ -964,7 +1166,7 @@ small {
         .selectAll(".landers-triggered")
         .data(dataTriggered.features)
         .attr("r", 10)
-        .attr("fill", d => d.properties.mag > 5 ? "#C3402C" : "#373536") //#C3402C
+        .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
         .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
         .attr("cx", d => timeScaleTriggered(d.properties.day))
         .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
@@ -978,7 +1180,7 @@ small {
         .transition()
         .delay(300)
         .duration(1000)
-        .attr("fill", d => d.properties.mag > 5 ? "#C3402C" : "#515151") //#C3402C
+        .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
         .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
 
       trigger
@@ -987,7 +1189,7 @@ small {
         .transition()
         .delay(300)
         .duration(1000)
-        .attr("fill", d => d.properties.mag > 5 ? "#C3402C" : "#515151") //#C3402C
+        .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
         .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
     };
 
@@ -998,7 +1200,7 @@ small {
         .transition()
         .delay(700)
         .duration(1000)
-        .attr("fill", "#515151")
+        .attr("fill", "#872B32")
         .style("opacity", 1);
 
       trigger
@@ -1007,7 +1209,7 @@ small {
         .transition()
         .delay(700)
         .duration(1000)
-        .attr("fill", "#515151")
+        .attr("fill", "#872B32")
         .style("opacity", 1);
     };
     //function to draw stacked dot histogram
@@ -1035,11 +1237,6 @@ small {
         .attr("fill", d => colorScale(d.properties.mag));
 
       update();
-      // Update on map interaction
-      //map.on("viewreset", update);
-      //map.on("move", update);
-      //map.on("moveend", update);
-
     };
 
     function drawBars(data) {
@@ -1151,32 +1348,32 @@ small {
         .attr("x", width / 2 - innerRadius / 1.05)
         .attr("y", height / 2 - innerRadius / 1.05);
 
-        var arc = d3.arc()
-          .innerRadius(innerRadius / 1.1)
-          .outerRadius(innerRadius / 1.04)
-          .startAngle(Math.PI);
+      var arc = d3.arc()
+        .innerRadius(innerRadius / 1.1)
+        .outerRadius(innerRadius / 1.04)
+        .startAngle(Math.PI);
 
-        var righthand = svg.append("g")
-          .attr("transform", `translate(${width/2}, ${height/2})`)
-          .append("path")
-          .datum({
-            endAngle: 0
-          })
-          .attr("class", "strain-wave")
-          .style("opacity", 0)
-          .attr("fill", "#83c1c1")
-          .attr("d", arc);
+      var righthand = svg.append("g")
+        .attr("transform", `translate(${width/2}, ${height/2})`)
+        .append("path")
+        .datum({
+          endAngle: 0
+        })
+        .attr("class", "strain-wave")
+        .style("opacity", 0)
+        .attr("fill", "#83c1c1")
+        .attr("d", arc);
 
-        var lefthand = svg.append("g")
-          .attr("transform", `translate(${width/2}, ${height/2})`)
-          .append("path")
-          .datum({
-            endAngle: 2 * Math.PI
-          })
-          .attr("class", "strain-wave")
-          .style("opacity", 0)
-          .attr("fill", "#83c1c1") //#961D72
-          .attr("d", arc);
+      var lefthand = svg.append("g")
+        .attr("transform", `translate(${width/2}, ${height/2})`)
+        .append("path")
+        .datum({
+          endAngle: 2 * Math.PI
+        })
+        .attr("class", "strain-wave")
+        .style("opacity", 0)
+        .attr("fill", "#83c1c1") //#961D72
+        .attr("d", arc);
 
       svg.append("g")
         .append("circle")
@@ -1191,43 +1388,6 @@ small {
         .duration(700)
         .ease(d3.easeElastic)
         .attr("r", 15);
-
-      function tweenPie(b) {
-        //b.innerRadius = 0;
-        var i = d3.interpolate({
-          startAngle: 0,
-          endAngle: 0
-        }, b);
-        return function(t) {
-          return arc(i(t));
-        };
-      }
-
-      //             var arc = d3.data(data)
-      //             .arc()
-      //             .innerRadius(innerRadius)
-      //             .outerRadius(function(d) {
-      //                  return y(d.rel_rate);
-      //                });
-      //
-      //
-      // var arcs = svg.selectAll("g.arc")
-      //     .data(data)
-      //   .enter().append("g")
-      //     .attr("class", "arc");
-
-      // svg.append("g")
-      //   .attr("transform", `translate(${width/2}, ${height/2})`)
-      //   .append("path")
-      //   .attr("class", "strain-wave")
-      //   .attr("opacity", 0.7)
-      //   .attr("fill", "#961D72")
-      //   .attr("d", d3.arc()
-      //     .innerRadius(innerRadius / 1.1)
-      //     .outerRadius(innerRadius / 1.04)
-      //     .startAngle(Math.PI)
-      //     .endAngle(0)
-      //   );
 
       var deadzone = svg.append("g")
         .attr("transform", `translate(${width/2}, ${height/2})`)
@@ -1276,25 +1436,40 @@ small {
           };
         });
 
-        // beforeLabel = d3.select(canvas)
+        // mainshockLabel = d3.select(canvas)
         //   .append("div")
         //   .attr("class", "chart-label")
         //   .html(
-        //     "Earthquakes 10 days before the Landers mainshock"
+        //     "On Jan 28th 1992, a magnitude 7.3 earthquake strikes near Landers, California"
         //   )
         //   .style("position", "absolute")
         //   .style("width", "200px")
         //   .style("opacity", 0)
-        //   .style("left", width / 12 + "px")
-        //   .style("top", height / 1.6 + "px")
+        //   .style("left", width / 2 - 220 + "px")
+        //   .style("top", height / 5.1 + "px")
         //   .style("text-anchor", "left")
-        //   .style("font-size", "20px")
+        //   .style("font-size", "16px")
         //   .transition()
-        //   .delay(0) //2500
+        //   .delay(0) //11000
         //   .duration(2000)
         //   .style("opacity", 1);
+        //
+        // arrow = svg.append("path")
+        //   .attr('marker-end', 'url(#arrowhead)')
+        //   .attr("d", arrowPath)
+        //   .attr("class", "myArrow")
+        //   .style('opacity', 0)
+        //   .style("fill", "none")
+        //   .attr("stroke-width", 1)
+        //   .attr("stroke", "black")
+        //   .transition()
+        //   .delay(0) //12000
+        //   .duration(1500)
+        //   .style('opacity', 1);
+
 
     };
+
     function highlightBars(data) {
       d3.selectAll("g.bar-chart")
         .selectAll("path")
@@ -1320,10 +1495,10 @@ small {
       innerRadius = 190,
         outerRadius = Math.min(width, height) / 2.1;
 
-        // Y scale
-        var y = d3.scaleRadial()
-          .range([innerRadius, outerRadius])
-          .domain([0, d3.max(data, d => d.rel_rate)]);
+      // Y scale
+      var y = d3.scaleRadial()
+        .range([innerRadius, outerRadius])
+        .domain([0, d3.max(data, d => d.rel_rate)]);
 
       svg.append("g")
         .append("circle")
@@ -1334,35 +1509,35 @@ small {
         .attr("fill", "#C3402C") // #E3191C
         .style("opacity", 1);
 
-        yAxis = g => g
-          .attr("text-anchor", "middle")
+      yAxis = g => g
+        .attr("text-anchor", "middle")
+        .call(g => g.append("text")
+          .attr("y", d => -y(y.ticks(5).pop()))
+          .attr("dy", "-0.7em")
+          .text("Relative rate"))
+        .attr("font-size", "16px")
+        .call(g => g.selectAll("g")
+          .data(y.ticks(5).slice(1))
+          .enter().append("g")
+          .call(g => g.append("circle")
+            .attr("class", "bar-axis")
+            .attr("r", y))
           .call(g => g.append("text")
-            .attr("y", d => -y(y.ticks(5).pop()))
-            .attr("dy", "-0.7em")
-            .text("Relative rate"))
-          .attr("font-size", "16px")
-          .call(g => g.selectAll("g")
-            .data(y.ticks(5).slice(1))
-            .enter().append("g")
-            .call(g => g.append("circle")
-              .attr("class", "bar-axis")
-              .attr("r", y))
-            .call(g => g.append("text")
-              .attr("y", d => -y(d))
-              .attr("dy", "0.45em")
-              .attr("stroke", "#fff")
-              .attr("stroke-width", 3)
-              .text(y.tickFormat(5, "s"))
-              .clone(true)
-              .attr("fill", "#000")
-              .attr("font-size", "16px")
-              .attr("stroke", "none")))
+            .attr("y", d => -y(d))
+            .attr("dy", "0.45em")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 3)
+            .text(y.tickFormat(5, "s"))
+            .clone(true)
+            .attr("fill", "#000")
+            .attr("font-size", "16px")
+            .attr("stroke", "none")))
 
-              svg.append("g")
-                .attr("class", "bar-axis")
-                .attr("transform", `translate(${width/2}, ${height/2})`)
-                .style("opacity", 0.9)
-                .call(yAxis);
+      svg.append("g")
+        .attr("class", "bar-axis")
+        .attr("transform", `translate(${width/2}, ${height/2})`)
+        .style("opacity", 0.9)
+        .call(yAxis);
 
     };
 
@@ -1419,18 +1594,10 @@ small {
 
     function showMap() {
       setMapOpacity(1);
-      // Enable map interaction
-      map.doubleClickZoom.enable();
-      map.scrollZoom.enable();
-      map.dragPan.enable();
     }
 
     function hideMap() {
       setMapOpacity(0.1);
-      // Disable map interaction
-      map.doubleClickZoom.disable();
-      map.scrollZoom.disable();
-      map.dragPan.disable();
     }
 
 
@@ -1490,27 +1657,17 @@ small {
         if (response.element.attributes['step-num'].value === '14') {
           initBarsHighlight(bars_url);
         };
-        if (response.element.attributes['step-num'].value === '15') {
-          map.flyTo(chapters['section2']);
-          initPoints(oita_mainshock_url, mainshockOita, "oita-mainshock", [2.5, 8], [0, 4000], 3000, d3.easeElastic,
-            1000); //range [0,4000] when not debugging
-        };
-        if (response.element.attributes['step-num'].value === '16') {
-          initPoints(oita_triggered_url, triggeredOita, "oita-triggered", [2.5, 8], [0, 4000], 1500, d3.easeElastic,
-            1000); //range [0,4000] when not debugging
-          animateArcs(arcsLayer);
-        };
         if (response.element.attributes['step-num'].value === '17') {
           hideEl(".oita-triggered,.oita-mainshock");
-          hideArcs(arcsLayer);
+          //hideArcs(arcsLayer);
           map.flyTo(chapters['section3']);
           initPoints(hokkaido_mainshock_url, mainshockHokkaido, "hokkaido-mainshock", [2.5, 8], [0, 4000], 3000, d3.easeElastic,
             1000); //range [0,4000] when not debugging
         };
         if (response.element.attributes['step-num'].value === '18') {
-          initPoints(hokkaido_triggered_url, triggeredHokkaido, "hokkaido-triggered", [2.5, 8], [0, 4000], 3000, d3.easeElastic,
+          initPoints(hokkaido_triggered_url, triggeredHokkaido, "hokkaido-triggered", [2.5, 8], [0, 4000], 1500, d3.easeElastic,
             1000); //range [0,4000] when not debugging
-          //animateArcs(arcsLayer2);
+          animateArcs(arcsLayer);
         };
 
       };
@@ -1536,7 +1693,7 @@ small {
         }
         if (response.element.attributes['step-num'].value === '12') {
           map.flyTo(chapters['welcome'])
-          eraseData(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
+          //eraseData(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
           showMap();
           showEl(".sumatra-before", 0.3);
           showEl(".sumatra-mainshock,.sumatra-triggered", 0.7)
@@ -1549,11 +1706,7 @@ small {
           showEl(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
           hideMap();
         };
-        if (response.element.attributes['step-num'].value === '16') {
-          map.flyTo(chapters['section2'])
-          showEl(".oita-triggered,.oita-mainshock")
-          animateArcs(arcsLayer)
-        };
+
       }
     };
 
@@ -1622,19 +1775,16 @@ small {
         if (response.element.attributes['step-num'].value === '11') {
           eraseData(".sumatra-triggered");
         };
-        if (response.element.attributes['step-num'].value === '15') {
-          eraseData(".oita-mainshock");
+        if (response.element.attributes['step-num'].value === '13') {
+          eraseData(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone");
         };
-        if (response.element.attributes['step-num'].value === '16') {
-          eraseData(".oita-triggered");
-          hideArcs(arcsLayer);
-        };
+
         if (response.element.attributes['step-num'].value === '17') {
           eraseData(".hokkaido-mainshock");
         };
         if (response.element.attributes['step-num'].value === '18') {
           eraseData(".hokkaido-triggered");
-          //hideArcs(arcsLayer);
+          hideArcs(arcsLayer);
         };
       }
     }
