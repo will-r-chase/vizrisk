@@ -10,18 +10,16 @@
   <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0-beta.1/mapbox-gl.css">
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
-  <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+SC|Alegreya+Sans|Playfair+Display&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
   <script src="https://unpkg.com/scrollama"></script>
-  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Fira+Sans|Open+Sans|Source+Sans+Pro&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+SC|Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
 
   <style media="screen">
     body {
       margin: 0;
       padding: 0;
     }
+
     #map {
       position: fixed;
       left: 35%;
@@ -29,6 +27,7 @@
       bottom: 0;
       width: 65%;
     }
+
     svg {
       position: absolute;
       width: 100%;
@@ -55,6 +54,7 @@
 
     section:last-child {
       border-bottom: none;
+      margin-bottom: 300px;
     }
 
     .features {
@@ -75,6 +75,12 @@
     }
 
     .myArrow,
+    #arrowhead {
+      fill: none;
+      stroke: #7E7D7E;
+    }
+
+    .bar-arrow,
     #arrowhead {
       fill: none;
       stroke: #7E7D7E;
@@ -102,7 +108,12 @@
       font-family: 'Source Sans Pro', sans-serif;
       font-size: 18px;
     }
+
     .mainshock-label {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    .bar-label {
       font-family: 'Source Sans Pro', sans-serif;
     }
 
@@ -169,24 +180,18 @@
       color: #872B32;
     }
 
-    /* Demo Styles */
-    a {
-      color: inherit;
-    }
-
     .container {
       display: grid;
       justify-content: center;
       align-items: center;
       /* height: 100vh; */
     }
+
     #intro {
       background:
-        linear-gradient(
-          to left,
+        linear-gradient(to left,
           rgba(0, 0, 0, 0),
-          rgba(0, 0, 0, 0.7)
-        ),
+          rgba(0, 0, 0, 0.7)),
         url(chile_eq.jpg);
       -webkit-background-size: cover;
       -moz-background-size: cover;
@@ -197,13 +202,13 @@
       position: relative;
       padding-top: 1%;
       padding-left: 5%;
-      padding-right: 5%
-      padding-bottom: 1%;
+      padding-right: 5% padding-bottom: 1%;
       color: #fafafa;
       /* background: #fafafa; */
       opacity: 1;
       z-index: 2;
     }
+
     #footer {
       font-family: 'Alegreya', serif;
       font-size: 20px;
@@ -211,17 +216,18 @@
       position: relative;
       padding-top: 1%;
       padding-left: 5%;
-      padding-right: 5%
-      padding-bottom: 1%;
+      padding-right: 5% padding-bottom: 1%;
       background: #fafafa;
       opacity: 1;
       z-index: 2;
     }
+
     #outro {
       box-sizing: border-box;
       padding-left: 25vw;
       padding-right: 25vw;
     }
+
     #methods {
       box-sizing: border-box;
       padding: 25px;
@@ -232,37 +238,44 @@
       margin-top: 100px;
       color: #2A2A2A;
     }
+
     #methods-title {
       font-family: 'Alegreya SC', serif;
       font-size: 25px;
       letter-spacing: 0.08em;
       color: #000;
     }
+
     .main {
       position: relative;
       z-index: 1;
     }
+
     .sticky {
       position: -webkit-sticky;
       position: sticky;
       top: 0;
     }
+
     .title {
       margin-top: 7vh;
       font-size: 40px;
       line-height: 1.45em;
       letter-spacing: 0.1em;
     }
-    .xtra-big{
+
+    .xtra-big {
       font-size: 60px;
       font-weight: 800;
       line-height: 1.5em;
     }
+
     .small {
       margin-top: 15vh;
       font-size: 20px;
       font-weight: lighter;
     }
+
     .modal-title {
       font-family: 'Alegreya SC', serif;
       font-size: 27px;
@@ -271,28 +284,34 @@
       color: #000;
     }
 
+    .mobile {
+      position: relative;
+      padding: 5%;
+      width: 80%;
+      margin-left: 10%;
+      margin-top: 50%;
+      font-family: 'Raleway', sans-serif;
+      font-size: 30px;
 
-
+    }
   </style>
 </head>
 
 <body>
   <div id="intro">
     <div class="title">
-    <div class="xtra-big">CAN ONE</br>
-    EARTHQUAKE</br></div>
-    <div class="small">TRIGGER ANOTHER</br></div>
-    ON THE</br>
-    OTHER SIDE OF</br>
-    THE WORLD?</br>
-  </div>
+      <div class="xtra-big">CAN ONE</br>
+        EARTHQUAKE</br></div>
+      <div class="small">TRIGGER ANOTHER</br></div>
+      ON THE</br>
+      OTHER SIDE OF</br>
+      THE WORLD?</br>
+    </div>
     </br></br></br></br>
     </br></br></br></br>
     <h1>by Will Chase</h1>
-  </br></br>
-    <div>insert socials here</div>
 
-</div>
+  </div>
   <div class="main">
     <div id="map"></div>
     <div class="container">
@@ -300,10 +319,10 @@
         <div>
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">Hello, this is an info box!</div>
-          <div>Whenever you see something that <div class="btn">looks like this</div>, click it to open a
-          popup that will contain explanations of jargon or helpful info. For example,
-          did you know you can click on the ‘close’ button in the top left of this box to close it?
-          See, I told you, helpful!</div>
+          <div>Whenever you see something that <span class="btn">looks like this</span>, click it to open a
+            popup that will contain explanations of jargon or helpful info. For example,
+            did you know you can click on the ‘close’ button in the top left of this box to close it?
+            See, I told you, helpful!</div>
         </div>
       </div>
     </div>
@@ -313,12 +332,12 @@
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">magnitude</div>
           <div>Magnitude refers to the strength of an earthquake. Magnitude is reported on the Richter Magnitude Scale
-          which ranges from 1 to 10 (M1.0–M10). Technically, today's seismologists measure earthquakes with the Moment
-          Magnitude Scale, but these values are converted to the Richter Scale for reporting to the public. The Richter
-          Scale is logarithmic, meaning that each increase of one magnitude denotes a ten-fold increase in strength
-          (ie. a M8.0 earthquake is 10 times stronger than a M7.0, or 1000 times stronger than a M5.0).
-          Earthquakes M1.0–M5.0 are quite small, and rarely cause damage; M5.0 - M6.0 are moderate and may damage
-          flimsy structures; M7.0–M9.0 are strong to catastrophic and can damage or entirely destroy structures. </div>
+            which ranges from 1 to 10 (M1.0–M10). Technically, today’s seismologists measure earthquakes with the Moment
+            Magnitude Scale, but these values are converted to the Richter Scale for reporting to the public. The Richter
+            Scale is logarithmic, meaning that each increase of one magnitude denotes a ten-fold increase in strength
+            (ie. a M8.0 earthquake is 10 times stronger than a M7.0, or 1000 times stronger than a M5.0).
+            Earthquakes M1.0–M5.0 are quite small, and rarely cause damage; M5.0 - M6.0 are moderate and may damage
+            flimsy structures; M7.0–M9.0 are strong to catastrophic and can damage or entirely destroy structures. </div>
         </div>
       </div>
     </div>
@@ -328,8 +347,8 @@
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">mainshock</div>
           <div>The mainshock is the largest earthquake in a sequence. Earthquakes often occur in groups, with seismic activity
-          over a short period of time. The mainshock is often proceeded be earthquakes (foreshocks), and almost always followed
-          by earthquakes (aftershocks).</div>
+            over a short period of time. The mainshock is often proceeded be earthquakes (foreshocks), and almost always followed
+            by earthquakes (aftershocks).</div>
         </div>
       </div>
     </div>
@@ -339,8 +358,8 @@
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">aftershock</div>
           <div>Aftershocks are smaller earthquakes that follow in the same vicinity of a mainshock. Generally, aftershocks are
-          limited to within two rupture lengths of the mainshock (the aftershock zone). Large mainshocks can be followed by thousands of aftershocks, which
-          can be very large, but decay in strength and number over time.</div>
+            limited to within two rupture lengths of the mainshock (the aftershock zone). Large mainshocks can be followed by thousands of aftershocks, which
+            can be very large, but decay in strength and number over time.</div>
         </div>
       </div>
     </div>
@@ -350,7 +369,7 @@
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">remotely triggered earthquakes</div>
           <div>Remotely triggered earthquakes are earthquakes following a large mainshock that occur outside of the aftershock zone.
-           as time and distiance from the mainshock increase, it can be more and more difficult to classify remotely triggered earthquakes.</div>
+            As time and distance from the mainshock increase, it becomes more difficult to classify remotely triggered earthquakes.</div>
         </div>
       </div>
     </div>
@@ -359,9 +378,9 @@
         <div>
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">seismograph</div>
-          <div>A seismograph is an instrument to detect movements in the earth's crust. It generally consists of a measurement device
-           attached to a recording device. Earthquakes are detected using networks of seismographs that are arrayed worldwide. These devices
-           can be quite sensitive, but their ability to detect earthquakes depend on the proximity of the quake, and seismic noise in the region.</div>
+          <div>A seismograph is an instrument to detect movements in the earth’s crust. It generally consists of a measurement device
+            attached to a recording device. Earthquakes are detected using networks of seismographs that are arrayed worldwide. These devices
+            can be quite sensitive, but their ability to detect earthquakes depend on the proximity of the quake and the seismic noise in the region.</div>
         </div>
       </div>
     </div>
@@ -380,10 +399,9 @@
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">strike-slip earthquake</div>
           <div>Earthquakes occur at faults, which are zone of fracture between two blocks of rock. During an earthquake, the rock
-          on one side slips relative to the other. The direction and type of slippage determines the type of earthquake. Faults where
-          the rocks move upward or downward are called dip-slip. If the block above the fault has moved downward relative to the block below
-          it is called a "normal" fault. If the upper block, above the fault plane, moves up and over the lower block, it is called
-          a thrust fault. At strike-slip faults, blocks of rock move horizontally to each other. See <a class="btn" href="https://www.usgs.gov/faqs/what-a-fault-and-what-are-different-types?qt-news_science_products=0#qt-news_science_products" target="_blank">these animations from the USGS.</a></div>
+            on one side slips relative to the other. The direction and type of slippage determines the type of earthquake. Faults where
+            the rocks move upward or downward are called dip-slip. At strike-slip faults, blocks of rock move horizontally to each other. See <a class="btn"
+              href="https://www.usgs.gov/faqs/what-a-fault-and-what-are-different-types?qt-news_science_products=0#qt-news_science_products" target="_blank">these animations from the USGS.</a></div>
         </div>
       </div>
     </div>
@@ -393,11 +411,11 @@
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">seismic waves</div>
           <div>When an earthquake strikes, it sends out energy in the form of seismic waves. Seismic waves come in two flavors:
-          body waves, which move through the inside of the earth, and surface waves which move along the surface of the earth. Within
-          body waves, there are P waves, which move parallel to the wave direction, and S waves which move perpendicular to the wave direction
-          Within surface waves there are Love waves, which cause the ground to move side-to-side, perpendicularly to the wave direction, and there are
-          Rayleigh waves, which cause the ground to move up and down like rolling ocean waves. Of these classes, Love waves are especially
-          destructive to structures.</div>
+            body waves, which move through the inside of the earth, and surface waves, which move along the surface of the earth. Within
+            body waves, there are P waves, which move parallel to the wave direction, and S waves, which move perpendicular to the wave direction.
+            Within surface waves there are Love waves, which cause the ground to move side-to-side, perpendicularly to the wave direction, and there are
+            Rayleigh waves, which cause the ground to move up and down like rolling ocean waves. Of these classes, Love waves are especially
+            destructive to structures.</div>
         </div>
       </div>
     </div>
@@ -406,8 +424,8 @@
         <div>
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">antipode</div>
-          <div>The antipode refers to the other side of the globe from a point. Imagine you were standing at some location
-          on the earth. If you drilled a hole straight through the earth from that point, you would emerge at the antipode to that location.</div>
+          <div>The antipode refers to the other side of the globe from a reference location. Imagine you were standing at some location
+            on the earth. If you drilled a hole straight through the earth from that point, you would emerge at the antipode to your original location.</div>
         </div>
       </div>
     </div>
@@ -416,8 +434,9 @@
         <div>
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">degrees</div>
-          <div>This study sectioned the globe into discs width width of 5 degrees each. Degrees here refers to the angle around a circle (the globe).
-          The study considers relative rates across 180 degrees on each side of a mainshock.</div>
+          <div>This study sectioned the globe into discs of ten degrees in width and calculated the number of earthquakes in each slice as a rolling average. The values for the +/- five degree increments
+            can then be tallied, which is what is represented by the bars in the circular plot. Degrees here refers to the angle around a circle (the globe).
+            The study considers relative rates across 180 degrees on each side of a mainshock (adding up to 360 degrees, which encompases the whole globe).</div>
         </div>
       </div>
     </div>
@@ -426,16 +445,15 @@
         <div>
           <a href="#close" title="Close" class="modal-close">Close</a>
           <div class="modal-title">relative rate</div>
-          <div>The realtive rate refers to the rate of earthquakes over the three days following a mainshock, compared to the historical average.
-          A relative rate below one means fewer earthquakes occurred in this period than historically, whereas a realative rate above one indicates
-          an increase in earthquakes.</div>
+          <div>The relative rate refers to the rate of earthquakes over the three days following a mainshock, compared to the historical average.
+            A relative rate below one means fewer earthquakes occurred in this period than historically, whereas a relative rate above one indicates
+            an increase in earthquakes.</div>
         </div>
       </div>
     </div>
 
     <div class='features'>
       <section id='welcome' class='step' step-num='1'>
-        <h3>Welcome</h3>
         <p>Can one natural disaster influence the risk of another? It's well known that natural disasters
           can cause others in their immediate vicinity, for instance, hurricanes are often accompanied by flooding,
           and earthquakes are followed by aftershocks. But what about longer distance interactions? Could one earthquake
@@ -443,45 +461,45 @@
         </p>
       </section>
       <section id='section1' class='step' step-num='2'>
-        <h3>Landers before</h3>
+
         <p>Our story begins in California in June of 1992. The dots below represent
-          earthquakes recorded in the ten days from June 18th to June 28th. Their size and color correspond to their <a class="btn" href="#mag-modal">magnitude</a>;
+          earthquakes recorded in the ten days from June 18th to June 28th. Their size and color correspond to their <a class="btn" href="#mag-modal">magnitude</a>:
           larger earthquakes are bigger and more red. There were 44 quakes during these ten days, though most were small
-          and wouldn't have been felt by people. But in the early hours of June 28th, that changed.</p>
+          and wouldn’t have been felt by people. But in the early hours of June 28th, that changed.</p>
       </section>
       <section id='section2' class='step' step-num='3'>
-        <h3>Landers mainshock</h3>
-        <p>At 5:00 on the morning of June 28th, a large magnitude 7.3 earthquake struck, waking much of
-          Southern California. The epicenter was located near Landers California, in the Mojave desert. Thanks
+
+        <p>At 5:00 on the morning of June 28th, a magnitude 7.3 earthquake struck, waking much of
+          Southern California. The epicenter was located near Landers California, in the Mojave Desert. Thanks
           to the remote location, the damage and loss of life was minimal.</p>
       </section>
       <section id='section3' class='step' step-num='4'>
-        <h3>Landers aftershocks</h3>
+
         <p>As expected, the <a class="btn" href="#mainshock-modal">mainshock</a> was followed by a smattering of <a class="btn" href="#aftershock-modal">aftershocks</a> which occurred in the immediate vicinity
           of the mainshock, but what played out over the next ten days was entirely unexpected.</p>
       </section>
       <section id='section4' class='step' step-num='5'>
-        <h3>Landers triggered</h3>
+
         <p>Survey stations across the Western United States recorded a flurry of seismic activity in the ten days following the
-          Landers earthquake. Seismologists recorded 192 earthquakes outside of the aftershock zone during this time, four times the amount in the ten days proceeding
+          Landers earthquake. Seismologists recorded 192 earthquakes outside of the aftershock zone during this time—four times the amount in the ten days proceeding
           the Landers quake. Even more surprising was that these earthquakes occurred at great distances from the aftershock zone, with many recorded hundreds or even thousands of miles
           from the mainshock epicenter.</p>
       </section>
       <section id='section5' class='step' step-num='6'>
-        <h3>Chart view</h3>
+
         <p>Placing each earthquake as a dot on a timeline before and after the mainshock reveals the striking pattern.
           There is an especially large burst of activity in the three days following the mainshock, after which things taper off.
           This event was one of the first reports of <a class="btn" href="#triggered-modal">remotely triggered earthquakes</a> to gain wide recognition. Most scholars were convinced
           that this increase in seismic activity was triggered by energy sent out from the Landers quake, but many questioned how relevant it was.</p>
       </section>
       <section id='section6' class='step' step-num='7'>
-        <h3>Landers above M5</h3>
-        <p>Most earthquakes are small (M2.5-M4). These quakes are not typically felt by people, and are only recorded by sensitive <a class="btn" href="#seismograph-modal">seismographs</a>.
-          Earthquakes of magnitude 4-5 can cause shaking that might knock things off your shelf, but they're unlikely to cause structural damage.
-          What we're really concerned about are quakes greater than M5.5; only one of the 192 earthquakes following the Landers mainshock met this criteria.</p>
+
+        <p>Most earthquakes are small (M2.5–M4.0). These quakes are not typically felt by people, and are only recorded by sensitive <a class="btn" href="#seismograph-modal">seismographs</a>.
+          Earthquakes of magnitude 4.0–5.0 can cause shaking that might knock things off your shelf, but they’re unlikely to cause structural damage.
+          What we’re really concerned about are quakes greater than M5.5; only one of the 192 earthquakes following the Landers mainshock met this criterion.</p>
       </section>
       <section id='section7' class='step' step-num='8'>
-        <h3>Transition</h3>
+
         <p>Over the next 15 years there were numerous papers published on remote triggering of earthquakes. It became well accepted
           that large earthquakes often trigger small earthquakes at long distances, and are usually followed by increases in seismicity. However, the question of
           whether <a class="btn" href="#source-modal">source events</a> could remotely trigger large earthquakes (M5.5+) remained contentious. Several researchers argued that the largest earthquakes (M8.0+) could
@@ -489,242 +507,250 @@
           into the possibilities of remote triggering.</p>
       </section>
       <section id='section8' class='step' step-num='9'>
-        <h3>Sumatra before</h3>
-        <p>The spring of 2012 was an unusually quiet time for large earthquakes. Here we will only consider earthquakes larger than M5.5. In the ten days
-          from April 1st to April 11th there were only 5 M5.5+ earthquakes.</p>
+
+        <p>The spring of 2012 was an unusually quiet time for large earthquakes. In the ten days
+          from April 1st to April 11th there were only five M5.5+ earthquakes. Note that from here on we will only consider earthquakes larger than M5.5.</p>
       </section>
       <section id='section9' class='step' step-num='10'>
-        <h3>Sumatra mainshock</h3>
-        <p>On the afternoon of April 11th 2012, a massive M8.6 earthquake struck off the coast of Sumatra. The temblor triggered many aftershocks (not shown here) and initiated
-          tsunami that devastated island nations in Indonesia. This quake was unique for it's size and mechanism. To date, this is the largest ever recorded
+
+        <p>On the afternoon of April 11th 2012, a massive M8.6 earthquake struck off the coast of Sumatra. The temblor triggered many aftershocks (not shown here)
+          . This quake was unique for its size and mechanism. To date, this is the largest ever recorded
           <a class="btn" href="#strike-modal">strike-slip earthquake</a>.</p>
       </section>
       <section id='section10' class='step' step-num='11'>
-        <h3>Sumatra triggered</h3>
-        <p>In the ten days following the Sumatra mainshock, 44 earthquakes M5.5+ were recorded. The statistics were clear; this nine-fold increase was highly
-          significant, and most researchers agreed the most likely explanation was remote triggering by the M8.6 Sumatra earthquake. This massive triggering of large
+
+        <p>In the ten days following the Sumatra mainshock, 44 earthquakes M5.5+ were recorded. The statistics were clear: this nine-fold increase was highly
+          significant, and most researchers agreed the likely explanation was remote triggering by the M8.6 Sumatra earthquake. This massive triggering of large
           earthquakes was unprecedented, and many wondered if the strike-slip mechanism at such a large magnitude was a unique combination that led to this outsized response.</p>
       </section>
       <section id='section11' class='step' step-num='12'>
-        <h3>Sumatra strain waves</h3>
-        <p>When earthquakes strike, they send out <a class="btn" href="#waves-modal">seismic waves</a> that travel through the earth's crust... These waves often propagate out from the mainshock in a '+' pattern
+
+        <p>When earthquakes strike, they send out <a class="btn" href="#waves-modal">seismic waves</a> that travel through the earth’s crust. These waves often propagate out from the mainshock in a '+' pattern
           meeting at the opposite side of the earth (the <a class="btn" href="#antipode-modal">antipode</a>). Analysis of the Sumatra quake showed that nearly all of the triggered earthquakes
-          fell within the strain waves from the mainshock.</p>
+          fell within the seismic waves from the mainshock.</p>
       </section>
       <section id='section12' class='step' step-num='13'>
-        <h3>Bar chart</h3>
+
         <p>The 2012 Sumatra quake showed that it was possible for a large earthquake to trigger other large earthquakes on the other side of the world, but the question remained: how common was
-        this phenomenon? Many argued that the Sumatra quake was an outlier, and rigorous statisical analysis was needed to prove otherwise. Recently, a small group of researchers at
-        Oregon State University carried out an analysis of 47 years of earthquake data to look for statistical evidence of remote earthquake triggering. Their method was to take each large mainshock (M7+)
-        and then divide the globe into slices of 5 <a class="btn" href="#degrees-modal">degrees</a> each emanating outwards from the mainshock (the 30 degrees surrounding the mainshock is disregarded as it was already known to have elevated earthquake levels).
-        For each slice, they compared the rate of M5.5+ earthquakes in the three days following the
-        mainshock to a historical average to determine a <a class="btn" href="#rate-modal">relative rate</a> of earthquakes.</p>
+          this phenomenon? Many argued that the Sumatra quake was an outlier, and rigorous statistical analysis was needed to prove otherwise. Recently, a small group of researchers at
+          Oregon State University carried out an analysis of 47 years of earthquake data to look for statistical evidence of remote earthquake triggering. Their method took each large mainshock (M7.0+)
+          and then divided the globe into slices of ten <a class="btn" href="#degrees-modal">degrees</a> each emanating outward from the mainshock (the 30 degrees surrounding the mainshock was disregarded as it was already known to have elevated
+          earthquake levels).
+          For each slice, they compared the rate of M5.0+ earthquakes in the three days following the
+          mainshock to a historical average to determine a <a class="btn" href="#rate-modal">relative rate</a> of earthquakes.</p>
       </section>
       <section id='section13' class='step' step-num='14'>
-        <h3>Highlight hotspots</h3>
-        <p>The researchers found that in the three days following the largest earthquakes (M8+), the rate of M5.5+ earthquakes at certain locations was elevated as much as twice the average.
-        Two main regions--around 60 degrees and in the 30 degrees surrounding the antipode--have significantly elevated rates. The area around the antipode is particularly intriguing, as that is
-        typically where strain waves from the mainshock converge. Although suggestive, skeptics may argue that these results merely show a correlation--without causation--between large mainshocks and elevated M5.5+
-        quakes. However, there have been a handful of documented cases of remote triggering of large quakes with a demonstrated seismic mechanism that more convincingly shows causation.</p>
+
+        <p>The researchers found that in the three days following the largest earthquakes (M8.0+), the rate of M5.5+ earthquakes at certain locations was elevated as much as twice the average.
+          Two main regions—around 80 degrees and in the 30 degrees surrounding the antipode—have significantly elevated rates. The area around the antipode is particularly intriguing, as that is
+          typically where seismic waves from the mainshock converge. Although suggestive, skeptics may argue that these results merely show a correlation—without causation—between large mainshocks and elevated rates of M5.5+
+          quakes. However, there have been a handful of documented cases of remote triggering of large quakes with a demonstrated seismic mechanism that more convincingly show causation.</p>
       </section>
       <section id='section16' class='step' step-num='17'>
-        <h3>Hokkaido mainshock</h3>
-        <p>On September 11th 2008, a M6.6 earthquake struck off the coast of Halmahera, Indonesia. The quake sent strain waves out towards Japan...</p>
+
+        <p>On September 11th 2008, a M6.6 earthquake struck off the coast of Halmahera, Indonesia. The quake sent seismic waves out towards Japan...</p>
       </section>
       <section id='section17' class='step' step-num='18'>
-        <h3>Hokkaido triggered</h3>
+
         <p>Twenty-one minutes after the Papua New Guinea mainshock, a M6.9 eathquake was recorded off the Eastern coast of Hokkaido, Japan. The Hokkaido quake
-        hit mere seconds after the strain waves from the Papua New Guinea mainshock landed. Detailed seismic analysis showed convincingly that the Hokkaido quake
-        was directly triggered by the strain waves from the Papua New Guinea quake. Though this is perhaps the most compelling example, there have been a handful of other studies
-        demonstrating similar results of direct remote triggering via a seismic mechanism.</p>
+          hit mere seconds after the seismic waves from the Papua New Guinea mainshock landed. Detailed analysis showed that the Hokkaido quake
+          was directly triggered by the seismic waves from the Papua New Guinea quake. Though this is perhaps the most compelling example, there have been a handful of other studies
+          demonstrating similar results of direct remote triggering via a seismic mechanism.</p>
       </section>
 
     </div>
     <div id="footer">
-    <div id="outro">
-      <p>So, what does all of this mean for helping to predict earthquake risk? We've now seen that large earthquakes trigger hundreds to thousands of smaller earthquakes at great distances beyond the traditional aftershock zone. This finding is well accepted,
-      though the significance of these small triggered quakes is unclear. It's possible that these quakes can alter earthquake risk by either relieving or transferring stress in faults where they strike, but
-      this is poorly understood and more research is needed. The more relevant finding is that the largest earthquakes can trigger other large earthquakes at remote distances. Importantly, we've seen that
-      the triggered quakes are most likely to strike in the path of the mainshock strain waves. Since the strain waves converge at the antipode, this means that regions directly opposite a large mainshock should be
-      on high alert for at least three days, after which the relative risk reduces. Particularly concerning, is that some studies have noted that remotely triggered quakes can occur in areas that are not considered fault zones, meaning
-      they are less prepared and thus at higher risk of damage to property and to people. However, many scientist still question how common remote triggering of large earthquakes is, and the literature in this area
-      remains in disagreement. It is crucial that we devote more research on the seismic mechanisms involved, so that we may better
-      predict where and when risk of remotely triggered quakes is greatest. For example, why were so many large earthquakes triggered by the 2012 Sumatra earthquake? Was the strike-slip fracture mechanism a factor in that
-      case? Some have also argued that there are periods of quiesence before and/or after large mainshocks that cause remote triggering--a question that deserves attention. Ultimately more research is needed to determine
-      the details, exact risk, and likelihood, but given the evidence so far, next time I see a big earthquake in the news, I'll certainly be on the lookout to see if it's on the other side of the world as me--something that once may have been reassuring, now concerning.
-    </p>
-    </div>
+      <div id="outro">
+        <p>So, what does all of this mean for helping to predict earthquake risk? We’ve now seen that large earthquakes trigger hundreds to thousands of smaller earthquakes at great distances beyond the traditional aftershock zone. This finding is
+          well accepted,
+          though the significance of these small triggered quakes is unclear. It’s possible that these quakes can alter earthquake risk by either relieving or transferring stress in faults where they strike, but
+          this is poorly understood and more research is needed. The more relevant finding is that the largest earthquakes can trigger other large earthquakes at remote distances. Importantly, we’ve seen that
+          the triggered quakes are most likely to strike in the path of the mainshock seismic waves. Since the seismic waves converge at the antipode, this means that regions directly opposite a large mainshock should be
+          on high alert for at least three days, after which the relative risk reduces. Particularly concerning, is that some studies have noted that remotely triggered quakes can occur in areas that are not considered fault zones, meaning
+          they are less prepared and thus at higher risk of damage to property and to people.</p>
+        <p>However, many scientist still question how common remote triggering of large earthquakes is, and the literature in this area
+          remains in disagreement. It is crucial that we devote more research on the seismic mechanisms involved, so that we may better
+          predict where and when risk of remotely triggered quakes is greatest. For example, why were so many large earthquakes triggered by the 2012 Sumatra earthquake? Was the strike-slip fracture mechanism a factor in that
+          case? Some have also noted periods of quiesence before and/or after large mainshocks, arguing that the stress buildup and release—like an elastic band—may be important in predicting remote triggering—a question that deserves further
+          attention. Ultimately more research is needed to determine
+          the details, exact risk, and likelihood of these events, but given the evidence so far, next time I see a big earthquake in the news, I’ll be on the lookout to see if it’s on the other side of the world as me—something that once may have
+          been reassuring, now concerning.
+        </p>
+      </div>
       <div id="methods">
         <div id="methods-title">Methods</div>
         <p>For the Landers and Sumatra earthquakes, data was retrieved from the USGS Earthquake Catalog for ten days before and after the mainshock. The Landers
-        data included all earthquakes greater than M2.5, and was limited to the Western United States. The Sumatra data was limited to M5.5+ earthquakes, and was
-        collected worldwide. For the Landers and Sumatra data, aftershocks and foreshocks were considered as any quake occurring within 2 rupture lengths of the mainshock,
-        and were excluded from all designations of earthquakes ten days before or after the mainshock. Analysis of the relative rate of M5.5+ earthquakes following large earthquakes
-        was based on O’Malley, R. T., Mondal, D., Goldfinger, C., & Behrenfeld, M. J. (2018). Evidence of systematic triggering at teleseismic distances following large earthquakes. <i>Scientific reports</i>. and was kindly provided by Mr. Robert O'Malley.
-        Data on the remote triggering of the Hokkaido earthquake was sourced from Lin, C. H. (2012). Remote Triggering of the M w 6.9 Hokkaido Earthquake as a Result of the M w 6.6 Indonesian Earthquake on September 11, 2008. <i>Terrestrial, Atmospheric & Oceanic Sciences</i>.
-        Scientific arguments and reasoning referred to throughout were sourced from XXXX ALL THE PAPERS.</p>
+          data included all earthquakes greater than M2.5, and was limited to the Western United States. The Sumatra data was limited to M5.5+ earthquakes, and was
+          collected worldwide. For the Landers and Sumatra data, aftershocks and foreshocks were considered as any quake occurring within 2 rupture lengths of the mainshock,
+          and were excluded from all designations of earthquakes ten days before or after the mainshock. Analysis of the relative rate of M5.5+ earthquakes following large earthquakes
+          was based on O’Malley, R. T., Mondal, D., Goldfinger, C., & Behrenfeld, M. J. (2018). Evidence of systematic triggering at teleseismic distances following large earthquakes. <i>Scientific reports</i>. and was kindly provided by Mr. Robert
+          O'Malley.
+          Data on the remote triggering of the Hokkaido earthquake was sourced from Lin, C. H. (2012). Remote Triggering of the M w 6.9 Hokkaido Earthquake as a Result of the M w 6.6 Indonesian Earthquake on September 11, 2008. <i>Terrestrial,
+            Atmospheric & Oceanic Sciences</i>.</p>
+      </div>
     </div>
   </div>
-  </div>
   <script type="text/javascript">
-    //initialize map
-    mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
-    let map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/wchase14/cjwh8fgh00omd1clb4krxzcxj',
-      center: [11.634, 25.448],
-      zoom: 1.1,
-      interactive: false
-    });
-    //for polygons
-    //area for mapbox fly-tos
-    let chapters = {
-      'welcome': {
-        bearing: 0,
+    let small_screen = document.documentElement.clientWidth < 1000 ? true : false
+    if (!small_screen) {
+      //initialize map
+      mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
+      let map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/wchase14/cjwh8fgh00omd1clb4krxzcxj',
         center: [11.634, 25.448],
         zoom: 1.1,
-        speed: 0.6,
-        pitch: 0
-      },
-      'section1': {
-        bearing: 0,
-        center: [-108.139, 39.404],
-        zoom: 3.94,
-        speed: 0.7,
-        pitch: 0
-      },
-      'section2': {
-        bearing: 0,
-        center: [131.380, 32.789],
-        zoom: 7.87,
-        speed: 0.7,
-        pitch: 60.00
-      },
-      'section3': {
-        bearing: -56,
-        center: [127.178124, 25.431137],
-        zoom: 3,
-        speed: 0.7,
-        pitch: 55
-      },
-    };
+        interactive: false
+      });
+      //for polygons
+      //area for mapbox fly-tos
+      let chapters = {
+        'welcome': {
+          bearing: 0,
+          center: [11.634, 25.448],
+          zoom: 1.1,
+          speed: 0.6,
+          pitch: 0
+        },
+        'section1': {
+          bearing: 0,
+          center: [-108.139, 39.404],
+          zoom: 3.94,
+          speed: 0.7,
+          pitch: 0
+        },
+        'section2': {
+          bearing: 0,
+          center: [131.380, 32.789],
+          zoom: 7.87,
+          speed: 0.7,
+          pitch: 60.00
+        },
+        'section3': {
+          bearing: -56,
+          center: [127.178124, 25.431137],
+          zoom: 3,
+          speed: 0.7,
+          pitch: 55
+        },
+      };
 
-    //////////////////////////
-    // Mapbox+D3 Connection
-    //////////////////////////
-    // Get Mapbox map canvas container
-    // Setup svg dims and margins
-    let canvas = map.getCanvasContainer();
-    let svg = d3.select(canvas).append("svg").attr("id", "my_svg");
-    let svgSelect = document.getElementById("my_svg");
-    let rect = svgSelect.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const margin = ({
-      top: 50,
-      right: 30,
-      bottom: 70,
-      left: 30
-    });
+      //////////////////////////
+      // Mapbox+D3 Connection
+      //////////////////////////
+      // Get Mapbox map canvas container
+      // Setup svg dims and margins
+      let canvas = map.getCanvasContainer();
+      let svg = d3.select(canvas).append("svg").attr("id", "my_svg");
+      let svgSelect = document.getElementById("my_svg");
+      let rect = svgSelect.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+      const margin = ({
+        top: 50,
+        right: 30,
+        bottom: 70,
+        left: 30
+      });
 
-    // Set up svg groups so that last one will be on top
-    let before = svg.append("g");
-    let aftershock = svg.append("g");
-    let trigger = svg.append("g");
-    let mainshock = svg.append("g");
-    let mainshockSumatra = svg.append("g");
-    let mainshockOita = svg.append("g");
-    let triggeredOita = svg.append("g");
-    let mainshockHokkaido = svg.append("g");
-    let triggeredHokkaido = svg.append("g");
+      // Set up svg groups so that last one will be on top
+      let before = svg.append("g");
+      let aftershock = svg.append("g");
+      let trigger = svg.append("g");
+      let mainshock = svg.append("g");
+      let mainshockSumatra = svg.append("g");
+      let mainshockOita = svg.append("g");
+      let triggeredOita = svg.append("g");
+      let mainshockHokkaido = svg.append("g");
+      let triggeredHokkaido = svg.append("g");
 
-    // Draw GeoJSON data with d3
-    let circles;
+      // Draw GeoJSON data with d3
+      let circles;
 
-    // Scales
-    //landers domain [2.5, 7.3]
-    aScale = d3.scaleSqrt()
-      .range([5, 22]);
+      // Scales
+      //landers domain [2.5, 7.3]
+      aScale = d3.scaleSqrt()
+        .range([5, 22]);
 
-    colorScale = d3.scaleSequential(d3.interpolateHcl("#F79567", "#c3402c"));
+      colorScale = d3.scaleSequential(d3.interpolateHcl("#F79567", "#c3402c"));
 
-    timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
-    timeScale = d3.scaleTime();
+      timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
+      timeScale = d3.scaleTime();
 
-    timeScaleBefore = d3.scaleTime()
-      .range([margin.left, width / 2 - margin.right]);
-    timeScaleTriggered = d3.scaleTime()
-      .range([width / 2 + margin.left, width - margin.right]);
+      timeScaleBefore = d3.scaleTime()
+        .range([margin.left, width / 2 - margin.right]);
+      timeScaleTriggered = d3.scaleTime()
+        .range([width / 2 + margin.left, width - margin.right]);
 
-    //clean data function
-    function clean(data) {
-      for (const d of data.features) {
-        const date = timeParse(d.properties.time);
-        d.properties.date = date;
-        d.properties.day = d3.timeDay(date);
+      //clean data function
+      function clean(data) {
+        for (const d of data.features) {
+          const date = timeParse(d.properties.time);
+          d.properties.date = date;
+          d.properties.day = d3.timeDay(date);
+        }
+        return data;
+      };
+
+      function csvClean(data) {
+        for (const d of data) {
+          d.rel_rate = +d.rel_rate;
+        }
+        return data;
+      };
+      //rand number function
+      function randNum(min, max) {
+        return Math.random() * (max - min) + min;
       }
-      return data;
-    };
 
-    function csvClean(data) {
-      for (const d of data) {
-        d.rel_rate = +d.rel_rate;
-      }
-      return data;
-    };
-    //rand number function
-    function randNum(min, max) {
-      return Math.random() * (max - min) + min;
-    }
+      //define URLs for data sources
+      const landers_before_url = "https://gist.githubusercontent.com/will-r-chase/375d6366e6c32caf3862d1f6154f87a0/raw/f632753fc5940ac57e55276f38bca2262cb87907/landers_before2.geojson";
+      const landers_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson";
+      const landers_aftershocks_url = "https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson";
+      const landers_triggered_url = "https://gist.githubusercontent.com/will-r-chase/b510d63e4cfabe7c52a053a50a9faeac/raw/a463bddcac56aa827e15a96d372e19854c99373d/landers_triggered2.geojson";
+      const sumatra_before_url = "https://gist.githubusercontent.com/will-r-chase/5cb1d0f0d043d3a3420a0be9d0eb3b58/raw/2542da1200c6ce637c4f80f12ff328c7873b564b/sumatra_before.geojson";
+      const sumatra_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/5e3e1470002a9bb53465c610faea0959/raw/07c39e495864ecc02aa5b683379af33e3dc9a259/indianOcean_mainshock.geojson";
+      const sumatra_triggered_url = "https://gist.githubusercontent.com/will-r-chase/cb0f15205c78e792fda1ffb3a753946f/raw/1c909965e19b283c597a125dc49d70ff92f2f4ae/sumatra_triggered.geojson";
+      const bars_url = "https://gist.githubusercontent.com/will-r-chase/8dea02691e0b03044711ea1f7ba97310/raw/6bfd551a460ba1118c19c3f9e9d84a8c07a26ee7/m8_day1-3_relrates.csv";
+      const oita_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/29e7d6564c96049fb5962e6c015150b4/raw/f0a3cca5753d88c9d780c1ab6cf8147acf0889ab/oitaMainshock.geojson";
+      const oita_triggered_url = "https://gist.githubusercontent.com/will-r-chase/bf22e59067f4ebb827cda5d81534dbd1/raw/29e28b6d04b7933664ed3357e5548255bc737e06/oitaTriggered.geojson";
+      const hokkaido_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/035234ed3d84b08bbaca18a68afaa0f3/raw/00352a1b23b761b84876932eff2ec25c1ecf372c/hokkaidoMainshock.geojson";
+      const hokkaido_triggered_url = "https://gist.githubusercontent.com/will-r-chase/4d6d64f50fe9db1094789afd34284470/raw/2cfd89ca9bea89b9e2810591ed79498107f34585/hokkaidoTriggered.geojson";
 
-    //define URLs for data sources
-    const landers_before_url = "https://gist.githubusercontent.com/will-r-chase/375d6366e6c32caf3862d1f6154f87a0/raw/f632753fc5940ac57e55276f38bca2262cb87907/landers_before2.geojson";
-    const landers_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/97555d4d4870f6acb2d3ca6708a5c61d/raw/3b78c10904ccfd968d5c06b6c8a04f0edc724273/landers_mainshock.geojson";
-    const landers_aftershocks_url = "https://gist.githubusercontent.com/will-r-chase/ab84dc036cbe1f444bc27a349bb1a8bb/raw/962b541ef08baaaf10479b88306ca467f7ced355/landers_aftershocks.geojson";
-    const landers_triggered_url = "https://gist.githubusercontent.com/will-r-chase/b510d63e4cfabe7c52a053a50a9faeac/raw/a463bddcac56aa827e15a96d372e19854c99373d/landers_triggered2.geojson";
-    const sumatra_before_url = "https://gist.githubusercontent.com/will-r-chase/5cb1d0f0d043d3a3420a0be9d0eb3b58/raw/2542da1200c6ce637c4f80f12ff328c7873b564b/sumatra_before.geojson";
-    const sumatra_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/5e3e1470002a9bb53465c610faea0959/raw/07c39e495864ecc02aa5b683379af33e3dc9a259/indianOcean_mainshock.geojson";
-    const sumatra_triggered_url = "https://gist.githubusercontent.com/will-r-chase/cb0f15205c78e792fda1ffb3a753946f/raw/1c909965e19b283c597a125dc49d70ff92f2f4ae/sumatra_triggered.geojson";
-    const bars_url = "https://gist.githubusercontent.com/will-r-chase/8dea02691e0b03044711ea1f7ba97310/raw/6bfd551a460ba1118c19c3f9e9d84a8c07a26ee7/m8_day1-3_relrates.csv";
-    const oita_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/29e7d6564c96049fb5962e6c015150b4/raw/f0a3cca5753d88c9d780c1ab6cf8147acf0889ab/oitaMainshock.geojson";
-    const oita_triggered_url = "https://gist.githubusercontent.com/will-r-chase/bf22e59067f4ebb827cda5d81534dbd1/raw/29e28b6d04b7933664ed3357e5548255bc737e06/oitaTriggered.geojson";
-    const hokkaido_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/035234ed3d84b08bbaca18a68afaa0f3/raw/00352a1b23b761b84876932eff2ec25c1ecf372c/hokkaidoMainshock.geojson";
-    const hokkaido_triggered_url = "https://gist.githubusercontent.com/will-r-chase/4d6d64f50fe9db1094789afd34284470/raw/2cfd89ca9bea89b9e2810591ed79498107f34585/hokkaidoTriggered.geojson";
+      const oita = [{
+        "latitude_target": 33.17,
+        "longitude_target": 131.4,
+        "latitude_source": 32.74,
+        "longitude_source": 130.77
+      }];
+      const hokkaido = [{
+        "latitude_target": 42.16340342422401,
+        "longitude_target": 143.61328125,
+        "latitude_source": 1.4500404973608074,
+        "longitude_source": 127.57324218750001
+      }];
 
-    const oita = [{
-      "latitude_target": 33.17,
-      "longitude_target": 131.4,
-      "latitude_source": 32.74,
-      "longitude_source": 130.77
-    }];
-    const hokkaido = [{
-      "latitude_target": 42.16340342422401,
-      "longitude_target": 143.61328125,
-      "latitude_source": 1.4500404973608074,
-      "longitude_source": 127.57324218750001
-    }];
+      //colors for arcs
+      var source_color = [131, 193, 193];
+      var target_color = [131, 193, 193];
 
-    //colors for arcs
-    var source_color = [131, 193, 193];
-    var target_color = [131, 193, 193];
+      var {
+        MapboxLayer,
+        ArcLayer
+      } = deck;
 
-    var {
-      MapboxLayer,
-      ArcLayer
-    } = deck;
-
-    // Deck.gl arc layer with custom shader
-    class ArcBrushingLayer extends ArcLayer {
-      getShaders() {
-        // here comes our custom shader
-        // we will use step function to create opacity gradient with colorA and color B
-        // for more information see https://thebookofshaders.com/05/
-        return Object.assign({}, super.getShaders(), {
-          inject: {
-            'vs:#decl': `
+      // Deck.gl arc layer with custom shader
+      class ArcBrushingLayer extends ArcLayer {
+        getShaders() {
+          // here comes our custom shader
+          // we will use step function to create opacity gradient with colorA and color B
+          // for more information see https://thebookofshaders.com/05/
+          return Object.assign({}, super.getShaders(), {
+            inject: {
+              'vs:#decl': `
              uniform float coef;
             `,
-            'vs:#main-end': `
+              'vs:#main-end': `
             if (coef > 0.0) {
               vec4 pct = vec4(segmentRatio);
               pct.a = step(coef, segmentRatio);
@@ -734,1079 +760,1161 @@
               vColor = color;
             }
                         `,
-            'fs:#main-start': `
+              'fs:#main-start': `
             if (vColor.a == 0.0) discard;
                         `
-          }
-        });
-      }
-
-      draw(opts) {
-        const {
-          coef
-        } = this.props;
-        // add uniforms
-        const uniforms = Object.assign({}, opts.uniforms, {
-          coef: coef
-        });
-        super.draw(Object.assign({}, opts, {
-          uniforms
-        }));
-      }
-    }
-    //function transition arc opacity from source to target
-    function animateArcs(layer) {
-      var coef = 0.0000001;
-      const animationInterval = setInterval(() => {
-        coef += 0.005;
-        if (coef >= 1.0) {
-          clearInterval(animationInterval);
+            }
+          });
         }
+
+        draw(opts) {
+          const {
+            coef
+          } = this.props;
+          // add uniforms
+          const uniforms = Object.assign({}, opts.uniforms, {
+            coef: coef
+          });
+          super.draw(Object.assign({}, opts, {
+            uniforms
+          }));
+        }
+      }
+      //function transition arc opacity from source to target
+      function animateArcs(layer) {
+        var coef = 0.0000001;
+        const animationInterval = setInterval(() => {
+          coef += 0.005;
+          if (coef >= 1.0) {
+            clearInterval(animationInterval);
+          }
+          layer.setProps({
+            coef
+          });
+        }, 5);
+      };
+
+      function hideArcs(layer) {
+        var coef = 0.0000001;
         layer.setProps({
           coef
         });
-      }, 5);
-    };
-
-    function hideArcs(layer) {
-      var coef = 0.0000001;
-      layer.setProps({
-        coef
-      });
-    };
-    //create new arcs and animate
-    function drawArc(data, myId) {
-      arcsLayer = new MapboxLayer({
-        type: ArcBrushingLayer,
-        id: myId,
-        data: data,
-        opacity: 1,
-        coef: 0.0000001,
-        getSourcePosition: d => [d.longitude_source, d.latitude_source],
-        getTargetPosition: d => [d.longitude_target, d.latitude_target],
-        getSourceColor: source_color,
-        getTargetColor: target_color,
-        getStrokeWidth: 10
-      });
-      map.addLayer(arcsLayer);
-    };
-
-    var arcsLayer;
-
-    //function to draw strain waves
-    map.on('load', function() {
-      map.addSource('strainWavesDat', {
-        type: 'geojson',
-        data: 'https://gist.githubusercontent.com/will-r-chase/72b206dd2ba17889ba98075d693db1bd/raw/cc17e7c23ef33d0c69a43ba9addccab6b2dc1270/strain_waves.geojson'
-      });
-      map.addLayer({
-        "id": "strainWaves",
-        "type": "fill",
-        "source": "strainWavesDat",
-        'layout': {},
-        'paint': {
-          'fill-color': '#83c1c1',
-          'fill-opacity': 0
-        }
-      });
-
-      drawArc(hokkaido, "hokkaido-arcs");
-    });
-
-    // For each enter step, read and draw data
-    function initData(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
-      d3.json(source, function(err, data) {
-        let cleanDat = clean(data)
-        drawData(cleanDat, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
-      })
-    };
-    // For each enter step, read and draw data
-    function initPoints(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
-      d3.json(source, function(err, data) {
-        drawPoints(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
-      })
-    };
-
-    function initChart(source1, source2) {
-      d3.json(source1, function(err, dataBefore) {
-        d3.json(source2, function(err, dataTriggered) {
-          if (err) console.log(err);
-          let cleanBefore = clean(dataBefore);
-          let cleanTriggered = clean(dataTriggered);
-          drawChart(cleanBefore, cleanTriggered);
+      };
+      //create new arcs and animate
+      function drawArc(data, myId) {
+        arcsLayer = new MapboxLayer({
+          type: ArcBrushingLayer,
+          id: myId,
+          data: data,
+          opacity: 1,
+          coef: 0.0000001,
+          getSourcePosition: d => [d.longitude_source, d.latitude_source],
+          getTargetPosition: d => [d.longitude_target, d.latitude_target],
+          getSourceColor: source_color,
+          getTargetColor: target_color,
+          getStrokeWidth: 10
         });
-      });
-    };
+        map.addLayer(arcsLayer);
+      };
 
-    function initChartBackwards(source1, source2) {
-      d3.json(source1, function(err, dataBefore) {
-        d3.json(source2, function(err, dataTriggered) {
-          if (err) console.log(err);
-          let cleanBefore = clean(dataBefore);
-          let cleanTriggered = clean(dataTriggered);
-          drawChartBackwards(cleanBefore, cleanTriggered);
+      var arcsLayer;
+
+      //function to draw strain waves
+      map.on('load', function() {
+        map.addSource('strainWavesDat', {
+          type: 'geojson',
+          data: 'https://gist.githubusercontent.com/will-r-chase/72b206dd2ba17889ba98075d693db1bd/raw/cc17e7c23ef33d0c69a43ba9addccab6b2dc1270/strain_waves.geojson'
         });
-      });
-    };
-
-    function initChartHighlight(source1, source2) {
-      d3.json(source1, function(err, dataBefore) {
-        d3.json(source2, function(err, dataTriggered) {
-          if (err) console.log(err);
-          let cleanBefore = clean(dataBefore);
-          let cleanTriggered = clean(dataTriggered);
-          highlightChart(cleanBefore, cleanTriggered);
+        map.addLayer({
+          "id": "strainWaves",
+          "type": "fill",
+          "source": "strainWavesDat",
+          'layout': {},
+          'paint': {
+            'fill-color': '#83c1c1',
+            'fill-opacity': 0
+          }
         });
+
+        drawArc(hokkaido, "hokkaido-arcs");
       });
-    };
 
-    function exitChartHighlight(source1, source2) {
-      d3.json(source1, function(err, dataBefore) {
-        d3.json(source2, function(err, dataTriggered) {
-          if (err) console.log(err);
-          let cleanBefore = clean(dataBefore);
-          let cleanTriggered = clean(dataTriggered);
-          reverseHighlightChart(cleanBefore, cleanTriggered);
-        });
-      });
-    };
-
-    function exitChart(source1, source2) {
-      d3.json(source1, function(err, dataBefore) {
-        d3.json(source2, function(err, dataTriggered) {
-          if (err) console.log(err);
-          let cleanBefore = clean(dataBefore);
-          let cleanTriggered = clean(dataTriggered);
-          reverseChart(cleanBefore, cleanTriggered);
-        });
-      });
-    };
-
-    function initBars(source) {
-      d3.csv(source, function(err, data) {
-        if (err) console.log(err);
-        let dataClean = csvClean(data);
-        console.log(dataClean)
-        drawBars(dataClean);
-      });
-    };
-
-    function initBarsHighlight(source) {
-      d3.csv(source, function(err, data) {
-        if (err) console.log(err);
-        let dataClean = csvClean(data);
-        console.log(dataClean)
-        highlightBars(dataClean);
-      });
-    };
-
-    function initRedrawCircles(source) {
-      d3.csv(source, function(err, data) {
-        if (err) console.log(err);
-        let dataClean = csvClean(data);
-        console.log(dataClean)
-        redrawCircles(dataClean);
-      });
-    };
-    //////////////
-    // D3 stuff //
-    //////////////
-    // Project GeoJSON coordinate to the map's current state
-    function project(d) {
-      return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
-    }
-
-    //Main draw function
-    function drawData(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
-      // set scale domain
-      aScale.domain(domain);
-      colorScale.domain(domain);
-      timeScale
-        .domain(d3.extent(data.features.map(d => d.properties).map(d => d.date)))
-        .range(timeRange);
-      // Add circles
-      circles = group.selectAll(pointClass)
-        .data(data.features)
-        .enter()
-        .append("circle")
-        .attr("class", pointClass)
-        .attr("r", 0)
-        .attr("fill", d => colorScale(d.properties.mag))
-        .attr("day", d => d.properties.day)
-        .style("opacity", 0.7);
-
-      circles
-        .transition()
-        .delay(d => extraDelay + timeScale(d.properties.date))
-        .duration(Duration)
-        .ease(Ease)
-        .attr("r", d => aScale(d.properties.mag));
-      // Call the update function
-      update();
-      // Update on map interaction
-      map.on("viewreset", update);
-      map.on("move", update);
-      map.on("moveend", update);
-    }
-
-    function drawPoints(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
-      // set scale domain
-      aScale.domain(domain);
-      colorScale.domain(domain);
-
-      // Add circles
-      circles = group.selectAll(pointClass)
-        .data(data.features)
-        .enter()
-        .append("circle")
-        .attr("class", pointClass)
-        .attr("r", 0)
-        .attr("fill", d => colorScale(d.properties.mag))
-        .style("opacity", 0.7);
-
-      circles
-        .transition()
-        .delay(extraDelay)
-        .duration(Duration)
-        .ease(Ease)
-        .attr("r", d => aScale(d.properties.mag));
-      // Call the update function
-      update();
-      // Update on map interaction
-      map.on("viewreset", update);
-      map.on("move", update);
-      map.on("moveend", update);
-    };
-    // Update d3 shapes' positions to the map's current state
-    function update() {
-      console.log("update");
-      svg.selectAll("circle").attr("cx", function(d) {
-          return project(d.geometry.coordinates).x
+      // For each enter step, read and draw data
+      function initData(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
+        d3.json(source, function(err, data) {
+          let cleanDat = clean(data)
+          drawData(cleanDat, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
         })
-        .attr("cy", function(d) {
-          return project(d.geometry.coordinates).y
+      };
+      // For each enter step, read and draw data
+      function initPoints(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
+        d3.json(source, function(err, data) {
+          drawPoints(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
+        })
+      };
+
+      function initChart(source1, source2) {
+        d3.json(source1, function(err, dataBefore) {
+          d3.json(source2, function(err, dataTriggered) {
+            if (err) console.log(err);
+            let cleanBefore = clean(dataBefore);
+            let cleanTriggered = clean(dataTriggered);
+            drawChart(cleanBefore, cleanTriggered);
+          });
         });
-    }
+      };
 
-    //function to draw stacked dot histogram
-    function drawChart(dataBefore, dataTriggered) {
-      console.log("dataBefore", dataBefore);
-      console.log("dataTriggered", dataTriggered);
-      timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
-      timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
-      const arrowPath = `M ${width/2 - 130},${height/3.6} C ${width/2 - 130},${height/4 + 60} ${width/2 - 130},${height/4 + 70} ${width/2 - 10},${height/4 + 70}`
-      // Define simple arrowhead marker
-      svg.append('defs')
-        .append("marker")
-        .attr("id", "arrowhead")
-        .attr("viewBox", "-10 -10 20 20")
-        .attr("refX", 0)
-        .attr("refY", 0)
-        .attr("markerWidth", 20)
-        .attr("markerHeight", 20)
-        .attr("stroke-width", 1)
-        .attr("orient", "auto")
-        .append("polyline")
-        .attr("stroke-linejoin", "bevel")
-        .attr("points", "-6.75,-6.75 0,0 -6.75,6.75");
+      function initChartBackwards(source1, source2) {
+        d3.json(source1, function(err, dataBefore) {
+          d3.json(source2, function(err, dataTriggered) {
+            if (err) console.log(err);
+            let cleanBefore = clean(dataBefore);
+            let cleanTriggered = clean(dataTriggered);
+            drawChartBackwards(cleanBefore, cleanTriggered);
+          });
+        });
+      };
 
-      //mainshock line
-      line = svg.append("g")
-        .append("line")
-        .attr("x1", width / 2)
-        .attr("x2", width / 2)
-        .attr("y1", height / 5)
-        .attr("y2", height - margin.bottom)
-        .attr("class", "mainshock-line")
-        .style("opacity", 0)
-        .style("stroke", "#C3402C") //#E3191C
-        .style("stroke-width", 3)
-        .style("stroke-dasharray", 5);
-      //x axis before
-      axisBefore = svg.append("g")
-        .attr("transform", `translate(0, ${height - margin.bottom})`)
-        .attr("class", "chart-axis")
-        .style("opacity", 0)
-        .call(d3.axisBottom(timeScaleBefore)
-          .ticks(5)
-          .tickFormat(d3.timeFormat("%b %d"))
-          .tickSizeOuter(0));
-      //x axis after
-      axisTriggered = svg.append("g")
-        .attr("transform", `translate(0, ${height - margin.bottom})`)
-        .attr("class", "chart-axis")
-        .style("opacity", 0)
-        .call(d3.axisBottom(timeScaleTriggered)
-          .ticks(5)
-          .tickFormat(d3.timeFormat("%b %d"))
-          .tickSizeOuter(0));
+      function initChartHighlight(source1, source2) {
+        d3.json(source1, function(err, dataBefore) {
+          d3.json(source2, function(err, dataTriggered) {
+            if (err) console.log(err);
+            let cleanBefore = clean(dataBefore);
+            let cleanTriggered = clean(dataTriggered);
+            highlightChart(cleanBefore, cleanTriggered);
+          });
+        });
+      };
 
-      axisBefore
-        .transition()
-        .delay(100)
-        .duration(2000)
-        .style("opacity", 1);
+      function exitChartHighlight(source1, source2) {
+        d3.json(source1, function(err, dataBefore) {
+          d3.json(source2, function(err, dataTriggered) {
+            if (err) console.log(err);
+            let cleanBefore = clean(dataBefore);
+            let cleanTriggered = clean(dataTriggered);
+            reverseHighlightChart(cleanBefore, cleanTriggered);
+          });
+        });
+      };
 
-      beforeLabel = d3.select(canvas)
-        .append("div")
-        .attr("class", "chart-label")
-        .html(
-          "Earthquakes 10 days before the Landers mainshock"
-        )
-        .style("position", "absolute")
-        .style("width", "200px")
-        .style("opacity", 0)
-        .style("left", width / 40 + "px")
-        .style("top", height / 1.55 + "px")
-        .style("text-anchor", "left")
-        .transition()
-        .delay(0) //2500
-        .duration(2000)
-        .style("opacity", 1);
+      function exitChart(source1, source2) {
+        d3.json(source1, function(err, dataBefore) {
+          d3.json(source2, function(err, dataTriggered) {
+            if (err) console.log(err);
+            let cleanBefore = clean(dataBefore);
+            let cleanTriggered = clean(dataTriggered);
+            reverseChart(cleanBefore, cleanTriggered);
+          });
+        });
+      };
 
-      before
-        .selectAll(".landers-before")
-        .data(dataBefore.features)
-        .transition()
-        .delay(d => 0 + randNum(0, 100) + d.properties.id_overall * 100) //7000
-        .attr("r", 10)
-        .style("opacity", 1)
-        .attr("fill", "#872B32")
-        .attr("cx", d => timeScaleBefore(d.properties.day))
-        .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
+      function initBars(source) {
+        d3.csv(source, function(err, data) {
+          if (err) console.log(err);
+          let dataClean = csvClean(data);
+          console.log(dataClean)
+          drawBars(dataClean);
+        });
+      };
 
-      mainshockLabel = d3.select(canvas)
-        .append("div")
-        .attr("class", "chart-label")
-        .html(
-          "On Jan 28th 1992, a magnitude 7.3 earthquake strikes near Landers, California"
-        )
-        .style("position", "absolute")
-        .style("width", "200px")
-        .style("opacity", 0)
-        .style("left", width / 2 - 220 + "px")
-        .style("top", height / 5.1 + "px")
-        .style("text-anchor", "left")
-        .style("font-size", "16px")
-        .transition()
-        .delay(0) //11000
-        .duration(2000)
-        .style("opacity", 1);
+      function initBarsHighlight(source) {
+        d3.csv(source, function(err, data) {
+          if (err) console.log(err);
+          let dataClean = csvClean(data);
+          console.log(dataClean)
+          highlightBars(dataClean);
+        });
+      };
 
-      arrow = svg.append("path")
-        .attr('marker-end', 'url(#arrowhead)')
-        .attr("d", arrowPath)
-        .attr("class", "myArrow")
-        .style('opacity', 0)
-        .style("fill", "none")
-        .attr("stroke-width", 1)
-        .attr("stroke", "black")
-        .transition()
-        .delay(0) //12000
-        .duration(1500)
-        .style('opacity', 1);
+      function initRedrawCircles(source) {
+        d3.csv(source, function(err, data) {
+          if (err) console.log(err);
+          let dataClean = csvClean(data);
+          console.log(dataClean)
+          redrawCircles(dataClean);
+        });
+      };
+      //////////////
+      // D3 stuff //
+      //////////////
+      // Project GeoJSON coordinate to the map's current state
+      function project(d) {
+        return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
+      }
 
-      line
-        .transition()
-        .delay(0) //13000
-        .duration(1000)
-        .style("opacity", 1)
+      //Main draw function
+      function drawData(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
+        // set scale domain
+        aScale.domain(domain);
+        colorScale.domain(domain);
+        timeScale
+          .domain(d3.extent(data.features.map(d => d.properties).map(d => d.date)))
+          .range(timeRange);
+        // Add circles
+        circles = group.selectAll(pointClass)
+          .data(data.features)
+          .enter()
+          .append("circle")
+          .attr("class", pointClass)
+          .attr("r", 0)
+          .attr("fill", d => colorScale(d.properties.mag))
+          .attr("day", d => d.properties.day)
+          .style("opacity", 0.7);
 
-      axisTriggered
-        .transition()
-        .delay(0) //15000
-        .duration(2000)
-        .style("opacity", 1);
+        circles
+          .transition()
+          .delay(d => extraDelay + timeScale(d.properties.date))
+          .duration(Duration)
+          .ease(Ease)
+          .attr("r", d => aScale(d.properties.mag));
+        // Call the update function
+        update();
+        // Update on map interaction
+        map.on("viewreset", update);
+        map.on("move", update);
+        map.on("moveend", update);
+      }
 
-      triggeredLabel = d3.select(canvas)
-        .append("div")
-        .attr("class", "chart-label")
-        .html(
-          "Earthquakes 10 days after the Landers mainshock"
-        )
-        .style("position", "absolute")
-        .style("width", "200px")
-        .style("opacity", 0)
-        .style("left", width / 1.5 + "px")
-        .style("top", height / 3.7 + "px")
-        .style("text-anchor", "left")
-        .transition()
-        .delay(0) //17500
-        .duration(2000)
-        .style("opacity", 1);
+      function drawPoints(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
+        // set scale domain
+        aScale.domain(domain);
+        colorScale.domain(domain);
 
-      trigger
-        .selectAll(".landers-triggered")
-        .data(dataTriggered.features)
-        .transition()
-        .delay(d => 0 + randNum(20, 150) + d.properties.id_overall * 30) //20000
-        .attr("r", 10)
-        .style("opacity", 1)
-        .attr("fill", "#872B32")
-        .attr("cx", d => timeScaleTriggered(d.properties.day))
-        .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
+        // Add circles
+        circles = group.selectAll(pointClass)
+          .data(data.features)
+          .enter()
+          .append("circle")
+          .attr("class", pointClass)
+          .attr("r", 0)
+          .attr("fill", d => colorScale(d.properties.mag))
+          .style("opacity", 0.7);
 
-    };
-
-    function drawChartBackwards(dataBefore, dataTriggered) {
-      timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
-      timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
-
-      before
-        .selectAll(".landers-before")
-        .data(dataBefore.features)
-        .attr("r", 10)
-        .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#DC0505
-        .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
-        .attr("cx", d => timeScaleBefore(d.properties.day))
-        .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
-
-
-      trigger
-        .selectAll(".landers-triggered")
-        .data(dataTriggered.features)
-        .attr("r", 10)
-        .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
-        .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
-        .attr("cx", d => timeScaleTriggered(d.properties.day))
-        .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
-
-    };
-
-    function highlightChart(dataBefore, dataTriggered) {
-      before
-        .selectAll(".landers-before")
-        .data(dataBefore.features)
-        .transition()
-        .delay(300)
-        .duration(1000)
-        .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
-        .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
-
-      trigger
-        .selectAll(".landers-triggered")
-        .data(dataTriggered.features)
-        .transition()
-        .delay(300)
-        .duration(1000)
-        .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
-        .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
-    };
-
-    function reverseHighlightChart(dataBefore, dataTriggered) {
-      before
-        .selectAll(".landers-before")
-        .data(dataBefore.features)
-        .transition()
-        .delay(700)
-        .duration(1000)
-        .attr("fill", "#872B32")
-        .style("opacity", 1);
-
-      trigger
-        .selectAll(".landers-triggered")
-        .data(dataTriggered.features)
-        .transition()
-        .delay(700)
-        .duration(1000)
-        .attr("fill", "#872B32")
-        .style("opacity", 1);
-    };
-    //function to draw stacked dot histogram
-    function reverseChart(dataBefore, dataTriggered) {
-      aScale.domain([2.5, 7.3]);
-      colorScale.domain([2.5, 7.3]);
-      timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
-      timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
-
-      before
-        .selectAll(".landers-before")
-        .data(dataBefore.features)
-        .transition()
-        .attr("r", d => aScale(d.properties.mag))
-        .style("opacity", 0.3)
-        .attr("fill", "#515151");
-      update();
-
-      trigger
-        .selectAll(".landers-triggered")
-        .data(dataTriggered.features)
-        .transition()
-        .attr("r", d => aScale(d.properties.mag))
-        .style("opacity", 0.7)
-        .attr("fill", d => colorScale(d.properties.mag));
-
-      update();
-    };
-
-    function drawBars(data) {
-      innerRadius = 190,
-        outerRadius = Math.min(width, height) / 2.1;
-
-      bars = svg.append("g")
-        .attr("class", "bar-chart")
-        .attr("transform", `translate(${width/2}, ${height/2})`);
-
-      // X scale
-      var x = d3.scaleBand()
-        .range([0, 2 * Math.PI])
-        .align(0)
-        .domain(data.map(function(d) {
-          return d.deg;
-        }));
-
-      // Y scale
-      var y = d3.scaleRadial()
-        .range([innerRadius, outerRadius])
-        .domain([0, d3.max(data, d => d.rel_rate)]);
-
-      bars
-        .selectAll("path")
-        .data(data)
-        .enter()
-        .append("path")
-        .style("opacity", 0)
-        .attr("d", d3.arc()
-          .innerRadius(innerRadius)
-          .outerRadius(function(d) {
-            return y(d.rel_rate);
+        circles
+          .transition()
+          .delay(extraDelay)
+          .duration(Duration)
+          .ease(Ease)
+          .attr("r", d => aScale(d.properties.mag));
+        // Call the update function
+        update();
+        // Update on map interaction
+        map.on("viewreset", update);
+        map.on("move", update);
+        map.on("moveend", update);
+      };
+      // Update d3 shapes' positions to the map's current state
+      function update() {
+        console.log("update");
+        svg.selectAll("circle").attr("cx", function(d) {
+            return project(d.geometry.coordinates).x
           })
-          .startAngle(function(d) {
-            return x(d.deg);
-          })
-          .endAngle(function(d) {
-            return x(d.deg) + x.bandwidth();
-          })
-          .padAngle(0.01)
-          .padRadius(innerRadius))
-        .transition()
-        .delay(2500)
-        .duration(1000)
-        .style("opacity", 1);
+          .attr("cy", function(d) {
+            return project(d.geometry.coordinates).y
+          });
+      }
 
-      xAxis = g => g
-        .attr("text-anchor", "middle")
-        .call(g => g.selectAll("g")
+      //function to draw stacked dot histogram
+      function drawChart(dataBefore, dataTriggered) {
+        console.log("dataBefore", dataBefore);
+        console.log("dataTriggered", dataTriggered);
+        timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
+        timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
+        const arrowPath = `M ${width/2 - 130},${height/3.6} C ${width/2 - 130},${height/4 + 60} ${width/2 - 130},${height/4 + 70} ${width/2 - 10},${height/4 + 70}`
+        // Define simple arrowhead marker
+        svg.append('defs')
+          .append("marker")
+          .attr("id", "arrowhead")
+          .attr("viewBox", "-10 -10 20 20")
+          .attr("refX", 0)
+          .attr("refY", 0)
+          .attr("markerWidth", 20)
+          .attr("markerHeight", 20)
+          .attr("stroke-width", 1)
+          .attr("orient", "auto")
+          .append("polyline")
+          .attr("stroke-linejoin", "bevel")
+          .attr("points", "-6.75,-6.75 0,0 -6.75,6.75");
+
+
+
+        //mainshock line
+        line = svg.append("g")
+          .append("line")
+          .attr("x1", width / 2)
+          .attr("x2", width / 2)
+          .attr("y1", height / 5)
+          .attr("y2", height - margin.bottom)
+          .attr("class", "mainshock-line")
+          .style("opacity", 0)
+          .style("stroke", "#C3402C") //#E3191C
+          .style("stroke-width", 3)
+          .style("stroke-dasharray", 5);
+        //x axis before
+        axisBefore = svg.append("g")
+          .attr("transform", `translate(0, ${height - margin.bottom})`)
+          .attr("class", "chart-axis")
+          .style("opacity", 0)
+          .call(d3.axisBottom(timeScaleBefore)
+            .ticks(5)
+            .tickFormat(d3.timeFormat("%b %d"))
+            .tickSizeOuter(0));
+        //x axis after
+        axisTriggered = svg.append("g")
+          .attr("transform", `translate(0, ${height - margin.bottom})`)
+          .attr("class", "chart-axis")
+          .style("opacity", 0)
+          .call(d3.axisBottom(timeScaleTriggered)
+            .ticks(5)
+            .tickFormat(d3.timeFormat("%b %d"))
+            .tickSizeOuter(0));
+
+        axisBefore
+          .transition()
+          .delay(100)
+          .duration(2000)
+          .style("opacity", 1);
+
+        beforeLabel = d3.select(canvas)
+          .append("div")
+          .attr("class", "chart-label")
+          .html(
+            "Earthquakes 10 days before the Landers mainshock"
+          )
+          .style("position", "absolute")
+          .style("width", "200px")
+          .style("opacity", 0)
+          .style("left", width / 40 + "px")
+          .style("top", height / 1.55 + "px")
+          .style("text-anchor", "left")
+          .transition()
+          .delay(0) //2500
+          .duration(2000)
+          .style("opacity", 1);
+
+        before
+          .selectAll(".landers-before")
+          .data(dataBefore.features)
+          .transition()
+          .delay(d => 0 + randNum(0, 100) + d.properties.id_overall * 100) //7000
+          .attr("r", 10)
+          .style("opacity", 1)
+          .attr("fill", "#872B32")
+          .attr("cx", d => timeScaleBefore(d.properties.day))
+          .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
+
+        mainshockLabel = d3.select(canvas)
+          .append("div")
+          .attr("class", "chart-label")
+          .html(
+            "On Jan 28th 1992, a magnitude 7.3 earthquake strikes near Landers, California"
+          )
+          .style("position", "absolute")
+          .style("width", "200px")
+          .style("opacity", 0)
+          .style("left", width / 2 - 220 + "px")
+          .style("top", height / 5.1 + "px")
+          .style("text-anchor", "left")
+          .style("font-size", "16px")
+          .transition()
+          .delay(0) //11000
+          .duration(2000)
+          .style("opacity", 1);
+
+        arrow = svg.append("path")
+          .attr('marker-end', 'url(#arrowhead)')
+          .attr("d", arrowPath)
+          .attr("class", "myArrow")
+          .style('opacity', 0)
+          .style("fill", "none")
+          .attr("stroke-width", 1)
+          .attr("stroke", "black")
+          .transition()
+          .delay(0) //12000
+          .duration(1500)
+          .style('opacity', 1);
+
+        line
+          .transition()
+          .delay(0) //13000
+          .duration(1000)
+          .style("opacity", 1)
+
+        axisTriggered
+          .transition()
+          .delay(0) //15000
+          .duration(2000)
+          .style("opacity", 1);
+
+        triggeredLabel = d3.select(canvas)
+          .append("div")
+          .attr("class", "chart-label")
+          .html(
+            "Earthquakes 10 days after the Landers mainshock"
+          )
+          .style("position", "absolute")
+          .style("width", "200px")
+          .style("opacity", 0)
+          .style("left", width / 1.5 + "px")
+          .style("top", height / 3.7 + "px")
+          .style("text-anchor", "left")
+          .transition()
+          .delay(0) //17500
+          .duration(2000)
+          .style("opacity", 1);
+
+        trigger
+          .selectAll(".landers-triggered")
+          .data(dataTriggered.features)
+          .transition()
+          .delay(d => 0 + randNum(20, 150) + d.properties.id_overall * 30) //20000
+          .attr("r", 10)
+          .style("opacity", 1)
+          .attr("fill", "#872B32")
+          .attr("cx", d => timeScaleTriggered(d.properties.day))
+          .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
+
+      };
+
+      function drawChartBackwards(dataBefore, dataTriggered) {
+        timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
+        timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
+
+        before
+          .selectAll(".landers-before")
+          .data(dataBefore.features)
+          .attr("r", 10)
+          .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#DC0505
+          .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
+          .attr("cx", d => timeScaleBefore(d.properties.day))
+          .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
+
+
+        trigger
+          .selectAll(".landers-triggered")
+          .data(dataTriggered.features)
+          .attr("r", 10)
+          .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
+          .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5)
+          .attr("cx", d => timeScaleTriggered(d.properties.day))
+          .attr("cy", d => height - margin.bottom - (d.properties.id_day * 20));
+
+      };
+
+      function highlightChart(dataBefore, dataTriggered) {
+        before
+          .selectAll(".landers-before")
+          .data(dataBefore.features)
+          .transition()
+          .delay(300)
+          .duration(1000)
+          .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
+          .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
+
+        trigger
+          .selectAll(".landers-triggered")
+          .data(dataTriggered.features)
+          .transition()
+          .delay(300)
+          .duration(1000)
+          .attr("fill", d => d.properties.mag > 5 ? "#872B32" : "#373536") //#C3402C
+          .style("opacity", d => d.properties.mag > 5 ? 1 : 0.5);
+      };
+
+      function reverseHighlightChart(dataBefore, dataTriggered) {
+        before
+          .selectAll(".landers-before")
+          .data(dataBefore.features)
+          .transition()
+          .delay(700)
+          .duration(1000)
+          .attr("fill", "#872B32")
+          .style("opacity", 1);
+
+        trigger
+          .selectAll(".landers-triggered")
+          .data(dataTriggered.features)
+          .transition()
+          .delay(700)
+          .duration(1000)
+          .attr("fill", "#872B32")
+          .style("opacity", 1);
+      };
+      //function to draw stacked dot histogram
+      function reverseChart(dataBefore, dataTriggered) {
+        aScale.domain([2.5, 7.3]);
+        colorScale.domain([2.5, 7.3]);
+        timeScaleBefore.domain(d3.extent(dataBefore.features.map(d => d.properties).map(d => d.day)));
+        timeScaleTriggered.domain(d3.extent(dataTriggered.features.map(d => d.properties).map(d => d.day)));
+
+        before
+          .selectAll(".landers-before")
+          .data(dataBefore.features)
+          .transition()
+          .attr("r", d => aScale(d.properties.mag))
+          .style("opacity", 0.3)
+          .attr("fill", "#515151");
+        update();
+
+        trigger
+          .selectAll(".landers-triggered")
+          .data(dataTriggered.features)
+          .transition()
+          .attr("r", d => aScale(d.properties.mag))
+          .style("opacity", 0.7)
+          .attr("fill", d => colorScale(d.properties.mag));
+
+        update();
+      };
+
+      function drawBars(data) {
+        innerRadius = 190,
+          outerRadius = Math.min(width, height) / 2.1;
+
+        bars = svg.append("g")
+          .attr("class", "bar-chart")
+          .attr("transform", `translate(${width/2}, ${height/2})`);
+
+        // X scale
+        var x = d3.scaleBand()
+          .range([0, 2 * Math.PI])
+          .align(0)
+          .domain(data.map(function(d) {
+            return d.deg;
+          }));
+
+        // Y scale
+        var y = d3.scaleRadial()
+          .range([innerRadius, outerRadius])
+          .domain([0, d3.max(data, d => d.rel_rate)]);
+
+        bars
+          .selectAll("path")
           .data(data)
-          .enter().append("g")
-          .attr("transform", d => `
+          .enter()
+          .append("path")
+          .style("opacity", 0)
+          .attr("d", d3.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(function(d) {
+              return y(d.rel_rate);
+            })
+            .startAngle(function(d) {
+              return x(d.deg);
+            })
+            .endAngle(function(d) {
+              return x(d.deg) + x.bandwidth();
+            })
+            .padAngle(0.01)
+            .padRadius(innerRadius))
+          .transition()
+          .delay(7000)
+          .duration(1000)
+          .style("opacity", 1);
+
+        xAxis = g => g
+          .attr("text-anchor", "middle")
+          .call(g => g.selectAll("g")
+            .data(data)
+            .enter().append("g")
+            .attr("transform", d => `
                   rotate(${((x(d.deg) + x.bandwidth() / 2) * 180 / Math.PI - 90)})
                   translate(${innerRadius},0)
                 `)
-          .call(g => g.append("line")
-            .attr("x2", -5)
-            .attr("stroke", "#000"))
+            .call(g => g.append("line")
+              .attr("x2", -5)
+              .attr("stroke", "#000"))
+            .call(g => g.append("text")
+              .attr("transform", d => (x(d.deg) + x.bandwidth() / 2 + Math.PI / 2) % (2 * Math.PI) < Math.PI ?
+                "rotate(90)translate(0,16)" :
+                "rotate(-90)translate(0,-9)")
+              .text(d => d.deg)))
+
+        yAxis = g => g
+          .attr("text-anchor", "middle")
           .call(g => g.append("text")
-            .attr("transform", d => (x(d.deg) + x.bandwidth() / 2 + Math.PI / 2) % (2 * Math.PI) < Math.PI ?
-              "rotate(90)translate(0,16)" :
-              "rotate(-90)translate(0,-9)")
-            .text(d => d.deg)))
+            .attr("y", d => -y(y.ticks(5).pop()))
+            .attr("dy", "-0.7em")
+            .text("Relative rate"))
+          .attr("font-size", "16px")
+          .call(g => g.selectAll("g")
+            .data(y.ticks(5).slice(1))
+            .enter().append("g")
+            .call(g => g.append("circle")
+              .attr("class", "bar-axis")
+              .attr("r", y))
+            .call(g => g.append("text")
+              .attr("y", d => -y(d))
+              .attr("dy", "0.45em")
+              .attr("stroke", "#fff")
+              .attr("stroke-width", 3)
+              .text(y.tickFormat(5, "s"))
+              .clone(true)
+              .attr("fill", "#000")
+              .attr("font-size", "16px")
+              .attr("stroke", "none")))
 
-      yAxis = g => g
-        .attr("text-anchor", "middle")
-        .call(g => g.append("text")
-          .attr("y", d => -y(y.ticks(5).pop()))
-          .attr("dy", "-0.7em")
-          .text("Relative rate"))
-        .attr("font-size", "16px")
-        .call(g => g.selectAll("g")
-          .data(y.ticks(5).slice(1))
-          .enter().append("g")
-          .call(g => g.append("circle")
-            .attr("class", "bar-axis")
-            .attr("r", y))
-          .call(g => g.append("text")
-            .attr("y", d => -y(d))
-            .attr("dy", "0.45em")
-            .attr("stroke", "#fff")
-            .attr("stroke-width", 3)
-            .text(y.tickFormat(5, "s"))
-            .clone(true)
-            .attr("fill", "#000")
-            .attr("font-size", "16px")
-            .attr("stroke", "none")))
+        // svg.append("g")
+        //   .attr("class", "bar-axis")
+        //   .attr("transform", `translate(${width/2}, ${height/2})`)
+        //   .call(xAxis);
+        svg.append("g")
+          .attr("class", "bar-axis")
+          .attr("transform", `translate(${width/2}, ${height/2})`)
+          .style("opacity", 0)
+          .call(yAxis)
+          .transition()
+          .delay(7000)
+          .duration(1000)
+          .style("opacity", 0.9);
 
-      // svg.append("g")
-      //   .attr("class", "bar-axis")
-      //   .attr("transform", `translate(${width/2}, ${height/2})`)
-      //   .call(xAxis);
-      svg.append("g")
-        .attr("class", "bar-axis")
-        .attr("transform", `translate(${width/2}, ${height/2})`)
-        .style("opacity", 0)
-        .call(yAxis)
-        .transition()
-        .delay(3000)
-        .duration(1000)
-        .style("opacity", 0.9);
+        var myimage = svg.append('image')
+          .attr('xlink:href', 'earth_outline.png')
+          .attr("class", "globe")
+          .attr('width', innerRadius * 1.9)
+          .attr('height', innerRadius * 1.9)
+          .attr("x", width / 2 - innerRadius / 1.05)
+          .attr("y", height / 2 - innerRadius / 1.05);
 
-      var myimage = svg.append('image')
-        .attr('xlink:href', 'earth_outline.png')
-        .attr("class", "globe")
-        .attr('width', innerRadius * 1.9)
-        .attr('height', innerRadius * 1.9)
-        .attr("x", width / 2 - innerRadius / 1.05)
-        .attr("y", height / 2 - innerRadius / 1.05);
+        var arc = d3.arc()
+          .innerRadius(innerRadius / 1.1)
+          .outerRadius(innerRadius / 1.04)
+          .startAngle(Math.PI);
 
-      var arc = d3.arc()
-        .innerRadius(innerRadius / 1.1)
-        .outerRadius(innerRadius / 1.04)
-        .startAngle(Math.PI);
+        var righthand = svg.append("g")
+          .attr("transform", `translate(${width/2}, ${height/2})`)
+          .append("path")
+          .datum({
+            endAngle: 0
+          })
+          .attr("class", "strain-wave")
+          .style("opacity", 0)
+          .attr("fill", "#83c1c1")
+          .attr("d", arc);
 
-      var righthand = svg.append("g")
-        .attr("transform", `translate(${width/2}, ${height/2})`)
-        .append("path")
-        .datum({
-          endAngle: 0
-        })
-        .attr("class", "strain-wave")
-        .style("opacity", 0)
-        .attr("fill", "#83c1c1")
-        .attr("d", arc);
+        var lefthand = svg.append("g")
+          .attr("transform", `translate(${width/2}, ${height/2})`)
+          .append("path")
+          .datum({
+            endAngle: 2 * Math.PI
+          })
+          .attr("class", "strain-wave")
+          .style("opacity", 0)
+          .attr("fill", "#83c1c1") //#961D72
+          .attr("d", arc);
 
-      var lefthand = svg.append("g")
-        .attr("transform", `translate(${width/2}, ${height/2})`)
-        .append("path")
-        .datum({
-          endAngle: 2 * Math.PI
-        })
-        .attr("class", "strain-wave")
-        .style("opacity", 0)
-        .attr("fill", "#83c1c1") //#961D72
-        .attr("d", arc);
+        svg.append("g")
+          .append("circle")
+          .attr("class", "mainshockDummy")
+          .attr("cx", width / 2)
+          .attr("cy", height / 2 + innerRadius / 1.08)
+          .attr("r", 0)
+          .attr("fill", "#C3402C")
+          .style("opacity", 1)
+          .transition()
+          .delay(1000)
+          .duration(700)
+          .ease(d3.easeElastic)
+          .attr("r", 15);
 
-      svg.append("g")
-        .append("circle")
-        .attr("class", "mainshockDummy")
-        .attr("cx", width / 2)
-        .attr("cy", height / 2 + innerRadius / 1.08)
-        .attr("r", 0)
-        .attr("fill", "#C3402C")
-        .style("opacity", 1)
-        .transition()
-        .delay(1000)
-        .duration(700)
-        .ease(d3.easeElastic)
-        .attr("r", 15);
+        var deadzone = svg.append("g")
+          .attr("transform", `translate(${width/2}, ${height/2})`)
+          .append("path")
+          .attr("class", "deadzone")
+          .style("opacity", 0)
+          .attr("fill", "#9A9A9A")
+          .attr("d", d3.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(innerRadius / 0.8)
+            .startAngle(Math.PI / 1.15)
+            .endAngle(Math.PI * 1.13)
+          )
+          .transition()
+          .delay(4000)
+          .duration(1000)
+          .style("opacity", 0.5);
 
-      var deadzone = svg.append("g")
-        .attr("transform", `translate(${width/2}, ${height/2})`)
-        .append("path")
-        .attr("class", "deadzone")
-        .style("opacity", 0)
-        .attr("fill", "#9A9A9A")
-        .attr("d", d3.arc()
-          .innerRadius(innerRadius)
-          .outerRadius(innerRadius / 0.8)
-          .startAngle(Math.PI / 1.15)
-          .endAngle(Math.PI * 1.13)
-        )
-        .transition()
-        .delay(2500)
-        .duration(1000)
-        .style("opacity", 0.5);
+        righthand.transition()
+          .delay(1500)
+          .duration(1000)
+          .style("opacity", 1)
+          .attrTween("d", function(d) {
+            var start = {
+              startAngle: Math.PI,
+              endAngle: Math.PI
+            };
+            var interpolate = d3.interpolate(start, d);
+            return function(t) {
+              return arc(interpolate(t));
+            };
+          });
 
-      righthand.transition()
-        .delay(1200)
-        .duration(1000)
-        .style("opacity", 1)
-        .attrTween("d", function(d) {
-          var start = {
-            startAngle: Math.PI,
-            endAngle: Math.PI
-          };
-          var interpolate = d3.interpolate(start, d);
-          return function(t) {
-            return arc(interpolate(t));
-          };
-        });
+        lefthand.transition()
+          .delay(1500)
+          .duration(1000)
+          .style("opacity", 1)
+          .attrTween("d", function(d) {
+            var start = {
+              startAngle: Math.PI,
+              endAngle: Math.PI
+            };
+            var interpolate = d3.interpolate(start, d);
+            return function(t) {
+              return arc(interpolate(t));
+            };
+          });
 
-      lefthand.transition()
-        .delay(1200)
-        .duration(1000)
-        .style("opacity", 1)
-        .attrTween("d", function(d) {
-          var start = {
-            startAngle: Math.PI,
-            endAngle: Math.PI
-          };
-          var interpolate = d3.interpolate(start, d);
-          return function(t) {
-            return arc(interpolate(t));
-          };
-        });
+        const arrowPath1 = `M ${width/2.28},${height/1.2} C ${width/2},${height/1.2} ${width/2},${height/1.35} ${width/2},${height/1.35}`
 
-        // mainshockLabel = d3.select(canvas)
-        //   .append("div")
-        //   .attr("class", "chart-label")
-        //   .html(
-        //     "On Jan 28th 1992, a magnitude 7.3 earthquake strikes near Landers, California"
-        //   )
-        //   .style("position", "absolute")
-        //   .style("width", "200px")
-        //   .style("opacity", 0)
-        //   .style("left", width / 2 - 220 + "px")
-        //   .style("top", height / 5.1 + "px")
-        //   .style("text-anchor", "left")
-        //   .style("font-size", "16px")
-        //   .transition()
-        //   .delay(0) //11000
-        //   .duration(2000)
-        //   .style("opacity", 1);
-        //
-        // arrow = svg.append("path")
-        //   .attr('marker-end', 'url(#arrowhead)')
-        //   .attr("d", arrowPath)
-        //   .attr("class", "myArrow")
-        //   .style('opacity', 0)
-        //   .style("fill", "none")
-        //   .attr("stroke-width", 1)
-        //   .attr("stroke", "black")
-        //   .transition()
-        //   .delay(0) //12000
-        //   .duration(1500)
-        //   .style('opacity', 1);
+        mainshockBarLabel = d3.select(canvas)
+          .append("div")
+          .attr("class", "bar-label")
+          .html(
+            "A large mainshock occurs, sending out seismic waves that meet at the antipode"
+          )
+          .style("position", "absolute")
+          .style("width", "200px")
+          .style("opacity", 0)
+          .style("left", width / 4 + "px")
+          .style("top", height / 1.25 + "px")
+          .style("text-anchor", "left")
+          .style("font-size", "16px")
+          .transition()
+          .delay(1200) //11000
+          .duration(1000)
+          .style("opacity", 1);
 
+        arrow1 = svg.append("path")
+          .attr('marker-end', 'url(#arrowhead)')
+          .attr("d", arrowPath1)
+          .attr("class", "bar-arrow")
+          .style('opacity', 0)
+          .style("fill", "none")
+          .attr("stroke-width", 1)
+          .attr("stroke", "black")
+          .transition()
+          .delay(1000) //12000
+          .duration(1000)
+          .style('opacity', 1);
 
-    };
+        const arrowPath2 = `M ${width/1.75},${height/1.2} C ${width/1.85},${height/1.2} ${width/1.85},${height/1.27} ${width/1.85},${height/1.27}`
 
-    function highlightBars(data) {
-      d3.selectAll("g.bar-chart")
-        .selectAll("path")
-        .data(data)
-        .transition()
-        .delay(300)
-        .duration(1000)
-        .style("opacity", d => d.rel_rate > 1.5 ? 1 : 0.5)
-        .style("fill", d => d.rel_rate > 1.5 ? "#872B32" : "#373536"); //#aa0303
-    };
+        deadzoneBarLabel = d3.select(canvas)
+          .append("div")
+          .attr("class", "bar-label")
+          .html(
+            "The region within 30 degrees of the mainshock is ignored"
+          )
+          .style("position", "absolute")
+          .style("width", "200px")
+          .style("opacity", 0)
+          .style("left", width / 1.72 + "px")
+          .style("top", height / 1.25 + "px")
+          .style("text-anchor", "left")
+          .style("font-size", "16px")
+          .transition()
+          .delay(4000) //11000
+          .duration(1000)
+          .style("opacity", 1);
 
-    function reverseHighlightBars() {
-      d3.selectAll("g.bar-chart")
-        .selectAll("path")
-        .transition()
-        .delay(300)
-        .duration(500)
-        .style("opacity", 1)
-        .style("fill", "#872B32"); //#aa0303
-    };
+        arrow2 = svg.append("path")
+          .attr('marker-end', 'url(#arrowhead)')
+          .attr("d", arrowPath2)
+          .attr("class", "bar-arrow")
+          .style('opacity', 0)
+          .style("fill", "none")
+          .attr("stroke-width", 1)
+          .attr("stroke", "black")
+          .transition()
+          .delay(4000) //12000
+          .duration(1000)
+          .style('opacity', 1);
 
-    function redrawCircles(data) {
-      innerRadius = 190,
-        outerRadius = Math.min(width, height) / 2.1;
+        const arrowPath3 = `M ${width/1.28},${height/8} C ${width/1.35},${height/9} ${width/1.45},${height/9} ${width/1.5},${height/8}`
 
-      // Y scale
-      var y = d3.scaleRadial()
-        .range([innerRadius, outerRadius])
-        .domain([0, d3.max(data, d => d.rel_rate)]);
+        rateBarLabel = d3.select(canvas)
+          .append("div")
+          .attr("class", "bar-label")
+          .html(
+            "Bars represent the relative rate of earthquakes in the three days following the mainshock compared to a historical average for each five-degree distance from the mainshock"
+          )
+          .style("position", "absolute")
+          .style("width", "200px")
+          .style("opacity", 0)
+          .style("left", width / 1.26 + "px")
+          .style("top", height / 16 + "px")
+          .style("text-anchor", "left")
+          .style("font-size", "16px")
+          .transition()
+          .delay(7000) //11000
+          .duration(1000)
+          .style("opacity", 1);
 
-      svg.append("g")
-        .append("circle")
-        .attr("class", "mainshockDummy")
-        .attr("cx", width / 2)
-        .attr("cy", height / 2 + innerRadius / 1.08)
-        .attr("r", 15)
-        .attr("fill", "#C3402C") // #E3191C
-        .style("opacity", 1);
+        arrow3 = svg.append("path")
+          .attr('marker-end', 'url(#arrowhead)')
+          .attr("d", arrowPath3)
+          .attr("class", "bar-arrow")
+          .style('opacity', 0)
+          .style("fill", "none")
+          .attr("stroke-width", 1)
+          .attr("stroke", "black")
+          .transition()
+          .delay(7000) //12000
+          .duration(1000)
+          .style('opacity', 1);
 
-      yAxis = g => g
-        .attr("text-anchor", "middle")
-        .call(g => g.append("text")
-          .attr("y", d => -y(y.ticks(5).pop()))
-          .attr("dy", "-0.7em")
-          .text("Relative rate"))
-        .attr("font-size", "16px")
-        .call(g => g.selectAll("g")
-          .data(y.ticks(5).slice(1))
-          .enter().append("g")
-          .call(g => g.append("circle")
-            .attr("class", "bar-axis")
-            .attr("r", y))
-          .call(g => g.append("text")
-            .attr("y", d => -y(d))
-            .attr("dy", "0.45em")
-            .attr("stroke", "#fff")
-            .attr("stroke-width", 3)
-            .text(y.tickFormat(5, "s"))
-            .clone(true)
-            .attr("fill", "#000")
-            .attr("font-size", "16px")
-            .attr("stroke", "none")))
-
-      svg.append("g")
-        .attr("class", "bar-axis")
-        .attr("transform", `translate(${width/2}, ${height/2})`)
-        .style("opacity", 0.9)
-        .call(yAxis);
-
-    };
-
-    //function to remove selected points
-    function eraseData(pointClass) {
-      d3.selectAll(pointClass).remove()
-    }
-    //function to fade opacity of selected points
-    function fadeData(pointClass) {
-      svg.selectAll(pointClass)
-        .transition()
-        .duration(500)
-        .style("opacity", 0.3)
-        .attr("fill", "#515151");
-    }
-
-    ///if we have time make this a real function to restore colors to faded data
-    function unfadeData(pointClass) {
-      colorScale.domain([2.5, 7.3]);
-
-
-      svg.selectAll(pointClass)
-        .transition()
-        .duration(500)
-        .style("opacity", 0.3)
-        .attr("fill", d => colorScale(d.properties.mag))
-    }
-
-    function hideEl(myClass) {
-      d3.selectAll(myClass)
-        .transition()
-        .duration(500)
-        .style("opacity", 0);
-    }
-
-
-    function showEl(myClass, opacity) {
-      d3.selectAll(myClass)
-        .transition()
-        .duration(500)
-        .style("opacity", opacity);
-    }
-
-    function setMapOpacity(value) {
-      d3.selectAll(".mapboxgl-canvas")
-        .transition()
-        .duration(500)
-        .style("opacity", value);
-      d3.selectAll(".mapboxgl-control-container")
-        .transition()
-        .duration(500)
-        .style("opacity", value);
-    }
-
-    function showMap() {
-      setMapOpacity(1);
-    }
-
-    function hideMap() {
-      setMapOpacity(0.1);
-    }
-
-
-    // initialize the scrollama
-    var scroller = scrollama();
-
-    // scrollama event handlers
-    function handleStepEnter(response) {
-      // response = { element, direction, index }
-      console.log(response);
-      // add to color to current step
-      response.element.classList.add('active');
-      if (response.element.attributes['step-num'].value === '12') {
-        map.setPaintProperty('strainWaves', 'fill-opacity', 0.4)
-      };
-      if (response.direction === 'down') {
-        if (response.element.attributes['step-num'].value === '2') {
-          map.flyTo(chapters['section1']);
-          initData(landers_before_url, before, "landers-before", [2.5, 8], [0, 500], 1500); //range [0,4000] when not debugging
-        };
-        if (response.element.attributes['step-num'].value === '3') {
-          initData(landers_mainshock_url, mainshock, "landers-mainshock", [2.5, 8], [0, 4000], 700, d3.easeElastic,
-            1000);
-        }
-        if (response.element.attributes['step-num'].value === '4') {
-          initData(landers_aftershocks_url, aftershock, "landers-aftershocks", [2.5, 8], [0, 700]);
-        }
-        if (response.element.attributes['step-num'].value === '5') {
-          initData(landers_triggered_url, trigger, "landers-triggered", [2.5, 8], [0, 500]); //range [0,4000] when not debugging
-        }
-        if (response.element.attributes['step-num'].value === '6') {
-          hideMap();
-          hideEl(".landers-aftershocks,.landers-mainshock");
-          initChart(landers_before_url, landers_triggered_url);
-        }
-        if (response.element.attributes['step-num'].value === '7') {
-          initChartHighlight(landers_before_url, landers_triggered_url);
-        }
-        if (response.element.attributes['step-num'].value === '8') {
-          map.flyTo(chapters['welcome']);
-        }
-        if (response.element.attributes['step-num'].value === '9') {
-          initData(sumatra_before_url, before, "sumatra-before", [2.5, 8], [0, 500], 500); //range [0,4000] when not debugging
-        };
-        if (response.element.attributes['step-num'].value === '10') {
-          initData(sumatra_mainshock_url, mainshock, "sumatra-mainshock", [2.5, 8], [0, 4000], 700, d3.easeElastic,
-            1000); //range [0,4000] when not debugging
-        };
-        if (response.element.attributes['step-num'].value === '11') {
-          initData(sumatra_triggered_url, trigger, "sumatra-triggered", [2.5, 8], [0, 500]); //range [0,4000] when not debugging
-        };
-        if (response.element.attributes['step-num'].value === '13') {
-          hideEl(".sumatra-before,.sumatra-mainshock,.sumatra-triggered");
-          hideMap();
-          initBars(bars_url);
-        };
-        if (response.element.attributes['step-num'].value === '14') {
-          initBarsHighlight(bars_url);
-        };
-        if (response.element.attributes['step-num'].value === '17') {
-          hideEl(".oita-triggered,.oita-mainshock");
-          //hideArcs(arcsLayer);
-          map.flyTo(chapters['section3']);
-          initPoints(hokkaido_mainshock_url, mainshockHokkaido, "hokkaido-mainshock", [2.5, 8], [0, 4000], 3000, d3.easeElastic,
-            1000); //range [0,4000] when not debugging
-        };
-        if (response.element.attributes['step-num'].value === '18') {
-          initPoints(hokkaido_triggered_url, triggeredHokkaido, "hokkaido-triggered", [2.5, 8], [0, 4000], 1500, d3.easeElastic,
-            1000); //range [0,4000] when not debugging
-          animateArcs(arcsLayer);
-        };
 
       };
-      if (response.direction === 'up') {
-        if (response.element.attributes['step-num'].value === '1') {
-          map.flyTo(chapters['welcome']);
-        }
-        if (response.element.attributes['step-num'].value === '5') {
-          showMap();
-          eraseData(".chart-axis,.mainshock-line,.chart-label,.myArrow");
-          exitChart(landers_before_url, landers_triggered_url);
-          showEl(".landers-aftershocks,.landers-mainshock", 0.7);
-          map.flyTo(chapters['section1']);
-        }
-        if (response.element.attributes['step-num'].value === '6') {
-          exitChartHighlight(landers_before_url, landers_triggered_url);
-          //showEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
-        }
-        if (response.element.attributes['step-num'].value === '7') {
-          hideMap();
-          showEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
-          initChartBackwards(landers_before_url, landers_triggered_url);
-        }
+
+      function highlightBars(data) {
+        d3.selectAll("g.bar-chart")
+          .selectAll("path")
+          .data(data)
+          .transition()
+          .delay(300)
+          .duration(1000)
+          .style("opacity", d => d.rel_rate > 1.5 ? 1 : 0.5)
+          .style("fill", d => d.rel_rate > 1.5 ? "#872B32" : "#373536"); //#aa0303
+      };
+
+      function reverseHighlightBars() {
+        d3.selectAll("g.bar-chart")
+          .selectAll("path")
+          .transition()
+          .delay(300)
+          .duration(500)
+          .style("opacity", 1)
+          .style("fill", "#872B32"); //#aa0303
+      };
+
+      function redrawCircles(data) {
+        innerRadius = 190,
+          outerRadius = Math.min(width, height) / 2.1;
+
+        // Y scale
+        var y = d3.scaleRadial()
+          .range([innerRadius, outerRadius])
+          .domain([0, d3.max(data, d => d.rel_rate)]);
+
+        svg.append("g")
+          .append("circle")
+          .attr("class", "mainshockDummy")
+          .attr("cx", width / 2)
+          .attr("cy", height / 2 + innerRadius / 1.08)
+          .attr("r", 15)
+          .attr("fill", "#C3402C") // #E3191C
+          .style("opacity", 1);
+
+        yAxis = g => g
+          .attr("text-anchor", "middle")
+          .call(g => g.append("text")
+            .attr("y", d => -y(y.ticks(5).pop()))
+            .attr("dy", "-0.7em")
+            .text("Relative rate"))
+          .attr("font-size", "16px")
+          .call(g => g.selectAll("g")
+            .data(y.ticks(5).slice(1))
+            .enter().append("g")
+            .call(g => g.append("circle")
+              .attr("class", "bar-axis")
+              .attr("r", y))
+            .call(g => g.append("text")
+              .attr("y", d => -y(d))
+              .attr("dy", "0.45em")
+              .attr("stroke", "#fff")
+              .attr("stroke-width", 3)
+              .text(y.tickFormat(5, "s"))
+              .clone(true)
+              .attr("fill", "#000")
+              .attr("font-size", "16px")
+              .attr("stroke", "none")))
+
+        svg.append("g")
+          .attr("class", "bar-axis")
+          .attr("transform", `translate(${width/2}, ${height/2})`)
+          .style("opacity", 0.9)
+          .call(yAxis);
+
+      };
+
+      //function to remove selected points
+      function eraseData(pointClass) {
+        d3.selectAll(pointClass).remove()
+      }
+      //function to fade opacity of selected points
+      function fadeData(pointClass) {
+        svg.selectAll(pointClass)
+          .transition()
+          .duration(500)
+          .style("opacity", 0.3)
+          .attr("fill", "#515151");
+      }
+
+      ///if we have time make this a real function to restore colors to faded data
+      function unfadeData(pointClass) {
+        colorScale.domain([2.5, 7.3]);
+
+
+        svg.selectAll(pointClass)
+          .transition()
+          .duration(500)
+          .style("opacity", 0.3)
+          .attr("fill", d => colorScale(d.properties.mag))
+      }
+
+      function hideEl(myClass) {
+        d3.selectAll(myClass)
+          .transition()
+          .duration(500)
+          .style("opacity", 0);
+      }
+
+
+      function showEl(myClass, opacity) {
+        d3.selectAll(myClass)
+          .transition()
+          .duration(500)
+          .style("opacity", opacity);
+      }
+
+      function setMapOpacity(value) {
+        d3.selectAll(".mapboxgl-canvas")
+          .transition()
+          .duration(500)
+          .style("opacity", value);
+        d3.selectAll(".mapboxgl-control-container")
+          .transition()
+          .duration(500)
+          .style("opacity", value);
+      }
+
+      function showMap() {
+        setMapOpacity(1);
+      }
+
+      function hideMap() {
+        setMapOpacity(0.1);
+      }
+
+
+      // initialize the scrollama
+      var scroller = scrollama();
+
+      // scrollama event handlers
+      function handleStepEnter(response) {
+        // response = { element, direction, index }
+        console.log(response);
+        // add to color to current step
+        response.element.classList.add('active');
         if (response.element.attributes['step-num'].value === '12') {
-          map.flyTo(chapters['welcome'])
-          //eraseData(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
-          showMap();
-          showEl(".sumatra-before", 0.3);
-          showEl(".sumatra-mainshock,.sumatra-triggered", 0.7)
+          map.setPaintProperty('strainWaves', 'fill-opacity', 0.4)
         };
-        if (response.element.attributes['step-num'].value === '13') {
-          reverseHighlightBars();
-        };
-        if (response.element.attributes['step-num'].value === '14') {
-          initRedrawCircles(bars_url);
-          showEl(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
-          hideMap();
-        };
+        if (response.direction === 'down') {
+          if (response.element.attributes['step-num'].value === '2') {
+            map.flyTo(chapters['section1']);
+            initData(landers_before_url, before, "landers-before", [2.5, 8], [0, 1500], 1500); //range [0,4000] when not debugging
+          };
+          if (response.element.attributes['step-num'].value === '3') {
+            initData(landers_mainshock_url, mainshock, "landers-mainshock", [2.5, 8], [0, 15000], 700, d3.easeElastic,
+              1000);
+          }
+          if (response.element.attributes['step-num'].value === '4') {
+            initData(landers_aftershocks_url, aftershock, "landers-aftershocks", [2.5, 8], [0, 700]);
+          }
+          if (response.element.attributes['step-num'].value === '5') {
+            initData(landers_triggered_url, trigger, "landers-triggered", [2.5, 8], [0, 1500]); //range [0,4000] when not debugging
+          }
+          if (response.element.attributes['step-num'].value === '6') {
+            hideMap();
+            hideEl(".landers-aftershocks,.landers-mainshock");
+            initChart(landers_before_url, landers_triggered_url);
+          }
+          if (response.element.attributes['step-num'].value === '7') {
+            initChartHighlight(landers_before_url, landers_triggered_url);
+          }
+          if (response.element.attributes['step-num'].value === '8') {
+            map.flyTo(chapters['welcome']);
+          }
+          if (response.element.attributes['step-num'].value === '9') {
+            initData(sumatra_before_url, before, "sumatra-before", [2.5, 8], [0, 1500], 200); //range [0,4000] when not debugging
+          };
+          if (response.element.attributes['step-num'].value === '10') {
+            initData(sumatra_mainshock_url, mainshock, "sumatra-mainshock", [2.5, 8], [0, 15000], 700, d3.easeElastic,
+              1000); //range [0,4000] when not debugging
+          };
+          if (response.element.attributes['step-num'].value === '11') {
+            initData(sumatra_triggered_url, trigger, "sumatra-triggered", [2.5, 8], [0, 1500]); //range [0,4000] when not debugging
+          };
+          if (response.element.attributes['step-num'].value === '13') {
+            hideEl(".sumatra-before,.sumatra-mainshock,.sumatra-triggered");
+            hideMap();
+            initBars(bars_url);
+          };
+          if (response.element.attributes['step-num'].value === '14') {
+            initBarsHighlight(bars_url);
+          };
+          if (response.element.attributes['step-num'].value === '17') {
+            hideEl(".oita-triggered,.oita-mainshock");
+            //hideArcs(arcsLayer);
+            map.flyTo(chapters['section3']);
+            initPoints(hokkaido_mainshock_url, mainshockHokkaido, "hokkaido-mainshock", [2.5, 8], [0, 4000], 2000, d3.easeElastic,
+              1000); //range [0,4000] when not debugging
+          };
+          if (response.element.attributes['step-num'].value === '18') {
+            initPoints(hokkaido_triggered_url, triggeredHokkaido, "hokkaido-triggered", [2.5, 8], [0, 4000], 1250, d3.easeElastic,
+              1000); //range [0,4000] when not debugging
+            animateArcs(arcsLayer);
+          };
 
-      }
-    };
+        };
+        if (response.direction === 'up') {
+          if (response.element.attributes['step-num'].value === '1') {
+            map.flyTo(chapters['welcome']);
+          }
+          if (response.element.attributes['step-num'].value === '5') {
+            showMap();
+            eraseData(".chart-axis,.mainshock-line,.chart-label,.myArrow");
+            exitChart(landers_before_url, landers_triggered_url);
+            showEl(".landers-aftershocks,.landers-mainshock", 0.7);
+            map.flyTo(chapters['section1']);
+          }
+          if (response.element.attributes['step-num'].value === '6') {
+            exitChartHighlight(landers_before_url, landers_triggered_url);
+            //showEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
+          }
+          if (response.element.attributes['step-num'].value === '7') {
+            hideMap();
+            showEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
+            initChartBackwards(landers_before_url, landers_triggered_url);
+          }
+          if (response.element.attributes['step-num'].value === '12') {
+            map.flyTo(chapters['welcome'])
+            //eraseData(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
+            showMap();
+            showEl(".sumatra-before", 0.3);
+            showEl(".sumatra-mainshock,.sumatra-triggered", 0.7)
+          };
+          if (response.element.attributes['step-num'].value === '13') {
+            reverseHighlightBars();
+          };
+          if (response.element.attributes['step-num'].value === '14') {
+            initRedrawCircles(bars_url);
+            showEl(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone,.bar-label,.bar-arrow")
+            hideMap();
+          };
 
-    function handleStepExit(response) {
-      // response = { element, direction, index }
-      console.log(response);
-      // remove color from current step
-      response.element.classList.remove('active');
-      if (response.element.attributes['step-num'].value === '12') {
-        map.setPaintProperty('strainWaves', 'fill-opacity', 0)
+        }
       };
-      if (response.direction === 'down') {
-        if (response.element.attributes['step-num'].value === '2') {
-          fadeData(".landers-before");
 
+      function handleStepExit(response) {
+        // response = { element, direction, index }
+        console.log(response);
+        // remove color from current step
+        response.element.classList.remove('active');
+        if (response.element.attributes['step-num'].value === '12') {
+          map.setPaintProperty('strainWaves', 'fill-opacity', 0)
+        };
+        if (response.direction === 'down') {
+          if (response.element.attributes['step-num'].value === '2') {
+            fadeData(".landers-before");
+
+          }
+          if (response.element.attributes['step-num'].value === '4') {
+            fadeData(".landers-aftershocks");
+
+          }
+          if (response.element.attributes['step-num'].value === '5') {
+            fadeData(".landers-triggered");
+
+          }
+          if (response.element.attributes['step-num'].value === '6') {
+            //showMap();
+            //hideEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.chart-label,.myArrow");
+          }
+          if (response.element.attributes['step-num'].value === '7') {
+            hideEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
+            showMap();
+          }
+          if (response.element.attributes['step-num'].value === '9') {
+            fadeData(".sumatra-before");
+          };
+          if (response.element.attributes['step-num'].value === '14') {
+            eraseData(".mainshockDummy,.bar-axis");
+            hideEl(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone,.bar-label,.bar-arrow")
+            showMap();
+          };
+
+        };
+        if (response.direction === 'up') {
+          if (response.element.attributes['step-num'].value === '2') {
+            eraseData(".landers-before");
+
+          };
+          if (response.element.attributes['step-num'].value === '3') {
+            eraseData(".landers-mainshock");
+
+          }
+          if (response.element.attributes['step-num'].value === '4') {
+            eraseData(".landers-aftershocks");
+
+          }
+          if (response.element.attributes['step-num'].value === '5') {
+            eraseData(".landers-triggered");
+
+          }
+          if (response.element.attributes['step-num'].value === '9') {
+            eraseData(".sumatra-before");
+          };
+          if (response.element.attributes['step-num'].value === '10') {
+            eraseData(".sumatra-mainshock");
+          };
+          if (response.element.attributes['step-num'].value === '11') {
+            eraseData(".sumatra-triggered");
+          };
+          if (response.element.attributes['step-num'].value === '13') {
+            eraseData(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone,.bar-label,.bar-arrow");
+          };
+
+          if (response.element.attributes['step-num'].value === '17') {
+            eraseData(".hokkaido-mainshock");
+          };
+          if (response.element.attributes['step-num'].value === '18') {
+            eraseData(".hokkaido-triggered");
+            hideArcs(arcsLayer);
+          };
         }
-        if (response.element.attributes['step-num'].value === '4') {
-          fadeData(".landers-aftershocks");
-
-        }
-        if (response.element.attributes['step-num'].value === '5') {
-          fadeData(".landers-triggered");
-
-        }
-        if (response.element.attributes['step-num'].value === '6') {
-          //showMap();
-          //hideEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.chart-label,.myArrow");
-        }
-        if (response.element.attributes['step-num'].value === '7') {
-          hideEl(".chart-axis,.mainshock-line,.landers-before,.landers-triggered,.myArrow,.chart-label");
-          showMap();
-        }
-        if (response.element.attributes['step-num'].value === '9') {
-          fadeData(".sumatra-before");
-        };
-        if (response.element.attributes['step-num'].value === '14') {
-          eraseData(".mainshockDummy,.bar-axis");
-          hideEl(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone")
-          showMap();
-        };
-
-      };
-      if (response.direction === 'up') {
-        if (response.element.attributes['step-num'].value === '2') {
-          eraseData(".landers-before");
-
-        };
-        if (response.element.attributes['step-num'].value === '3') {
-          eraseData(".landers-mainshock");
-
-        }
-        if (response.element.attributes['step-num'].value === '4') {
-          eraseData(".landers-aftershocks");
-
-        }
-        if (response.element.attributes['step-num'].value === '5') {
-          eraseData(".landers-triggered");
-
-        }
-        if (response.element.attributes['step-num'].value === '9') {
-          eraseData(".sumatra-before");
-        };
-        if (response.element.attributes['step-num'].value === '10') {
-          eraseData(".sumatra-mainshock");
-        };
-        if (response.element.attributes['step-num'].value === '11') {
-          eraseData(".sumatra-triggered");
-        };
-        if (response.element.attributes['step-num'].value === '13') {
-          eraseData(".bar-chart,.bar-axis,.globe,.mainshockDummy,.strain-wave,.deadzone");
-        };
-
-        if (response.element.attributes['step-num'].value === '17') {
-          eraseData(".hokkaido-mainshock");
-        };
-        if (response.element.attributes['step-num'].value === '18') {
-          eraseData(".hokkaido-triggered");
-          hideArcs(arcsLayer);
-        };
       }
+
+      function init() {
+        // 1. setup the scroller with the bare-bones options
+        // 		this will also initialize trigger observations
+        // 2. bind scrollama event handlers (this can be chained like below)
+        scroller.setup({
+            step: '.step',
+            debug: false,
+            offset: 0.3
+          })
+          .onStepEnter(handleStepEnter)
+          .onStepExit(handleStepExit);
+
+        // 3. setup resize event
+        window.addEventListener('resize', scroller.resize);
+      }
+
+      // kick things off
+      init();
+    } else {
+      d3.select("#intro").remove();
+      d3.select("#footer").remove();
+      d3.select(".main").remove();
+      d3.select("body")
+        .append("div")
+        .attr("class", "mobile")
+        .html(
+          "This page is not optimized for small screens, please visit it on a desktop screen (ideally 1400px) for the best viewing experience. Thank you."
+        );
+
     }
-
-    function init() {
-      // 1. setup the scroller with the bare-bones options
-      // 		this will also initialize trigger observations
-      // 2. bind scrollama event handlers (this can be chained like below)
-      scroller.setup({
-          step: '.step',
-          debug: false,
-          offset: 0.3
-        })
-        .onStepEnter(handleStepEnter)
-        .onStepExit(handleStepExit);
-
-      // 3. setup resize event
-      window.addEventListener('resize', scroller.resize);
-    }
-
-    // kick things off
-    init();
   </script>
 </body>
 
