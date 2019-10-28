@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Remote Triggering of Earthquakes</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0-beta.1/mapbox-gl.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0-beta.1/mapbox-gl.css">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
+  <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+  <script src="https://unpkg.com/scrollama"></script>
+  <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+SC|Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
+
+  <style media="screen">
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 2.4vw;
+      -webkit-font-feature-settings: 'lnum'1;
+      font-feature-settings: 'lnum'1;
+    }
+
+    @media all and (min-width:1000px) {
+      html {
+        font-size: 20px;
+      }
+    }
+
+    @media (min-width: 320px) and (max-width: 520px) {
+      html {
+        font-size: 16px;
+      }
+    }
+
+    #map {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    circle {
+      stroke-width: 0;
+    }
+
+    section {
+      padding: 500px 25px 500px 25px;
+      line-height: 1.2rem;
+      margin: 500px 25px 500px 25px;
+      opacity: 0.15;
+      font-size: 1rem;
+      color: #2A2A2A;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    section p {
+      background-color: #fafafa;
+      padding: 15px;
+    }
+
+    section.active {
+      opacity: 0.95;
+    }
+
+    section:last-child {
+      border-bottom: none;
+      margin-bottom: 300px;
+    }
+
+    .features {
+      width: 600px;
+      margin-right: auto;
+      margin-left: auto;
+      font-family: 'Alegreya', serif;
+      font-size: 1rem;
+      line-height: 1.35;
+      overflow-y: scroll;
+      background-color: rgba(0, 0, 0, 0);
+      color: #2A2A2A;
+    }
+
+    h3 {
+      font-family: 'Alegreya SC', serif;
+      font-size: 1.4rem;
+      color: #2A2A2A;
+    }
+
+    .myArrow,
+    #arrowhead {
+      fill: none;
+      stroke: #7E7D7E;
+    }
+
+    .bar-arrow,
+    #arrowhead {
+      fill: none;
+      stroke: #7E7D7E;
+    }
+
+    .bar-chart {
+      fill: #872B32; //#aa0303
+      stroke: none;
+    }
+
+    circle.bar-axis {
+      font-family: 'Source Sans Pro', sans-serif;
+      fill: none;
+      stroke: #1E1E1E;
+      stroke-opacity: 0.7;
+      stroke-width: 0.5px;
+      stroke-dasharray: 2;
+    }
+
+    .chart-axis {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    .chart-label {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 0.8rem;
+    }
+
+    .mainshock-label {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    .bar-label {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    .bar-axis {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    .modal-window {
+      position: fixed;
+      background-color: rgba(230, 230, 230, 0.5);
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      transition: all 0.3s;
+    }
+
+    .modal-window:target {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-window>div {
+      font-family: 'Alegreya', serif;
+      font-size: 0.8rem;
+      width: 400px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 2em;
+      background: #fafafa;
+      border-left: 3px solid #E3191C;
+    }
+
+    .modal-close {
+      font-family: 'Alegreya', serif;
+      color: #aaa;
+      line-height: 1.2;
+      font-size: 0.7rem;
+      position: absolute;
+      right: 0;
+      text-align: center;
+      top: 0;
+      width: 70px;
+      text-decoration: none;
+    }
+
+    .modal-close:hover {
+      color: black;
+    }
+
+    .btn {
+      position: relative;
+      z-index: 1000;
+      font-family: 'Alegreya SC', serif;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      background-color: #fafafa;
+      color: #872B32;
+    }
+
+    .container {
+      display: grid;
+      justify-content: center;
+      align-items: center;
+      /* height: 100vh; */
+    }
+
+    #intro {
+      background:
+        linear-gradient(to left,
+          rgba(0, 0, 0, 0),
+          rgba(0, 0, 0, 0.7)),
+        url(chile_eq.jpg);
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      font-family: 'Raleway', sans-serif;
+      height: 100vh;
+      position: relative;
+      padding-top: 1%;
+      padding-left: 5%;
+      padding-right: 5% padding-bottom: 1%;
+      color: #fafafa;
+      /* background: #fafafa; */
+      opacity: 1;
+      z-index: 2;
+    }
+
+    #footer {
+      font-family: 'Alegreya', serif;
+      font-size: 1rem;
+      height: 200vh;
+      position: relative;
+      padding-top: 1%;
+      padding-left: 5%;
+      padding-right: 5%;
+      padding-bottom: 1%;
+      background: #fafafa;
+      opacity: 1;
+      z-index: 2;
+    }
+
+    #outro {
+      box-sizing: border-box;
+      padding-left: 25vw;
+      padding-right: 25vw;
+    }
+
+    #methods {
+      box-sizing: border-box;
+      padding: 25px;
+      border-style: dotted;
+      border-width: 2px;
+      margin-left: 25vw;
+      margin-right: 25vw;
+      margin-top: 100px;
+      color: #2A2A2A;
+    }
+
+    #methods-title {
+      font-family: 'Alegreya SC', serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      color: #000;
+    }
+
+    .main {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sticky {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+    }
+
+    .title {
+      margin-top: 7vh;
+      font-size: 2rem;
+      line-height: 1.45em;
+      letter-spacing: 0.1em;
+    }
+
+    .xtra-big {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.5em;
+    }
+
+    .small {
+      margin-top: 15vh;
+      font-size: 1rem;
+      font-weight: lighter;
+    }
+
+    .modal-title {
+      font-family: 'Alegreya SC', serif;
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      letter-spacing: 0.08em;
+      color: #000;
+    }
+
+    .mobile {
+      position: relative;
+      padding: 5%;
+      width: 80%;
+      margin-left: 10%;
+      margin-top: 50%;
+      font-family: 'Raleway', sans-serif;
+      font-size: 30px;
+
+    }
+
+    .scroll {
+      background-image: url(arrow_white.png);
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin-left: auto;
+      margin-right: auto;
+      width: 85px;
+      height: 85px;
+    }
+
+    .center {
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 10px;
+      text-align: center;
+      letter-spacing: 0.15em;
+      font-size: 0.65rem;
+      font-family: 'Raleway', sans-serif;
+    }
+
+    @media (min-width: 320px) and (max-width: 520px) {
+      #map {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        height: 50%;
+      }
+
+      section {
+        padding: 400px 10px 400px 10px;
+        margin: 400px 0px 400px 0px;
+      }
+
+      section p {
+        padding: 10px;
+      }
+
+      .features {
+        width: 300px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      .modal-window>div {
+        width: 300px;
+      }
+
+      #footer {
+        height: 400vh;
+        padding-top: 1%;
+        padding-left: 5%;
+        padding-right: 5%;
+        padding-bottom: 1%;
+      }
+
+      #outro {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      #methods {
+        padding: 5px;
+        border-width: 2px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 100px;
+      }
+    }
+
+    #squiggle {
+      fill: none;
+      stroke: red;
+      stroke-width: 2;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="intro">
+    <div class="title">
+      <div class="xtra-big">CAN ONE</br>
+        EARTHQUAKE</br></div>
+      <div class="small">TRIGGER ANOTHER</br></div>
+      ON THE</br>
+      OTHER SIDE OF</br>
+      THE WORLD?</br>
+    </div>
+    </br></br></br></br>
+    </br></br></br></br>
+    <h1>by Will Chase</h1>
+    <div class="center">SCROLL</div>
+    <div class="scroll"></div>
+
+  </div>
+  <div class="main">
+    <div id="map"></div>
+    <div class="container">
+      <div id="welcome-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">Hello, this is an info box!</div>
+          <div>Whenever you see something that <span class="btn">looks like this</span>, click it to open a
+            popup that will contain explanations of jargon or helpful info. For example,
+            did you know you can click on the ‘close’ button in the top left of this box to close it?
+            See, I told you, helpful!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div id="rate-modal" class="modal-window">
+        <div>
+          <a href="#close" title="Close" class="modal-close">Close</a>
+          <div class="modal-title">relative rate</div>
+          <div>The relative rate refers to the rate of earthquakes over the three days following a mainshock, compared to the historical average.
+            A relative rate below one means fewer earthquakes occurred in this period than historically, whereas a relative rate above one indicates
+            an increase in earthquakes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class='features'>
+      <section id='welcome' class='step' step-num='1'>
+        <p>Can one natural disaster influence the risk of another? It's well known that natural disasters
+          can cause others in their immediate vicinity, for instance, hurricanes are often accompanied by flooding,
+          and earthquakes are followed by aftershocks. But what about longer distance interactions? Could one earthquake
+          trigger another on the other side of the world? <a class="btn" href="#welcome-modal">hey click me for more info!</a>
+        </p>
+      </section>
+      <section id='section16' class='step' step-num='17'>
+
+        <p>On September 11th 2008, a M6.6 earthquake struck off the coast of Halmahera, Indonesia. The quake sent seismic waves out towards Japan...</p>
+      </section>
+      <section id='section17' class='step' step-num='18'>
+
+        <p>Twenty-one minutes after the Papua New Guinea mainshock, a M6.9 eathquake was recorded off the Eastern coast of Hokkaido, Japan. The Hokkaido quake
+          hit mere seconds after the seismic waves from the Papua New Guinea mainshock landed. Detailed analysis showed that the Hokkaido quake
+          was directly triggered by the seismic waves from the Papua New Guinea quake. Though this is perhaps the most compelling example, there have been a handful of other studies
+          demonstrating similar results of direct remote triggering via a seismic mechanism.</p>
+      </section>
+
+    </div>
+    <div id="footer">
+      <div id="outro">
+        <p>So, what does all of this mean for helping to predict earthquake risk? We’ve now seen that large earthquakes trigger hundreds to thousands of smaller earthquakes at great distances beyond the traditional aftershock zone. This finding is
+          well accepted,
+          though the significance of these small triggered quakes is unclear. It’s possible that these quakes can alter earthquake risk by either relieving or transferring stress in faults where they strike, but
+          this is poorly understood and more research is needed. The more relevant finding is that the largest earthquakes can trigger other large earthquakes at remote distances. Importantly, we’ve seen that
+          the triggered quakes are most likely to strike in the path of the mainshock seismic waves. Since the seismic waves converge at the antipode, this means that regions directly opposite a large mainshock should be
+          on high alert for at least three days, after which the relative risk reduces. Particularly concerning, is that some studies have noted that remotely triggered quakes can occur in areas that are not considered fault zones, meaning
+          they are less prepared and thus at higher risk of damage to property and to people.</p>
+        <p>However, many scientist still question how common remote triggering of large earthquakes is, and the literature in this area
+          remains in disagreement. It is crucial that we devote more research on the seismic mechanisms involved, so that we may better
+          predict where and when risk of remotely triggered quakes is greatest. For example, why were so many large earthquakes triggered by the 2012 Sumatra earthquake? Was the strike-slip fracture mechanism a factor in that
+          case? Some have also noted periods of quiesence before and/or after large mainshocks, arguing that the stress buildup and release—like an elastic band—may be important in predicting remote triggering—a question that deserves further
+          attention. Ultimately more research is needed to determine
+          the details, exact risk, and likelihood of these events, but given the evidence so far, next time I see a big earthquake in the news, I’ll be on the lookout to see if it’s on the other side of the world as me—something that once may have
+          been reassuring, now concerning.
+        </p>
+      </div>
+      <div id="methods">
+        <div id="methods-title">Methods</div>
+        <p>For the Landers and Sumatra earthquakes, data was retrieved from the USGS Earthquake Catalog for ten days before and after the mainshock. The Landers
+          data included all earthquakes greater than M2.5, and was limited to the Western United States. The Sumatra data was limited to M5.5+ earthquakes, and was
+          collected worldwide. For the Landers and Sumatra data, aftershocks and foreshocks were considered as any quake occurring within 2 rupture lengths of the mainshock,
+          and were excluded from all designations of earthquakes ten days before or after the mainshock. Analysis of the relative rate of M5.5+ earthquakes following large earthquakes
+          was based on O’Malley, R. T., Mondal, D., Goldfinger, C., & Behrenfeld, M. J. (2018). Evidence of systematic triggering at teleseismic distances following large earthquakes. <i>Scientific reports</i>. and was kindly provided by Mr. Robert
+          O'Malley.
+          Data on the remote triggering of the Hokkaido earthquake was sourced from Lin, C. H. (2012). Remote Triggering of the M w 6.9 Hokkaido Earthquake as a Result of the M w 6.6 Indonesian Earthquake on September 11, 2008. <i>Terrestrial,
+            Atmospheric & Oceanic Sciences</i>.</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    let small_screen = document.documentElement.clientWidth < 1000 ? true : false
+    //if (!small_screen) {
+    //initialize map
+    mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
+    let map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/wchase14/cjwh8fgh00omd1clb4krxzcxj',
+      fitBounds: [
+        [-163.125, 70.02058730174062],
+        [172.265625, -55.17886766328199]
+      ],
+      zoom: 1.1,
+      interactive: false
+    });
+    //for polygons
+    //area for mapbox fly-tos
+    let chapters = {
+      'welcome': [
+        [-163.125, 70.02058730174062],
+        [183.1640625, -54.77534585936447]
+      ],
+      'section1': [
+        [-145.546875, 53.12040528310657],
+        [-101.6015625, 21.453068633086783]
+      ],
+      'section2': {
+        bearing: 0,
+        center: [131.380, 32.789],
+        zoom: 7.87,
+        speed: 0.7,
+        pitch: 60.00
+      },
+      'section3': [
+        [79.62890625, -17.476432197195518],
+        [168.134765625, 53.067626642387374]
+      ]
+    };
+
+    // 'section3': {
+    //   bearing: -56,
+    //   center: [127.178124, 25.431137],
+    //   zoom: 3,
+    //   speed: 0.7,
+    //   pitch: 50
+    // }
+
+    //////////////////////////
+    // Mapbox+D3 Connection
+    //////////////////////////
+    // Get Mapbox map canvas container
+    // Setup svg dims and margins
+    let canvas = map.getCanvasContainer();
+    let svg = d3.select(canvas).append("svg").attr("id", "my_svg");
+    let svgSelect = document.getElementById("my_svg");
+    let rect = svgSelect.getBoundingClientRect();
+    const max_width = 800;
+    const width = rect.width;
+    const height = rect.height;
+    const margin = ({
+      top: 50,
+      right: (width > max_width) ? (width - max_width) / 2 : 20,
+      bottom: width < 500 ? 20 : 70,
+      left: (width > max_width) ? (width - max_width) / 2 : 20
+    });
+
+
+    let mainshockHokkaido = svg.append("g");
+    let triggeredHokkaido = svg.append("g");
+
+    // Draw GeoJSON data with d3
+    let circles;
+
+    // Scales
+    //landers domain [2.5, 7.3]
+    aScale = d3.scaleSqrt()
+      .range([5, 22]);
+
+    colorScale = d3.scaleSequential(d3.interpolateHcl("#F79567", "#c3402c"));
+
+    timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
+    timeScale = d3.scaleTime();
+
+    timeScaleBefore = d3.scaleTime()
+      .range([margin.left, width / 2 - 20]);
+    timeScaleTriggered = d3.scaleTime()
+      .range([width / 2 + 20, width - margin.right]);
+    radScale = d3.scaleLinear()
+      .domain([300, 800])
+      .range([6, 10])
+      .clamp(true);
+    //clean data function
+    function clean(data) {
+      for (const d of data.features) {
+        const date = timeParse(d.properties.time);
+        d.properties.date = date;
+        d.properties.day = d3.timeDay(date);
+      }
+      return data;
+    };
+
+    function csvClean(data) {
+      for (const d of data) {
+        d.rel_rate = +d.rel_rate;
+      }
+      return data;
+    };
+    //rand number function
+    function randNum(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    //define URLs for data sources
+    const hokkaido_mainshock_url = "https://gist.githubusercontent.com/will-r-chase/035234ed3d84b08bbaca18a68afaa0f3/raw/00352a1b23b761b84876932eff2ec25c1ecf372c/hokkaidoMainshock.geojson";
+    const hokkaido_triggered_url = "https://gist.githubusercontent.com/will-r-chase/4d6d64f50fe9db1094789afd34284470/raw/2cfd89ca9bea89b9e2810591ed79498107f34585/hokkaidoTriggered.geojson";
+
+
+
+
+    //function to draw strain waves
+    map.on('load', function() {
+      map.fitBounds(chapters['welcome']);
+      map.addSource('strainWavesDat', {
+        type: 'geojson',
+        data: 'https://gist.githubusercontent.com/will-r-chase/72b206dd2ba17889ba98075d693db1bd/raw/cc17e7c23ef33d0c69a43ba9addccab6b2dc1270/strain_waves.geojson'
+      });
+      map.addLayer({
+        "id": "strainWaves",
+        "type": "fill",
+        "source": "strainWavesDat",
+        'layout': {},
+        'paint': {
+          'fill-color': '#83c1c1',
+          'fill-opacity': 0
+        }
+      });
+    });
+
+    // For each enter step, read and draw data
+    function initData(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
+      d3.json(source, function(err, data) {
+        let cleanDat = clean(data)
+        drawData(cleanDat, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
+      })
+    };
+    // For each enter step, read and draw data
+    function initPoints(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
+      d3.json(source, function(err, data) {
+        drawPoints(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
+      })
+    };
+
+
+    function initRedrawCircles(source) {
+      d3.csv(source, function(err, data) {
+        if (err) console.log(err);
+        let dataClean = csvClean(data);
+        console.log(dataClean)
+        redrawCircles(dataClean);
+      });
+    };
+    //////////////
+    // D3 stuff //
+    //////////////
+    // Project GeoJSON coordinate to the map's current state
+    function project(d) {
+      return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
+    }
+
+    //Main draw function
+    function drawData(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
+      // set scale domain
+      aScale.domain(domain);
+      colorScale.domain(domain);
+      timeScale
+        .domain(d3.extent(data.features.map(d => d.properties).map(d => d.date)))
+        .range(timeRange);
+      // Add circles
+      circles = group.selectAll(pointClass)
+        .data(data.features)
+        .enter()
+        .append("circle")
+        .attr("class", pointClass)
+        .attr("r", 0)
+        .attr("fill", d => colorScale(d.properties.mag))
+        .attr("day", d => d.properties.day)
+        .style("opacity", 0.7);
+
+      circles
+        .transition()
+        .delay(d => extraDelay + timeScale(d.properties.date))
+        .duration(Duration)
+        .ease(Ease)
+        .attr("r", d => aScale(d.properties.mag));
+      // Call the update function
+      update();
+      // Update on map interaction
+      map.on("viewreset", update);
+      map.on("move", update);
+      map.on("moveend", update);
+    }
+
+    function drawPoints(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
+      // set scale domain
+      aScale.domain(domain);
+      colorScale.domain(domain);
+
+      // Add circles
+      circles = group.selectAll(pointClass)
+        .data(data.features)
+        .enter()
+        .append("circle")
+        .attr("class", pointClass)
+        .attr("r", 0)
+        .attr("fill", d => colorScale(d.properties.mag))
+        .style("opacity", 0.7);
+
+      circles
+        .transition()
+        .delay(extraDelay)
+        .duration(Duration)
+        .ease(Ease)
+        .attr("r", d => aScale(d.properties.mag));
+      // Call the update function
+      update();
+      // Update on map interaction
+      map.on("viewreset", update);
+      map.on("move", update);
+      map.on("moveend", update);
+    };
+    // Update d3 shapes' positions to the map's current state
+    function update() {
+      console.log("update");
+      svg.selectAll("circle").attr("cx", function(d) {
+          return project(d.geometry.coordinates).x
+        })
+        .attr("cy", function(d) {
+          return project(d.geometry.coordinates).y
+        });
+    }
+
+    function makeSquiggle(squigglePathId, followPathId, squiggleStep, squiggleAmplitude) {
+      var followPath = document.getElementById(followPathId);
+      var pathLen = followPath.getTotalLength();
+
+      // Adjust step so that there are a whole number of steps along the path
+      var numSteps = Math.round(pathLen / squiggleStep);
+
+      var pos = followPath.getPointAtLength(0);
+      var newPath = "M" + [pos.x, pos.y].join(',');
+      var side = -1;
+      for (var i = 1; i <= numSteps; i++) {
+        var last = pos;
+        var pos = followPath.getPointAtLength(i * pathLen / numSteps);
+
+        // Find a point halfway between last and pos. Then find the point that is
+        // perpendicular to that line segment, and is squiggleAmplitude away from
+        // it on the side of the line designated by 'side' (-1 or +1).
+        // This point will be the control point of the quadratic curve forming the
+        // squiggle step.
+
+        // The vector from the last point to this one
+        var vector = {
+          x: (pos.x - last.x),
+          y: (pos.y - last.y)
+        };
+        // The length of this vector
+        var vectorLen = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+        // The point halfwasy between last point and tis one
+        var half = {
+          x: (last.x + vector.x / 2),
+          y: (last.y + vector.y / 2)
+        };
+        // The vector that is perpendicular to 'vector'
+        var perpVector = {
+          x: -(squiggleAmplitude * vector.y / vectorLen),
+          y: (squiggleAmplitude * vector.x / vectorLen)
+        };
+        // No calculate the control point position
+        var controlPoint = {
+          x: (half.x + perpVector.x * side),
+          y: (half.y + perpVector.y * side)
+        };
+        newPath += ("Q" + [controlPoint.x, controlPoint.y, pos.x, pos.y].join(','));
+        // Switch the side (for next step)
+        side = -side;
+      }
+      var squigglePath = document.getElementById(squigglePathId);
+      squigglePath.setAttribute("d", newPath);
+    }
+
+    function strainArrows() {
+      let hok_start = map.project([127.57324218750001, 1.4500404973608074])
+      let hok_end = map.project([143.61328125, 42.16340342422401])
+      let right_mdpt = map.project([144.228515625, 22.268764039073968])
+      let left_mdpt = map.project([128.14453125, 26.194876675795218])
+      let right_end = map.project([145.37109375, 41.64007838467894])
+      let left_end = map.project([141.85546875, 42.4234565179383])
+
+      const right_data = [hok_start, right_mdpt, right_end];
+      const left_data = [hok_start, left_mdpt, left_end];
+
+      line = d3.line()
+        .x(d => d.x)
+        .y(d => d.y)
+        .curve(d3.curveCatmullRom.alpha(0.5));
+
+      svg.append("g")
+        .append("path")
+        .attr("id", "squiggle");
+      svg.append("g")
+        .append("path")
+        .attr("id", "squiggle2");
+      svg.append("g")
+        .append("path")
+        .attr("id", "squiggle3");
+
+      center_line = svg.append("g")
+        .append("line")
+        .attr("id", "center-line")
+        .attr("x1", hok_start.x)
+        .attr("x2", hok_end.x)
+        .attr("y1", hok_start.y)
+        .attr("y2", hok_end.y)
+        .style("fill", "none")
+        .style("opacity", 0)
+        .style("stroke", "#83c1c1")
+        .style("stroke-width", 5)
+
+      right_line = svg.append("g")
+        .append("path")
+        .attr("d", line(right_data))
+        .attr("id", "right-line")
+        .style("fill", "none")
+        .style("opacity", 0)
+        .style("stroke", "#83c1c1")
+        .style("stroke-width", 5);
+
+      left_line = svg.append("g")
+        .append("path")
+        .attr("id", "left-line")
+        .attr("d", line(left_data))
+        .style("fill", "none")
+        .style("opacity", 0)
+        .style("stroke", "#83c1c1")
+        .style("stroke-width", 5);
+
+      makeSquiggle("squiggle", "center-line", 40, 10);
+      makeSquiggle("squiggle2", "right-line", 40, 10);
+      makeSquiggle("squiggle3", "left-line", 40, 10);
+
+      d3.select("#squiggle")
+        .style("fill", "none")
+        .style("opacity", 1)
+        .style("stroke", "#83c1c1")
+        .style("stroke-width", 7)
+        .attr("stroke-dasharray", function() {
+          pathLength = this.getTotalLength();
+          return pathLength;
+        })
+        .attr("stroke-dashoffset", pathLength)
+        .transition()
+        .ease(d3.easeLinear)
+        .duration(2000)
+        .attr("stroke-dashoffset", 0);
+
+      d3.select("#squiggle2")
+        .style("fill", "none")
+        .style("opacity", 1)
+        .style("stroke", "#83c1c1")
+        .style("stroke-width", 7)
+        .attr("stroke-dasharray", function() {
+          pathLength = this.getTotalLength();
+          return pathLength;
+        })
+        .attr("stroke-dashoffset", pathLength)
+        .transition()
+        .ease(d3.easeLinear)
+        .duration(2000)
+        .attr("stroke-dashoffset", 0);
+
+      d3.select("#squiggle3")
+        .style("fill", "none")
+        .style("opacity", 1)
+        .style("stroke", "#83c1c1")
+        .style("stroke-width", 7)
+        .attr("stroke-dasharray", function() {
+          pathLength = this.getTotalLength();
+          return pathLength;
+        })
+        .attr("stroke-dashoffset", pathLength)
+        .transition()
+        .ease(d3.easeLinear)
+        .duration(2000)
+        .attr("stroke-dashoffset", 0);
+    }
+
+
+
+
+    //function to remove selected points
+    function eraseData(pointClass) {
+      d3.selectAll(pointClass).remove()
+    }
+    //function to fade opacity of selected points
+    function fadeData(pointClass) {
+      svg.selectAll(pointClass)
+        .transition()
+        .duration(500)
+        .style("opacity", 0.3)
+        .attr("fill", "#515151");
+    }
+
+    ///if we have time make this a real function to restore colors to faded data
+    function unfadeData(pointClass) {
+      colorScale.domain([2.5, 7.3]);
+
+
+      svg.selectAll(pointClass)
+        .transition()
+        .duration(500)
+        .style("opacity", 0.3)
+        .attr("fill", d => colorScale(d.properties.mag))
+    }
+
+    function hideEl(myClass) {
+      d3.selectAll(myClass)
+        .transition()
+        .duration(500)
+        .style("opacity", 0);
+    }
+
+
+    function showEl(myClass, opacity) {
+      d3.selectAll(myClass)
+        .transition()
+        .duration(500)
+        .style("opacity", opacity);
+    }
+
+    function setMapOpacity(value) {
+      d3.selectAll(".mapboxgl-canvas")
+        .transition()
+        .duration(500)
+        .style("opacity", value);
+      d3.selectAll(".mapboxgl-control-container")
+        .transition()
+        .duration(500)
+        .style("opacity", value);
+    }
+
+    function showMap() {
+      setMapOpacity(1);
+    }
+
+    function hideMap() {
+      setMapOpacity(0.1);
+    }
+
+
+    // initialize the scrollama
+    var scroller = scrollama();
+
+    // scrollama event handlers
+    function handleStepEnter(response) {
+      // response = { element, direction, index }
+      console.log(response);
+      // add to color to current step
+      response.element.classList.add('active');
+      if (response.direction === 'down') {
+
+        if (response.element.attributes['step-num'].value === '17') {
+
+          map.fitBounds(chapters['section3'], {
+            speed: 0.7
+          });
+          initPoints(hokkaido_mainshock_url, mainshockHokkaido, "hokkaido-mainshock", [2.5, 8], [0, 4000], 2000, d3.easeElastic,
+            1000); //range [0,4000] when not debugging
+        };
+        if (response.element.attributes['step-num'].value === '18') {
+          initPoints(hokkaido_triggered_url, triggeredHokkaido, "hokkaido-triggered", [2.5, 8], [0, 4000], 1250, d3.easeElastic,
+            1000); //range [0,4000] when not debugging
+          strainArrows();
+        };
+
+      };
+      if (response.direction === 'up') {
+        //response.element.classList.remove('active');
+        if (response.element.attributes['step-num'].value === '1') {
+          map.fitBounds(chapters['welcome'], {
+            speed: 0.7
+          });
+
+
+        }
+      };
+    };
+
+    function handleStepExit(response) {
+      // response = { element, direction, index }
+      console.log(response);
+      // remove color from current step
+
+      if (response.direction === 'down') {
+
+
+      };
+      if (response.direction === 'up') {
+
+
+        if (response.element.attributes['step-num'].value === '17') {
+          eraseData(".hokkaido-mainshock");
+        };
+        if (response.element.attributes['step-num'].value === '18') {
+          eraseData(".hokkaido-triggered");
+        };
+      }
+    }
+
+    function init() {
+      // 1. setup the scroller with the bare-bones options
+      // 		this will also initialize trigger observations
+      // 2. bind scrollama event handlers (this can be chained like below)
+      scroller.setup({
+          step: '.step',
+          debug: true,
+          offset: 0.5
+        })
+        .onStepEnter(handleStepEnter)
+        .onStepExit(handleStepExit);
+
+      // 3. setup resize event
+      window.addEventListener('resize', scroller.resize);
+    }
+
+    // kick things off
+    init();
+    // } else {
+    //   d3.select("#intro").remove();
+    //   d3.select("#footer").remove();
+    //   d3.select(".main").remove();
+    //   d3.select("body")
+    //     .append("div")
+    //     .attr("class", "mobile")
+    //     .html(
+    //       "This page is not optimized for small screens, please visit it on a desktop screen (ideally 1400px) for the best viewing experience. Thank you."
+    //     );
+    //
+    // }
+  </script>
+</body>
+
+</html>

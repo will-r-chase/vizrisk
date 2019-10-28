@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>The Rise of Kpop in Chicago</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0-beta.1/mapbox-gl.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0-beta.1/mapbox-gl.css">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+SC|Alegreya+Sans|Playfair+Display&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+  <script src="https://unpkg.com/scrollama"></script>
+
+  <style media="screen">
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 60%;
+    }
+
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    circle {
+      stroke-width: 0;
+    }
+
+    section {
+      padding: 25px 50px;
+      line-height: 25px;
+      margin: 200px 25px 200px 25px;
+      opacity: 0.05;
+      font-size: 20px;
+      color: #000;
+      ;
+    }
+
+    section.active {
+      opacity: 0.8;
+    }
+
+    section:last-child {
+      border-bottom: none;
+      margin-bottom: 1000px;
+    }
+
+    #features {
+      width: 40%;
+      margin-left: 60%;
+      font-family: 'Alegreya', serif;
+      font-size: 20px;
+      line-height: 1.5;
+      overflow-y: scroll;
+      background-color: #fafafa;
+    }
+
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div id='features'>
+    <section id='welcome' class='step' step-num='1'>
+      <h3>Welcome</h3>
+      <p>Can one natural disaster influence the risk of another? It's well known that natural disasters
+        can cause others in their immediate vicinity, for instance, hurricanes are often accompanied by flooding,
+        and earthquakes are followed by aftershocks. But what about longer distance interactions? Could one earthquake
+        trigger another on the other side of the world?
+      </p>
+    </section>
+    <section id='section14' class='step' step-num='15'>
+      <h3>direct trigger 1</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+    <section id='section15' class='step' step-num='16'>
+      <h3>direct trigger 2</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </section>
+  </div>
+  <script type="text/javascript">
+    //initialize map
+    mapboxgl.accessToken = 'pk.eyJ1Ijoid2NoYXNlMTQiLCJhIjoiY2p2dnYwOXBvMGJvNDQzcDkxcTZqNWd3dCJ9.UqxE9xtZJevAQem-lKCYnA';
+    let map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/wchase14/cjwh8fgh00omd1clb4krxzcxj',
+      center: [11.634, 25.448],
+      zoom: 1.1,
+      interactive: false
+    });
+    //for polygons
+    //area for mapbox fly-tos
+    let chapters = {
+      'welcome': {
+        bearing: 0,
+        center: [11.634, 25.448],
+        zoom: 1.1,
+        speed: 0.6,
+        pitch: 0
+      },
+      'section1': {
+        bearing: 0,
+        center: [-108.139, 39.404],
+        zoom: 3.94,
+        speed: 0.7,
+        pitch: 0
+      },
+      'section2': {
+        bearing: 0,
+        center: [131.380, 32.789],
+        zoom: 7.87,
+        speed: 0.5,
+        pitch: 60.00
+      },
+    };
+
+    //////////////////////////
+    // Mapbox+D3 Connection
+    //////////////////////////
+    // Get Mapbox map canvas container
+    // Setup svg dims and margins
+    let canvas = map.getCanvasContainer();
+    let svg = d3.select(canvas).append("svg").attr("id", "my_svg");
+    let svgSelect = document.getElementById("my_svg");
+    let rect = svgSelect.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const margin = ({
+      top: 50,
+      right: 30,
+      bottom: 70,
+      left: 30
+    });
+
+    // Set up svg groups so that last one will be on top
+    let mainshockOita = svg.append("g");
+
+    // Draw GeoJSON data with d3
+    let circles;
+
+    // Scales
+    //landers domain [2.5, 7.3]
+    aScale = d3.scaleSqrt()
+      .range([5, 20]);
+
+    colorScale = d3.scaleSequential(d3.interpolateHcl("#FD8C3D", "#E3191C"));
+
+    timeParse = d3.timeParse("%Y-%m-%d %H:%M:%S");
+    timeScale = d3.scaleTime();
+
+    timeScaleBefore = d3.scaleTime()
+      .range([margin.left, width / 2 - margin.right]);
+    timeScaleTriggered = d3.scaleTime()
+      .range([width / 2 + margin.left, width - margin.right]);
+
+    //define URLs for point data sources
+    const oita_url = "https://gist.githubusercontent.com/will-r-chase/41156c838e91d38344a6ad0369893b57/raw/0d9da15b21da91052a82ceb5af56a9f7e9a180e5/oita.geojson";
+
+    //data for arc start and end
+    const oita = [{
+      "latitude_target": 33.17,
+      "longitude_target": 131.4,
+      "latitude_source": 32.74,
+      "longitude_source": 130.77
+    }];
+
+    //colors for arcs
+    var source_color = [131, 193, 193];
+    var target_color = [131, 193, 193];
+
+    var {
+      MapboxLayer,
+      ArcLayer
+    } = deck;
+
+    //add arcs layer to map
+    var arcsLayer;
+    map.on('load', function() {
+      drawArc(oita);
+    });
+
+    // Deck.gl arc layer with custom shader
+    class ArcBrushingLayer extends ArcLayer {
+      getShaders() {
+        // here comes our custom shader
+        // we will use step function to create opacity gradient with colorA and color B
+        // for more information see https://thebookofshaders.com/05/
+        return Object.assign({}, super.getShaders(), {
+          inject: {
+            'vs:#decl': `
+             uniform float coef;
+            `,
+            'vs:#main-end': `
+            if (coef > 0.0) {
+              vec4 pct = vec4(segmentRatio);
+              pct.a = step(coef, segmentRatio);
+              vec4 colorA = instanceTargetColors;
+              vec4 colorB = vec4(instanceTargetColors.r, instanceTargetColors.g, instanceTargetColors.b, 0.0);
+              vec4 color = mix(colorA, colorB, pct) / 255.;
+              vColor = color;
+            }
+                        `,
+            'fs:#main-start': `
+            if (vColor.a == 0.0) discard;
+                        `
+          }
+        });
+      }
+
+      draw(opts) {
+        const {
+          coef
+        } = this.props;
+        // add uniforms
+        const uniforms = Object.assign({}, opts.uniforms, {
+          coef: coef
+        });
+        super.draw(Object.assign({}, opts, {
+          uniforms
+        }));
+      }
+    }
+    //function transition arc opacity from source to target
+    function animateArcs(layer) {
+      var coef = 0.001;
+      const animationInterval = setInterval(() => {
+        coef += 0.005;
+        if (coef >= 1.0) {
+          clearInterval(animationInterval);
+        }
+        layer.setProps({
+          coef
+        });
+      }, 5);
+    };
+    function hideArcs(layer) {
+      var coef = 0.001;
+        layer.setProps({
+          coef
+        });
+      };
+    //create new arcs and animate
+    function drawArc(data) {
+      arcsLayer = new MapboxLayer({
+        type: ArcBrushingLayer,
+        id: `deckarcs`,
+        data: data,
+        opacity: 1,
+        coef: 0.001,
+        getSourcePosition: d => [d.longitude_source, d.latitude_source],
+        getTargetPosition: d => [d.longitude_target, d.latitude_target],
+        getSourceColor: source_color,
+        getTargetColor: target_color,
+        getStrokeWidth: 10
+      });
+      map.addLayer(arcsLayer);
+    }
+
+
+
+    // For each enter step, read and draw data
+    function initPoints(source, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase = d3.easeCubicInOut, myDuration = 650) {
+      d3.json(source, function(err, data) {
+        drawPoints(data, myGroup, myClass, myDomain, myTimeRange, myExtraDelay, myEase, myDuration);
+      })
+    };
+
+
+    //////////////
+    // D3 stuff
+    //////////////
+    // Project GeoJSON coordinate to the map's current state
+    function project(d) {
+      return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
+    }
+
+    //draw function for points
+    function drawPoints(data, group, pointClass, domain, timeRange, extraDelay = 0, Ease, Duration) {
+      // set scale domain
+      aScale.domain(domain);
+      colorScale.domain(domain);
+
+      // Add circles
+      circles = group.selectAll(pointClass)
+        .data(data.features)
+        .enter()
+        .append("circle")
+        .attr("class", pointClass)
+        .attr("r", 0)
+        .attr("fill", d => colorScale(d.properties.mag))
+        .style("opacity", 0.7);
+
+      circles
+        .transition()
+        .delay(extraDelay)
+        .duration(Duration)
+        .ease(Ease)
+        .attr("r", d => aScale(d.properties.mag));
+      // Call the update function
+      update();
+      // Update on map interaction
+      map.on("viewreset", update);
+      map.on("move", update);
+      map.on("moveend", update);
+    };
+    // Update d3 shapes' positions to the map's current state
+    function update() {
+      console.log("update");
+      svg.selectAll("circle").attr("cx", function(d) {
+          return project(d.geometry.coordinates).x
+        })
+        .attr("cy", function(d) {
+          return project(d.geometry.coordinates).y
+        });
+    }
+
+    //function to remove selected points
+    function eraseData(pointClass) {
+      d3.selectAll(pointClass).remove()
+    }
+
+    // initialize the scrollama
+    var scroller = scrollama();
+    // scrollama event handlers
+    function handleStepEnter(response) {
+      // response = { element, direction, index }
+      console.log(response);
+      // add to color to current step
+      response.element.classList.add('active');
+      if (response.direction === 'down') {
+        if (response.element.attributes['step-num'].value === '15') {
+          map.flyTo(chapters['section2']);
+          initPoints(oita_url, mainshockOita, "oita-mainshock", [2.5, 7.3], [0, 4000], [1500, 3000], d3.easeElastic,
+            1000); //range [0,4000] when not debugging
+        };
+        if (response.element.attributes['step-num'].value === '16') {
+          animateArcs(arcsLayer);
+        };
+      };
+      if (response.direction === 'up') {
+        if (response.element.attributes['step-num'].value === '1') {
+          map.flyTo(chapters['welcome']);
+        }
+      }
+    };
+
+    function handleStepExit(response) {
+      // response = { element, direction, index }
+      console.log(response);
+      // remove color from current step
+      response.element.classList.remove('active');
+      if (response.direction === 'down') {
+      };
+      if (response.direction === 'up') {
+        if (response.element.attributes['step-num'].value === '15') {
+          eraseData(".oita-mainshock");
+        };
+        if (response.element.attributes['step-num'].value === '16') {
+          hideArcs(arcsLayer);
+        };
+      }
+    }
+
+    function init() {
+      // 1. setup the scroller with the bare-bones options
+      // 		this will also initialize trigger observations
+      // 2. bind scrollama event handlers (this can be chained like below)
+      scroller.setup({
+          step: '.step',
+          debug: false,
+          offset: 0.3
+        })
+        .onStepEnter(handleStepEnter)
+        .onStepExit(handleStepExit);
+
+      // 3. setup resize event
+      window.addEventListener('resize', scroller.resize);
+    }
+
+    // kick things off
+    init();
+  </script>
+</body>
+
+</html>

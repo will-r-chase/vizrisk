@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" enable-background="new 0 0 1200 1200">
+<defs>
+<filter  x="0%" y="0%" width="100%" height="100%" id="SALT" filterUnits="objectBoundingBox">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.3" numOctaves="1" seed="1" />
+	<feColorMatrix type="matrix" values="-22 0 0 0 6      -22 0 0 0 6     -22 0 0 0 6      0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="f3" in2="SourceGraphic" result="f4" operator="in" />
+	<feColorMatrix type="matrix" values="1 0 0 0 1      0 1 0 0 1     0 0 1 0 1     0 0 0 1 0" in="f4" result="f5" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f5" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="SALT-more" filterUnits="objectBoundingBox">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.3" numOctaves="1" seed="1" />
+	<feColorMatrix type="matrix" values="-23 0 0 0 7      -23 0 0 0 7     -23 0 0 0 7      0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="f3" in2="SourceGraphic" result="f4" operator="in" />
+	<feColorMatrix type="matrix" values="1 0 0 0 1      0 1 0 0 1     0 0 1 0 1     0 0 0 1 0" in="f4" result="f5" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f5" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="PEPPER" filterUnits="objectBoundingBox">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.28" numOctaves="1" seed="2" />
+	<feColorMatrix type="matrix" values="-21 0 0 0 6      -21 0 0 0 6     -21 0 0 0 6      0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="f3" in2="SourceGraphic" result="f4" operator="in" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f4" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="PEPPER-more" filterUnits="objectBoundingBox">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.3" numOctaves="1" seed="2" />
+	<feColorMatrix type="matrix" values="-22 0 0 0 7      -22 0 0 0 7     -22 0 0 0 7      0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="f3" in2="SourceGraphic" result="f4" operator="in" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f4" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="SAND_light-soft" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.6" numOctaves="1" seed="0" />
+	<feColorMatrix type="matrix" values="-18 0 0 0 8      -18 0 0 0 8     -18 0 0 0 8      0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="SourceGraphic" in2="f3" result="f4" operator="in" />
+	<feColorMatrix type="matrix" values="1 0 0 0 0.12      0 1 0 0 0.12     0 0 1 0 0.12     0 0 0 1 0" in="f4" result="f5" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f5" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="SAND_light-medium" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.6" numOctaves="1" seed="0" />
+	<feColorMatrix type="matrix" values="-18 0 0 0 8     -18 0 0 0 8     -18 0 0 0 8     0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="SourceGraphic" in2="f3" result="f4" operator="in" />
+	<feColorMatrix type="matrix" values="1 0 0 0 0.22      0 1 0 0 0.22      0 0 1 0 0.22      0 0 0 1 0" in="f4" result="f5" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f5" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="SAND_light-hard" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.6" numOctaves="1" seed="0" />
+	<feColorMatrix type="matrix" values="-18 0 0 0 8     -18 0 0 0 8     -18 0 0 0 8     0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="SourceGraphic" in2="f3" result="f4" operator="in" />
+	<feColorMatrix type="matrix" values="1 0 0 0 0.32     0 1 0 0 0.32     0 0 1 0 0.32     0 0 0 1 0" in="f4" result="f5" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f5" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="SAND_dark-soft" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.6" numOctaves="1" seed="0" />
+	<feColorMatrix type="matrix" values="-17 0 0 0 8      -17 0 0 0 8     -17 0 0 0 8      0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="SourceGraphic" in2="f3" result="f4" operator="in" />
+	<feColorMatrix type="matrix" values="1 0 0 0 -0.1     0 1 0 0 -0.1     0 0 1 0 -0.1     0 0 0 1 0" in="f4" result="f5" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f5" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="SAND_dark-medium" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.6" numOctaves="1" seed="0" />
+	<feColorMatrix type="matrix" values="-17 0 0 0 8     -17 0 0 0 8     -17 0 0 0 8     0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="SourceGraphic" in2="f3" result="f4" operator="in" />
+	<feColorMatrix type="matrix" values="1 0 0 0 -0.18     0 1 0 0 -0.18     0 0 1 0 -0.18     0 0 0 1 0" in="f4" result="f5" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f5" />
+	</feMerge>
+</filter>
+<filter  x="0%" y="0%" width="100%" height="100%" id="SAND_dark-hard" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+	<feTurbulence type="fractalNoise" result="f1" stitchTiles="noStitch" baseFrequency="0.6" numOctaves="1" seed="0" />
+	<feColorMatrix type="matrix" values="-17 0 0 0 8     -17 0 0 0 8     -17 0 0 0 8     0 0 0 0 1" in="f1" result="f2" />
+	<feColorMatrix type="luminanceToAlpha" in="f2" result="f3" />
+	<feComposite in="SourceGraphic" in2="f3" result="f4" operator="in" />
+	<feColorMatrix type="matrix" values="1 0 0 0 -0.26     0 1 0 0 -0.26     0 0 1 0 -0.26     0 0 0 1 0" in="f4" result="f5" />
+	<feMerge>
+		<feMergeNode in="SourceGraphic" />
+		<feMergeNode in="f5" />
+	</feMerge>
+</filter>
+</defs>
+ <rect fill="#ffffff" width="1200" height="1200"/>
+ <g filter="url(#SALT)">
+  <rect x="120" y="120" fill="#a10d59" width="200" height="200"/>
+ </g>
+ <rect x="322" y="120" fill="#a10d59" width="200" height="402"/>
+ <g filter="url(#SALT-more)">
+  <rect x="120" y="322" fill="#a10d59" width="200" height="200"/>
+ </g>
+ <g filter="url(#PEPPER)">
+  <rect x="678" y="120" fill="#a9cc15" width="200" height="200"/>
+ </g>
+ <rect x="880" y="120" fill="#a9cc15" width="200" height="402"/>
+ <g filter="url(#PEPPER-more)">
+  <rect x="678" y="322" fill="#a9cc15" width="200" height="200"/>
+ </g>
+ <g filter="url(#SAND_light-soft)">
+  <rect x="120" y="678" fill="#f7b600" width="200" height="200"/>
+ </g>
+ <rect x="322" y="678" fill="#f7b600" width="200" height="200"/>
+ <g filter="url(#SAND_light-medium)">
+  <rect x="120" y="880" fill="#f7b600" width="200" height="200"/>
+ </g>
+ <g filter="url(#SAND_light-hard)">
+  <rect x="322" y="880" fill="#f7b600" width="200" height="200"/>
+ </g>
+ <g filter="url(#SAND_dark-soft)">
+  <rect x="678" y="678" fill="#f7b600" width="200" height="200"/>
+ </g>
+ <rect x="880" y="678" fill="#f7b600" width="200" height="200"/>
+ <g filter="url(#SAND_dark-medium)">
+  <rect x="678" y="880" fill="#f7b600" width="200" height="200"/>
+ </g>
+ <g filter="url(#SAND_dark-hard)">
+  <rect x="880" y="880" fill="#f7b600" width="200" height="200"/>
+ </g>
+</svg>

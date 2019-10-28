@@ -1,0 +1,101 @@
+const oita = [{
+  "latitude_target": 33.17,
+  "longitude_target": 131.4,
+  "latitude_source": 32.74,
+  "longitude_source": 130.77
+}];
+const hokkaido = [{
+  "latitude_target": 42.16340342422401,
+  "longitude_target": 143.61328125,
+  "latitude_source": 1.4500404973608074,
+  "longitude_source": 127.57324218750001
+}];
+
+//colors for arcs
+var source_color = [131, 193, 193];
+var target_color = [131, 193, 193];
+
+var {
+  MapboxLayer,
+  ArcLayer
+} = deck;
+
+// Deck.gl arc layer with custom shader
+class ArcBrushingLayer extends ArcLayer {
+  getShaders() {
+    // here comes our custom shader
+    // we will use step function to create opacity gradient with colorA and color B
+    // for more information see https://thebookofshaders.com/05/
+    return Object.assign({}, super.getShaders(), {
+      inject: {
+        'vs:#decl': `
+       uniform float coef;
+      `,
+        'vs:#main-end': `
+      if (coef > 0.0) {
+        vec4 pct = vec4(segmentRatio);
+        pct.a = step(coef, segmentRatio);
+        vec4 colorA = instanceTargetColors;
+        vec4 colorB = vec4(instanceTargetColors.r, instanceTargetColors.g, instanceTargetColors.b, 0.0);
+        vec4 color = mix(colorA, colorB, pct) / 255.;
+        vColor = color;
+      }
+                  `,
+        'fs:#main-start': `
+      if (vColor.a == 0.0) discard;
+                  `
+      }
+    });
+  }
+
+  draw(opts) {
+    const {
+      coef
+    } = this.props;
+    // add uniforms
+    const uniforms = Object.assign({}, opts.uniforms, {
+      coef: coef
+    });
+    super.draw(Object.assign({}, opts, {
+      uniforms
+    }));
+  }
+}
+//function transition arc opacity from source to target
+function animateArcs(layer) {
+  var coef = 0.0000001;
+  const animationInterval = setInterval(() => {
+    coef += 0.005;
+    if (coef >= 1.0) {
+      clearInterval(animationInterval);
+    }
+    layer.setProps({
+      coef
+    });
+  }, 5);
+};
+
+function hideArcs(layer) {
+  var coef = 0.0000001;
+  layer.setProps({
+    coef
+  });
+};
+//create new arcs and animate
+function drawArc(data, myId) {
+  arcsLayer = new MapboxLayer({
+    type: ArcBrushingLayer,
+    id: myId,
+    data: data,
+    opacity: 1,
+    coef: 0.0000001,
+    getSourcePosition: d => [d.longitude_source, d.latitude_source],
+    getTargetPosition: d => [d.longitude_target, d.latitude_target],
+    getSourceColor: source_color,
+    getTargetColor: target_color,
+    getStrokeWidth: 10
+  });
+  map.addLayer(arcsLayer);
+};
+
+var arcsLayer;

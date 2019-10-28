@@ -1,0 +1,27 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"mag": 6.6, "delay": },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          127.57324218750001,
+          1.4500404973608074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {"mag": 6.9, "delay": },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          143.61328125,
+          42.16340342422401
+        ]
+      }
+    }
+  ]
+}
